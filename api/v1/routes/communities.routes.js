@@ -6,7 +6,7 @@ const {check, validationResult} = require('express-validator');
 
 var postValidator = [
     check('userID').notEmpty().isEmail().withMessage('userID should be email and not Empty'),
-    check('userNickName').notEmpty().isAlphanumeric().withMessage('userNickName should only contain alphabet and number'),
+    check('userNickName').notEmpty().withMessage('userNickName should only contain alphabet and number'),
     check('category').notEmpty().withMessage('category should not be empty'),
     check('content').notEmpty().withMessage('content should not be empty').trim().escape(),
     check('imageKey').optional(),

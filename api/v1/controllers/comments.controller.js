@@ -23,10 +23,45 @@ let postComment = async function(req, res, next){
     }
 }
 
+//post reply => push replies into their parent 
+let postReply = async function(req, res, next){
+    try{
+        const searchParent = await Community.findById(req.body.parentID);
+        console.log(searchParent);
+        if(!searchParent || searchParent.length < 1 ){
+            const error = new Error();
+            error.message = 'parentID is Not found';
+            error.status = 404;
+            throw error;
+        }
+
+        const searchReplyParent = await Comment.findById(req.params.replyParentID);
+        console.log(searchReplyParent);
+        if(!searchReplyParent || searchReplyParent.length < 1 ){
+            const error = new Error();
+            error.message = 'replyParentID is Not found';
+            error.status = 404;
+            throw error;
+        }
+
+        const post = new Comment(req.body);
+        const result = await post.save();
+
+        const replyID = result._id;
+        const replyParentID = req.params.replyParentID;
+        const options = { new: true };
+        const updateResult = await Comment.findByIdAndUpdate(replyParentID, { $push: { 'replies':  replyID}}, options);
+        res.send(result);
+
+    }catch(error){
+        next(error);
+    }
+}
+
 //get Comments By parent ID 
 let getCommentsByParent = async function(req, res, next){
     try{
-        const results = await Comment.find({parentID : req.params.parentID}).sort({updated : -1});
+        const results = await Comment.find({parentID : req.params.parentID}).sort({updated : -1}).populate('replies');
         console.log(results);
         res.send(results);
     }catch (error) {
@@ -38,6 +73,7 @@ let getCommentsByParent = async function(req, res, next){
 //get Comments By userID w/ posts 
 let getCommentsByUserID = async function(req, res, next){
     try{
+        console.log(req.params.userID);
         const results = await Comment.find({userID : req.params.userID}).sort({updated : -1}).populate('parentID');
         console.log(results);
         res.send(results);
@@ -50,11 +86,9 @@ let getCommentsByUserID = async function(req, res, next){
 let updateComment = async function(req, res, next){
     try{
         const commentID = req.params.commentID;
-        req.body.updated = Date.now();
-        const updates = req.body;
         const options = { new: true };
         // console.log(postID);
-        const result = await Communities.findByIdAndUpdate(commentID, updates, options);
+        const result = await Comment.findByIdAndUpdate(commentID, {content : req.body.content, updated : Date.now()}, options);
         if (!result) {
             const error = new Error();
             error.message = 'commentID is Not found';
@@ -70,7 +104,7 @@ let updateComment = async function(req, res, next){
 let deleteComment = async function(req, res, next){
     const commentID = req.params.commentID;
     try {
-        const result = await Communities.findByIdAndDelete(commentID);
+        const result = await Comment.findByIdAndDelete(commentID);
         if (!result) {
             const error = new Error();
             error.message = 'commentID is Not found';
@@ -89,5 +123,6 @@ module.exports = {
     getCommentsByParent : getCommentsByParent,
     getCommentsByUserID : getCommentsByUserID,
     updateComment : updateComment,
-    deleteComment : deleteComment
+    deleteComment : deleteComment,
+    postReply : postReply
 }

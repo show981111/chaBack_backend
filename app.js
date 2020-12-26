@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 const mongoDB = require('./dbConnection/mongoDB.js')
+const mariaDB = require('./dbConnection/mariaDB.js')
 var communityRouter = require('./api/v1/routes/communities.routes.js');
 var commentRouter = require('./api/v1/routes/comments.routes.js');
 
