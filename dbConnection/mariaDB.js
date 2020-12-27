@@ -13,4 +13,9 @@ if(!db._connectCalled )
 	db.connect();
 }
 
+process.on('SIGINT', function(){
+    console.log('MariaDB default connection is closed');
+    db.end();
+});
+
 module.exports = db;
