@@ -6,6 +6,8 @@ const mariaDB = require('./dbConnection/mariaDB.js')
 var communityRouter = require('./api/v1/routes/communities.routes.js');
 var commentRouter = require('./api/v1/routes/comments.routes.js');
 var userRouter = require('./api/v1/routes/user.routes.js');
+var authRouter = require('./api/v1/routes/auth.routes.js');
+
 const bodyParser = require('body-parser')
 
 
@@ -16,7 +18,7 @@ mongoDB();
 app.use('/api/v1/community', communityRouter);
 app.use('/api/v1/comment', commentRouter);
 app.use('/api/v1/user', userRouter);
-
+app.use('/api/v1/auth', authRouter);
 
 //error handler
 app.use((err, req, res, next) => {

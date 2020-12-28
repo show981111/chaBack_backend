@@ -23,7 +23,7 @@ router.post('/register',
 
 /*회원 정보 수정*/
 router.put('/',
-    check('userID').notEmpty().withMessage('userID should not be Empty'),
+    check('userID').notEmpty().isEmail().withMessage('userID should not be Empty'),
     check('profileImg').notEmpty().withMessage('profileImg should not be Empty'),
     check('userNickName').notEmpty().withMessage('userNickName should not be Empty').trim(),
     check('userName').notEmpty().withMessage('userName should not be empty').trim(),
@@ -33,7 +33,7 @@ router.put('/',
 )
 /*비밀번호 변경*/
 router.put('/reset',
-    check('userID').notEmpty().withMessage('userID should not be Empty'),
+    check('userID').notEmpty().isEmail().withMessage('userID should not be Empty'),
     check('userPassword').notEmpty().withMessage('userPassword should not be Empty'),
     checkValidationResult,
     userController.resetPassword

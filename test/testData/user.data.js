@@ -87,8 +87,88 @@ const invalidLoginProvider = [
         detail : 'incorrect password'
     }
 ]
+
+const updateUserFailProvider = [
+    {
+        userID : 'notexist@gmail.com',
+        profileImg : 'default',
+        userNickName : 'dasd',
+        userName : 'sadasd',
+        userPhone : '01011112222',
+        exp : 404,
+        detail : 'user does not exist'
+    },
+    {
+        userID : 'ok1@gmail.com',
+        profileImg : 'default',
+        userNickName : 'ok6',
+        userName : 'sadasd',
+        userPhone : '01011112222',
+        exp : 409,
+        detail : 'userNickName already exist'
+    },
+    {
+        userID : 'notexist@gmailcom',
+        profileImg : 'default',
+        userNickName : 'a',
+        userName : 'sadasd',
+        userPhone : '01011112222',
+        exp : 400,
+        detail : 'invalid email'
+    },
+    {
+        profileImg : 'default',
+        userNickName : 'a',
+        userName : 'sadasd',
+        userPhone : '01011112222',
+        exp : 400,
+        detail : 'ID does not exist'
+    },
+    {
+        userID : 'notexist@gmailcom',
+        userNickName : 'ok6',
+        userName : 'sadasd',
+        userPhone : '01011112222',
+        exp : 400,
+        detail : 'profileImg does not exist'
+    },
+    {
+        userID : 'notexist@gmailcom',
+        profileImg : 'default',
+        userName : 'sadasd',
+        userPhone : '01011112222',
+        exp : 400,
+        detail : 'userNickName deos not exist'
+    },
+    {
+        userID : 'notexist@gmailcom',
+        profileImg : 'default',
+        userNickName : 'a',
+        userPhone : '01011112222',
+        exp : 400,
+        detail : 'userName does not exist'
+    },
+    {
+        userID : 'notexist@gmailcom',
+        profileImg : 'default',
+        userNickName : 'a',
+        userName : 'sadasd',
+        exp : 400,
+        detail : 'userPhone does not exist'
+    },
+    {
+        userID : 'notexist@gmailcom',
+        profileImg : 'default',
+        userNickName : 'a',
+        userName : 'sadasd',
+        userPhone : '010-1111-2222',
+        exp : 400,
+        detail : 'invalid userPhone'
+    }
+]
 module.exports = {
     badRequestTestProvider : badRequestTestProvider,
     conflictTestProvider : conflictTestProvider,
-    invalidLoginProvider : invalidLoginProvider
+    invalidLoginProvider : invalidLoginProvider,
+    updateUserFailProvider : updateUserFailProvider,
 }

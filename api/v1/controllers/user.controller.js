@@ -1,37 +1,15 @@
 const crypto = require('crypto');
 const db = require('../../../dbConnection/mariaDB.js');
-const jwt = require('jsonwebtoken');
+const jwt = require('../middleware/jwt.js');
 const async = require('async');
-const Promise = require('promise');
 require('dotenv').config();
 
 /* LOGIN */
 
-let signJWT = function(userInfo, expIn, subject){
-    console.log('process ENV ' + process.env.JWT_KEY);
-    console.log(Date.now());
-    return new Promise((resolve, reject) => {
-        jwt.sign({
-            userID: userInfo.userID,
-            iat : Math.floor(Date.now() / 1000)
-        }, 
-        process.env.JWT_KEY, 
-        {
-            expiresIn: expIn,
-            issuer: 'chaback',
-            subject: subject,
-        }, 
-        function(err, token) {
-            if(err){reject(err)}
-            resolve(token);
-        }
-    )});
-}
-
 let issueTokens = async function(arg1){
     try{
-        arg1.accessToken = await signJWT(arg1,'15m', 'accessToken');
-        arg1.refreshToken = await signJWT(arg1,'90d', 'refreshToken');
+        arg1.accessToken = await jwt.signJWT(arg1,'15m', 'accessToken');
+        arg1.refreshToken = await jwt.signJWT(arg1,'90d', 'refreshToken');
         return arg1;
     }catch(err){
         return err;
@@ -212,8 +190,17 @@ let isVerified = function(userID, callback){
     const sql = 'SELECT verifiedAt FROM VERIFICATION WHERE userID = ?';
     db.query(sql, [userID], function(err, result){
         if(err) return callback(err);
-        if(Math.floor(Date.now() / 1000) - result[0].verifiedAt >= 0 && Math.floor(Date.now() / 1000) - result[0].verifiedAt < 180 ){
-            callback(null);
+
+        if(result != null && result.length > 0 )
+        {
+            if(Math.floor(Date.now() / 1000) - result[0].verifiedAt >= 0 && Math.floor(Date.now() / 1000) - result[0].verifiedAt < 180 ){
+                callback(null);
+            }else{
+                const e = new Error();
+                e.message = 'not verified';
+                e.status = 403;
+                callback(e);
+            }
         }else{
             const e = new Error();
             e.message = 'not verified';

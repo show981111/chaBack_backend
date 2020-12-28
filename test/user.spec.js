@@ -132,5 +132,25 @@ describe('USER API', function(){
                 done();
             })
         })
+        let invalidInput = function(invalidUpdateProvider, i){
+            it(`It should be ${invalidUpdateProvider.exp} detail : ${invalidUpdateProvider.detail} index:[${i}]`, (done) => {
+                request(app)
+                    .put("/api/v1/user/")
+                    .send(invalidUpdateProvider)
+                    .expect(invalidUpdateProvider.exp)
+                    .end((err, response) => {
+                        if(err) throw err;
+                        console.log(response.body);
+                        response.body.should.be.a('object');
+                    done();
+                });
+            });
+        }
+
+        for(var i = 0 ; i < testData.updateUserFailProvider.length; i++){
+            invalidInput(testData.updateUserFailProvider[i], i);
+        }
+
+        
     })
 })
