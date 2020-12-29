@@ -15,20 +15,22 @@ router.post('/email/verify',
 
 /**Verify  User : get userID from token and post or put into verification table*/
 router.post('/email/verify/:token',
-    authController.
+    jwt.verifyEmailVerification,
+    authController.verifyUser
 );
 
 /**Auto login Using jwt : validate accesstoken and send userInfo */
 router.get('/login',
-    jwt.verifyToken,
-    authController.
+    jwt.verifyToken(),
+    authController.authLogin
 );
 
-/**Get new accesstoken using refreshToken : compare refreshTokin in DB and verify token then issue new AccessToken to User*/
+/**Get new accesstoken using refreshToken : compare refreshToken in DB and verify token then issue new AccessToken to User*/
 router.get('/refresh/:userID',
     check('userID').notEmpty().isEmail().withMessage('userID should be email and not Empty'),
     checkValidationResult,
-    authController.
+    jwt.verifyToken('refreshToken'),
+    authController.issueRefreshToken
 );
 
 

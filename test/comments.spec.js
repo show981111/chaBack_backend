@@ -1,7 +1,6 @@
 let request = require('supertest');
 const chai = require('chai');
 let app = require("../app.js");
-const { response } = require('express');
 const { expect } = require('chai');
 
 chai.should();

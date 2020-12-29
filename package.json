@@ -21,7 +21,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "node_modules/.bin/mocha test/user.spec.js"
+    "test": "node_modules/.bin/mocha test/auth.spec.js"
   },
   "author": "yongseung lee",
   "license": "ISC"

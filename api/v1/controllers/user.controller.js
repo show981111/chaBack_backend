@@ -20,7 +20,6 @@ let updateRefreshToken = function(arg1 , callback){
     if(arg1 instanceof Error){
         return callback(arg1);
     }
-    console.log(arg1.refreshToken);
     var sql = 'UPDATE USER SET refreshToken = ? WHERE userID = ?';
     db.query(sql, [arg1.refreshToken, arg1.userID], function(err, result){
         if(err){return callback(err);}
@@ -76,7 +75,6 @@ let login = function(req, res, next){
             next(err); 
             return;
         }
-        console.log(result);
         if(result == 'done'){
             res.status(200).send(final);
         }else{
@@ -147,7 +145,6 @@ let register = function(req, res , next){
             next(err); 
             return;
         }
-        console.log(result);
         if(result == 'done'){
             res.status(200).send('success');
         }else{

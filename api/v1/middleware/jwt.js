@@ -26,30 +26,91 @@ let signJWT = function(userInfo, expIn, subject){
     )});
 }
 
-var verifyToken = function(req, res, next){
 
-    var rejected = new Error();
-    rejected.status = 401;
-    
-	if(!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
-        rejected.message = 'no credential';
-		return next(rejected);
-	}
-	
-	var token = req.headers.authorization;
-	token = token.slice(7, token.length).trimLeft();
-	
-    jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
-    	if(err) return next(err);
+let verifyToken = function(role){ 
+
+    return function(req, res, next){
+        var rejected = new Error('no credential');
+        rejected.status = 401;
+        if(!req.headers.authorization|| req.headers.authorization == undefined || !req.headers.authorization.startsWith('Bearer ')) {
+            return next(rejected);
+        }
         
-        req.token_userID = decoded.userID;
-        next();
-	});
+        var token = req.headers.authorization;
+        token = token.slice(7, token.length).trimLeft();
+        
+        if(token == undefined){return next(rejected)}
 
+        jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
+            if(err) {
+                if(err.name === 'TokenExpiredError'){
+                    var e = new Error();
+                    e.status = 401;
+                    e.message = 'Token Expired';
+                    return next(e); 
+                }else{
+                    console.log(token);
+                    console.log(err);
+                    return next(err); 
+                }
+            }
+            
+            if(role == undefined){
+                role = 'accessToken';
+            }
+            if(decoded.sub == role && decoded.userID != undefined){
+                req.token_userID = decoded.userID;
+                next();
+            }else{
+                console.log('Wrong Token ' + decoded.sub);
+                var e = new Error();
+                e.status = 401;
+                e.message = 'Wrong Token';
+                return next(e); 
+            }
+        });
+    }
 }
+
+let verifyEmailVerification = function(req, res, next){
+    
+    if(req.params.token == undefined){
+        e.message = 'no credential';
+        return next(e);
+    }
+    const token = req.params.token;
+    jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
+    	if(err) { 
+            console.log(err);
+            if(err.name === 'TokenExpiredError'){
+                var e = new Error();
+                e.status = 401;
+                e.message = 'Token Expired';
+                return next(e); 
+            }else{
+                return next(err); 
+            }
+        }
+
+        console.log(decoded)
+        
+        if(decoded.sub == 'Email verification')
+        {
+            req.token_userID = decoded.userID;
+            next();
+        }else{
+            var e = new Error();
+            e.status = 401;
+            e.message = 'Wrong Token';
+            return next(e);
+        }
+	});
+}
+
 
 
 module.exports = {
     signJWT : signJWT,
-    verifyToken : verifyToken
+    verifyToken : verifyToken,
+    verifyEmailVerification : verifyEmailVerification
 }

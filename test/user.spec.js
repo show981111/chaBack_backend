@@ -150,7 +150,6 @@ describe('USER API', function(){
         for(var i = 0 ; i < testData.updateUserFailProvider.length; i++){
             invalidInput(testData.updateUserFailProvider[i], i);
         }
-
-        
     })
+
 })
