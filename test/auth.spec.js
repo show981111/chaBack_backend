@@ -3,10 +3,14 @@ const chai = require('chai');
 let app = require("../app.js");
 const { expect } = require('chai');
 const testData = require('./testData/auth.data.js');
-const { sendEmailInvalidInput } = require('./testData/auth.data.js');
+const { sendEmailInvalidInput, undefinedUser } = require('./testData/auth.data.js');
+const { response } = require('express');
 
 chai.should();
 var verificationToken ;
+var refreshToken;
+var accessToken;
+
 describe('Auth API', function(){
     
     describe('Send Verification Email To User /api/v1/auth/email/verify', function(){
@@ -21,6 +25,7 @@ describe('Auth API', function(){
                     verificationToken = response.body.token;
                     console.log(verificationToken);
                     response.body.should.be.a('object');
+                    //expect(response.text).to.equal('success');
                 done();
             })
         })
@@ -33,7 +38,7 @@ describe('Auth API', function(){
                     .expect(invalidInputProvider.exp)
                     .end((err, response) => {
                         if(err) throw err;
-                        response.body.should.be.a('object');
+                        expect(response.body).to.have.property('error');
                     done();
                 })
             })
@@ -51,7 +56,7 @@ describe('Auth API', function(){
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
-                    response.body.should.be.a('object');
+                    expect(response.text).to.equal('success');
                 done();
             })
         })
@@ -63,14 +68,13 @@ describe('Auth API', function(){
                 .end((err, response) => {
                     if(err) throw err;
                     console.log(response.body);
-                    response.body.should.be.a('object');
+                    expect(response.body).to.have.property('error');
                 done();
             })
         })
     })
 
     describe('Verify user /api/v1/auth/login', function(){
-        var accessToken;
         
         const loginUser = {
             userID : 'ok@gmail.com',
@@ -84,7 +88,9 @@ describe('Auth API', function(){
                 .end((err, response) => {
                     if(err) throw err;
                     response.body.should.be.a('object');
+
                     accessToken = response.body.accessToken;
+                    refreshToken = response.body.refreshToken;
                     request(app)
                         .get('/api/v1/auth/login')
                         .set('Authorization', 'Bearer ' + accessToken)
@@ -109,7 +115,7 @@ describe('Auth API', function(){
                 .end((err, response) => {
                     if(err) throw err;
                     console.log(response.body);
-                    response.body.should.be.a('object');
+                    expect(response.body).to.have.property('error');
                 })
                 done();
         })
@@ -123,7 +129,7 @@ describe('Auth API', function(){
                     .end((err, response) => {
                         if(err) throw err;
                         console.log(response.body);
-                        response.body.should.be.a('object');
+                        expect(response.body).to.have.property('error');
                     })
                     done();
             })
@@ -132,6 +138,94 @@ describe('Auth API', function(){
             invalidTokenTest(testData.invalidToken[i], i);
         }
 
+    })
+
+    describe('Get RefreshToken /api/v1/auth/refresh/:userID', function(){
+        it(`it should get refreshToken`, (done) => {
+            request(app)
+                .get('/api/v1/auth/refresh/ok@gmail.com')
+                .set('Authorization', 'Bearer ' + refreshToken)
+                .expect(200)
+                .end((err, response) => {
+                    if(err) throw err;
+                    console.log(response.body);
+                    response.body.should.be.a('object');
+                    expect(response.body).to.have.property('accessToken');
+                })
+            done();
+        })
+
+        it(`it should be 401 due to Wrong Subject `, (done) => {
+            request(app)
+                .get('/api/v1/auth/refresh/ok@gmail.com')
+                .set('Authorization', 'Bearer ' + accessToken)
+                .expect(401)
+                .end((err, response) => {
+                    if(err) throw err;
+                    console.log(response.body);
+                    response.body.should.be.a('object');
+                })
+            done();
+        })
+
+        let invalidRefreshTest = function(invalidProvider, i ){
+            it(`it should ${invalidProvider.exp} : ${invalidProvider.detail} index[${i}] `, (done) => {
+                request(app)
+                    .get('/api/v1/auth/refresh/'+invalidProvider.userID)
+                    .set('Authorization', 'Bearer ' + invalidProvider.token)
+                    .expect(invalidProvider.exp)
+                    .end((err, response) => {
+                        if(err) throw err;
+                        console.log(response.body);
+                        expect(response.body).to.have.property('error');
+                        expect(response.body).to.not.have.property('accessToken');
+                    })
+                done();
+            })
+        }
+
+        for(var i = 0; i < testData.invalidRefreshToken.length ; i++){
+            invalidRefreshTest(testData.invalidRefreshToken[i], i);
+        }
+    })
+
+    describe('Change User Password(User API) api/v1/user/reset', function(){
+        const user = {
+            userID : 'show981111@gmail.com',
+            userPassword : '12345'
+        }
+        it('it should change user Password', (done) => {
+            request(app)
+                .put('/api/v1/user/reset')
+                .send(user)
+                .expect(200)
+                .end((err, response) => {
+                    if(err) throw err;
+                    expect(response.text).to.equal('success');
+                })
+            done();
+        })
+
+        let undefinedUserTest = function(invalidInput , i )
+        {
+            it(`it should be ${invalidInput.exp} : ${invalidInput.detail} index[${i}]`, (done) => {
+                request(app)
+                    .put('/api/v1/user/reset')
+                    .send(invalidInput)
+                    .expect(invalidInput.exp)
+                    .end((err, response) => {
+                        if(err) throw err;
+                        console.log(response.body);
+                        expect(response.body).to.have.property('error');
+                        expect(response.body.error).to.equal(invalidInput.detail);
+                    })
+                done();
+            })
+        }
+
+        for(var i = 0; i < testData.undefinedUser.length; i++){
+            undefinedUserTest(testData.undefinedUser[i], i);
+        }
     })
 
 })

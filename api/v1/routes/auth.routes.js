@@ -8,7 +8,7 @@ const {check, validationResult} = require('express-validator');
 
 /**Send Email to User */
 router.post('/email/verify',
-    check('userID').notEmpty().isEmail().withMessage('userID should be email and not Empty'),
+    check('userID').notEmpty().isEmail().withMessage('userID should be email and not Empty').trim(),
     checkValidationResult,
     authController.postEmail
 );
@@ -27,10 +27,10 @@ router.get('/login',
 
 /**Get new accesstoken using refreshToken : compare refreshToken in DB and verify token then issue new AccessToken to User*/
 router.get('/refresh/:userID',
-    check('userID').notEmpty().isEmail().withMessage('userID should be email and not Empty'),
+    check('userID').notEmpty().isEmail().withMessage('userID should be email and not Empty').trim(),
     checkValidationResult,
     jwt.verifyToken('refreshToken'),
-    authController.issueRefreshToken
+    authController.issueNewAccessToken
 );
 
 

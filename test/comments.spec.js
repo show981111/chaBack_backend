@@ -4,7 +4,7 @@ let app = require("../app.js");
 const { expect } = require('chai');
 
 chai.should();
-
+var accessToken ;
 describe('Comment API', function(){
     var _id;
     describe('Post api/v1/comment', function(){
@@ -15,16 +15,29 @@ describe('Comment API', function(){
                 userNickName : '안녕123',
                 content : 'blablablablablabads',
             };
+            const loginUser = {
+                userID : 'ok@gmail.com',
+                userPassword : '1234'
+            }
             request(app)
-                .post("/api/v1/comment")
-                .send(commentItem)
+                .post("/api/v1/user/login")
+                .send(loginUser)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
-                    _id = response.body._id;
-                    console.log('------------')
-                    console.log(_id)
-                    response.body.should.be.a('object');
+                    accessToken = response.body.accessToken;
+                    request(app)
+                        .post("/api/v1/comment")
+                        .send(commentItem)
+                        .set('Authorization', 'Bearer ' + accessToken)
+                        .expect(200)
+                        .end((err, response) => {
+                            if(err) throw err;
+                            _id = response.body._id;
+                            console.log('------------')
+                            console.log(_id)
+                            response.body.should.be.a('object');
+                    });
                 done();
             });
         })
@@ -38,6 +51,7 @@ describe('Comment API', function(){
             request(app)
                 .post("/api/v1/comment")
                 .send(commentItem)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(400)
                 .end((err, response) => {
                     if(err) throw err;
@@ -56,6 +70,7 @@ describe('Comment API', function(){
             request(app)
                 .post("/api/v1/comment")
                 .send(commentItem)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(404)
                 .end((err, response) => {
                     if(err) throw err;
@@ -130,6 +145,7 @@ describe('Comment API', function(){
             request(app)
                 .put("/api/v1/comment/" + _id)
                 .send(commentItem)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
@@ -143,6 +159,7 @@ describe('Comment API', function(){
             request(app)
                 .put("/api/v1/comment/5fe606056a7ffc310a22f59a")
                 .send(commentItem)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(404)
                 .end((err, response) => {
                     if(err) throw err;
@@ -158,6 +175,7 @@ describe('Comment API', function(){
         it('it should delete comment', (done)=>{
             request(app)
                 .delete("/api/v1/comment/"+_id)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
@@ -169,6 +187,7 @@ describe('Comment API', function(){
         it('it should show 404(commentID does not exist)', (done)=>{
             request(app)
                 .delete("/api/v1/comment/5fe606056a7ffc310a22f59f")
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(404)
                 .end((err, response) => {
                     if(err) throw err;
@@ -189,6 +208,7 @@ describe('Comment API', function(){
             request(app)
                 .post("/api/v1/comment/5fe6f0c4f4ef276059634af9")
                 .send(commentItem)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
@@ -206,6 +226,7 @@ describe('Comment API', function(){
             request(app)
                 .post("/api/v1/comment/5fe6f0c4f4ef276059634af9")
                 .send(commentItem)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(400)
                 .end((err, response) => {
                     if(err) throw err;
@@ -224,6 +245,7 @@ describe('Comment API', function(){
             request(app)
                 .post("/api/v1/comment/5fe6f0c4f4ef276059634aff")
                 .send(commentItem)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(404)
                 .end((err, response) => {
                     if(err) throw err;
@@ -242,6 +264,7 @@ describe('Comment API', function(){
             request(app)
                 .post("/api/v1/comment/5fe6f0c4f4ef276059634af9")
                 .send(commentItem)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(404)
                 .end((err, response) => {
                     if(err) throw err;

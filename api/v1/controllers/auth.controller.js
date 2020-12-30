@@ -5,16 +5,12 @@ const jwt = require('../middleware/jwt.js');
 
 
 let transporter = nodemailer.createTransport({
-	// 사용하고자 하는 서비스, gmail계정으로 전송할 예정이기에 'gmail'
-	service: 'Naver',
-	// host를 gmail로 설정
-	host: 'smtp.naver.com',
-	port: 587,
-	secure: false,
+	service: 'kakao',
+	host: 'smtp.kakao.com',
+	port: 465,
+	secure: true,
 	auth: {
-	  // Gmail 주소 입력, 'testmail@gmail.com'
 	  user: process.env.emailUserID,
-	  // Gmail 패스워드 입력
 	  pass: process.env.emailUserPassword,
 	},
 });
@@ -43,6 +39,7 @@ let postEmail = function(req, res, next){
                 //     subject: '차박의 성지 이메일 인증',
                 //     html: html,
                 // });
+                // console.log(info);
                 res.status(200).send({token : verificationToken});
         
             }catch(mail_error){
@@ -85,12 +82,12 @@ let authLogin = function(req, res, next){
     })
 }
 
-let issueRefreshToken = function(req, res, next){
-    const sql = 'SELECT * FROM USER WHERE userID = ? refreshToken = ?';
+let issueNewAccessToken = function(req, res, next){
+    const sql = 'SELECT * FROM USER WHERE userID = ? AND refreshToken = ?';
     var token = req.headers.authorization;
 	token = token.slice(7, token.length).trimLeft();
     db.query(sql , [req.params.userID, token],async function(err, result){
-        if(err) return next(err);
+        if(err) {console.log(err); return next(err);}
 
         const userInfo = {userID : req.params.userID};
         if(result != undefined && result.length > 0){
@@ -100,7 +97,7 @@ let issueRefreshToken = function(req, res, next){
         }else{
             const e = new Error();
             e.status = 404;
-            e.message = "Not Found";
+            e.message = "Token and userID pair was not found";
             next(e);
         }
     })
@@ -111,5 +108,5 @@ module.exports = {
     postEmail : postEmail,
     verifyUser : verifyUser,
     authLogin : authLogin,
-    issueRefreshToken : issueRefreshToken
+    issueNewAccessToken : issueNewAccessToken
 }

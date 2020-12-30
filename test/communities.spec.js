@@ -6,19 +6,33 @@ const { expect } = require('chai');
 var util = require('util');
 
 chai.should();
+
+var accessToken;
 describe('community api', function(){
     var _id; 
     //get all community posts
     describe("GET /api/v1/community", () => {
         it("It should GET all community posts", (done) => {
+            const loginUser = {
+                userID : 'ok@gmail.com',
+                userPassword : '1234'
+            }
             request(app)
-                .get("/api/v1/community")
+                .post("/api/v1/user/login")
+                .send(loginUser)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
-                    response.body.should.be.a('array');
-                    console.log(response.body);
-                    //response.body.length.should.be.eq(3);
+                    accessToken = response.body.accessToken;
+                    request(app)
+                        .get("/api/v1/community")
+                        .expect(200)
+                        .end((err, response) => {
+                            if(err) throw err;
+                            response.body.should.be.a('array');
+                            console.log(response.body);
+                            //response.body.length.should.be.eq(3);
+                    });
                 done();
             });
         });
@@ -77,6 +91,7 @@ describe('community api', function(){
             request(app)
                 .post("/api/v1/community")
                 .send(postItem)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
@@ -98,6 +113,7 @@ describe('community api', function(){
             request(app)
                 .post("/api/v1/community/")
                 .send(postItemWithoutUserID)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(400)
                 .end((err, response) => {
                     if(err) throw err;
@@ -116,6 +132,7 @@ describe('community api', function(){
             request(app)
                 .put("/api/v1/community/"+_id)
                 .send(postItem)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
@@ -132,6 +149,7 @@ describe('community api', function(){
             request(app)
                 .post("/api/v1/community/5fe5e8219f70441cac72a8ba")
                 .send(postItem)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(404)
                 .end((err, response) => {
                     if(err) throw err;
@@ -148,6 +166,7 @@ describe('community api', function(){
             request(app)
                 .post("/api/v1/community/5fe5e8219f70441cac72a8ba")
                 .send(postItem)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(404)
                 .end((err, response) => {
                     if(err) throw err;
@@ -161,6 +180,7 @@ describe('community api', function(){
         it("It should delete post item", (done) => {
             request(app)
                 .delete("/api/v1/community/"+_id)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
@@ -171,6 +191,7 @@ describe('community api', function(){
         it("It should be 404", (done) => {
             request(app)
                 .delete("/api/v1/community/5fe5e8219f70441cac72a8ba")
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(404)
                 .end((err, response) => {
                     if(err) throw err;
@@ -181,6 +202,7 @@ describe('community api', function(){
         it("It should be bad request(malformed post ID)", (done) => {
             request(app)
                 .delete("/api/v1/community/5fe5e8219f70441cac7a")
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(400)
                 .end((err, response) => {
                     if(err) throw err;

@@ -194,7 +194,7 @@ let isVerified = function(userID, callback){
                 callback(null);
             }else{
                 const e = new Error();
-                e.message = 'not verified';
+                e.message = 'outDated';
                 e.status = 403;
                 callback(e);
             }
