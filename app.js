@@ -20,7 +20,7 @@ app.use('/api/v1/community', communityRouter);
 app.use('/api/v1/comment', commentRouter);
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/auth', authRouter);
-app.use('ap1/v1/place', placeRouter);
+app.use('/api/v1/place', placeRouter);
 
 //error handler
 app.use((err, req, res, next) => {

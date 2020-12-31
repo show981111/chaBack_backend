@@ -1,10 +1,12 @@
 const {checkSchema} = require('express-validator');
 const { options } = require('superagent');
 
-const regionData = ['서울특별시','부산광역시','대구광역시','인천광역시','광주광역시','대전광역시','울산광역시','경기도',
-'강원도','충청북도','충청남도','전라북도','전라남도','경상북도','경상남도','제주도','세종시']
+// const regionData = ['서울특별시','부산광역시','대구광역시','인천광역시','광주광역시','대전광역시','울산광역시','경기도',
+// '강원도','충청북도','충청남도','전라북도','전라남도','경상북도','경상남도','제주도','세종시']
 
-const categoryList = ['a','b','c','d','e']
+const regionData = ['a','b','c','d','e','f','g','h']
+
+const categoryList = ['a','b','c','d','e','f','g','h']
 
 let filter = function(value, data){
     for(var i = 0; i < data.length; i++){
@@ -117,9 +119,95 @@ var placeSchema = checkSchema({
     }
 });
 
+var placeFilterSchema = checkSchema({
+    region: {
+        errorMessage: 'region should not be empty',
+        notEmpty : true, 
+        custom : {
+            options : (value) => {
+                try{
+                    return filter(value, regionData);
+                }catch(err){
+                    throw err;
+                }
+            },
+        },  
+        trim: true
+    },
+    category: {
+        errorMessage: 'category should not be empty',
+        notEmpty : true,
+        custom : {
+            options : (value) => {
+                try{
+                    return filter(value, categoryList);
+                }catch(err){
+                    throw err;
+                }
+            },
+        },  
+        trim : true
+    },
+    bathroom: {
+        errorMessage: 'bathroom should be 1, 0, -1',
+        notEmpty : true,
+        custom : {
+            options : (value) => {
+                if(value == 0 || value == 1 || value == -1){
+                    return value;
+                }else{
+                    const e = new Error('bathroom should be 1, 0, -1');
+                    e.status = 400;
+                    throw e;
+                }
+            },
+        },  
+        trim : true
+    },
+    water: {
+        errorMessage: 'water should be 1, 0, -1',
+        notEmpty : true,
+        custom : {
+            options : (value) => {
+                if(value == 0 || value == 1 || value == -1){
+                    return value;
+                }else{
+                    const e = new Error('water should be 1, 0, -1');
+                    e.status = 400;
+                    throw e;
+                }
+            },
+        },  
+        trim : true
+    },
+    price: {
+        errorMessage: 'price should be 1, 0, -1',
+        notEmpty : true,
+        custom : {
+            options : (value) => {
+                if(value == 0 || value == 1 || value == -1){
+                    return value;
+                }else{
+                    const e = new Error('price should be 1, 0, -1');
+                    e.status = 400;
+                    throw e;
+                }
+            },
+        },  
+        trim : true
+    },
+    before: {
+        errorMessage: 'before should not be empty and be Date',
+        isDate : true,
+        notEmpty : true,
+        trim : true
+    }
+});
+
 module.exports = {
     placeSchema : placeSchema,
     filter : filter,
+    placeFilterSchema : placeFilterSchema,
     categoryList : categoryList,
     regionData : regionData
 };
