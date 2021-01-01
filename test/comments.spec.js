@@ -11,7 +11,6 @@ describe('Comment API', function(){
         it('it should create comment', (done)=>{
             const commentItem = {
                 parentID : '5fe5ef811f23fe215c96238e',
-                userID : 'test@gmail.com',
                 userNickName : '안녕123',
                 content : 'blablablablablabads',
             };
@@ -44,7 +43,6 @@ describe('Comment API', function(){
 
         it('it should show 400(does not have parent ID)', (done)=>{
             const commentItem = {
-                userID : 'test@gmail.com',
                 userNickName : 'testUser',
                 content : 'blablablablablabads',
             };
@@ -63,7 +61,6 @@ describe('Comment API', function(){
         it('it should show 404(invalid parentID)', (done)=>{
             const commentItem = {
                 parentID : '5fe5ef811f23fe215c96238f',
-                userID : 'test@gmail.com',
                 userNickName : 'testUser',
                 content : 'blablablablablabads',
             };
@@ -201,7 +198,6 @@ describe('Comment API', function(){
         it('it should create comment and push reply into parent\'s replies', (done)=>{
             const commentItem = {
                 parentID : '5fe5e6a789cccc1b4534038a',
-                userID : 'test@gmail.com',
                 userNickName : 'testUser',
                 content : 'reply to 5fe6f0c4f4ef276059634af9 hello~~',
             };
@@ -219,7 +215,6 @@ describe('Comment API', function(){
 
         it('it should show 400(does not have parent ID)', (done)=>{
             const commentItem = {
-                userID : 'test@gmail.com',
                 userNickName : 'testUser',
                 content : 'blablablablablabads',
             };
@@ -238,7 +233,6 @@ describe('Comment API', function(){
         it('it should show 404(invalid replyParentID)', (done)=>{
             const commentItem = {
                 parentID : '5fe5e6a789cccc1b4534038a',
-                userID : 'test@gmail.com',
                 userNickName : 'testUser',
                 content : 'blablablablablabads',
             };
@@ -257,7 +251,6 @@ describe('Comment API', function(){
         it('it should show 404(invalid ParentID)', (done)=>{
             const commentItem = {
                 parentID : '5fe5e6a789cccc1b45340388',
-                userID : 'test@gmail.com',
                 userNickName : 'testUser',
                 content : 'blablablablablabads',
             };

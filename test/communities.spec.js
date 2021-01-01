@@ -82,7 +82,6 @@ describe('community api', function(){
     describe("POST /api/v1/community/", () => {
         it("It should create post", (done) => {
             const postItem = {
-                userID : 'test@gmail.com',
                 userNickName : 'testUser',
                 category : '실시간 현황',
                 content : 'blablablablablabads',
@@ -99,24 +98,6 @@ describe('community api', function(){
                     console.log('------------')
                     console.log(_id)
                     response.body.should.be.a('object');
-                done();
-            });
-        });
-
-        it("It should show error because it has no userID", (done) => {
-            const postItemWithoutUserID = {
-                userNickName : 'testUser',
-                category : '실시간 현황',
-                content : 'blablablablablabads',
-                imageKey : ['first', 'sec', 'third']
-            };
-            request(app)
-                .post("/api/v1/community/")
-                .send(postItemWithoutUserID)
-                .set('Authorization', 'Bearer ' + accessToken)
-                .expect(400)
-                .end((err, response) => {
-                    if(err) throw err;
                 done();
             });
         });
@@ -159,7 +140,6 @@ describe('community api', function(){
 
         it("It should be a bad request because it contains userID", (done) => {
             const postItem = {
-                userID : 'dsadsa@asdas.com',
                 content : 'blablablablablabads',
                 imageKey : ['first', 'sec', 'third', 'firth', 'fifth']
             };

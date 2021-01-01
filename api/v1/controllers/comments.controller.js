@@ -13,7 +13,7 @@ let postComment = async function(req, res, next){
             error.status = 404;
             throw error;
         }
-
+        req.body.userID = req.token_userID;
         const post = new Comment(req.body);
         const result = await post.save();
         res.send(result);
@@ -43,7 +43,7 @@ let postReply = async function(req, res, next){
             error.status = 404;
             throw error;
         }
-
+        req.body.userID = req.token_userID;
         const post = new Comment(req.body);
         const result = await post.save();
 

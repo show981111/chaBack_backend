@@ -6,7 +6,6 @@ const {check, validationResult} = require('express-validator');
 const jwt = require('../middleware/jwt.js')
 
 var postValidator = [
-    check('userID').notEmpty().isEmail().withMessage('userID should be email and not Empty').trim(),
     check('userNickName').notEmpty().withMessage('userNickName should only contain alphabet and number').trim(),
     check('category').notEmpty().withMessage('category should not be empty').trim(),
     check('content').notEmpty().withMessage('content should not be empty').trim().escape(),
@@ -28,7 +27,6 @@ router.post('/', postValidator,
 
 router.put('/:postID',
     [
-        check('userID').isEmpty().withMessage('should not contain userID').trim(),
         check('userNickName').isEmpty().withMessage('should not contain userNickName').trim(),
         check('content').notEmpty().withMessage('content should not be empty').trim().escape(), 
         check('postID').notEmpty().isLength({min : 24, max :24}).withMessage('postID should not be empty and 24 hex characters').trim()

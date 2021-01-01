@@ -2,6 +2,7 @@ const Communities = require('../model/communities.js')
 
 var postPosts = async function(req, res, next){
     try {
+        req.body.userID = req.token_userID;
         const post = new Communities(req.body);
         console.log(post);
         const result = await post.save();
@@ -38,6 +39,7 @@ var updatePosts = async function(req, res, next){
     try {
         const postID = req.params.postID;
         req.body.updated = Date.now();
+        req.body.userID = req.token_userID;
         const updates = req.body;
         const options = { new: true };
         // console.log(postID);

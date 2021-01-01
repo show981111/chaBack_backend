@@ -7,7 +7,6 @@ const jwt = require('../middleware/jwt.js')
 
 var postValidator = [
     check('parentID').notEmpty().isLength({min : 24, max :24}).withMessage('parentID should not be empty and 24 hex characters').trim(),
-    check('userID').notEmpty().isEmail().withMessage('userID should be email and not Empty').trim(),
     check('userNickName').notEmpty().withMessage('userNickName should only contain alphabet and number').trim(),
     check('content').notEmpty().withMessage('content should not be empty').trim().escape(),
 ];

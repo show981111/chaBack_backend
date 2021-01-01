@@ -25,12 +25,12 @@ var placeSchema = checkSchema({
         notEmpty : true, 
         trim: true
     },
-    userID: {
-        errorMessage: 'userID should not be empty and should be email',
-        notEmpty : true, 
-        isEmail : true, 
-        trim: true
-    },
+    // userID: {
+    //     errorMessage: 'userID should not be empty and should be email',
+    //     notEmpty : true, 
+    //     isEmail : true, 
+    //     trim: true
+    // },
     lat: {
         errorMessage: 'lat should not be empty and should be decimal',
         notEmpty : true, 
