@@ -8,19 +8,21 @@ const { response } = require('express');
 
 chai.should();
 var accessToken;
+var insertedPlaceID;
 describe('PLACE API', function(){
+    var test = {
+        'region' : 'a',
+        'category' : 'a',
+        'bathroom' : 0,
+        'water' : 1,
+        'price' : -1,
+        'placeName' : '4C',
+        'before' : 5,
+        'option' : 'id'
+    };
 
     describe('GET PLACE /api/v1/place/:region/:category/:bathroom/:water/:price/:placeName/:before/:option', function() {
-        var test = {
-            'region' : 'a',
-            'category' : 'a',
-            'bathroom' : 0,
-            'water' : 1,
-            'price' : -1,
-            'placeName' : '4C',
-            'before' : '2019-05-01',
-            'option' : 'date'
-        };
+
         console.log(test['placeName']);
         it('it should return place lists' , (done) => {
             request(app)
@@ -63,6 +65,43 @@ describe('PLACE API', function(){
         }
     })
 
+    describe('GET PLACE according to current location api/v1/place/:region/:category/:bathroom/:water/:price/:placeName/:before/distance/:lat/:lng', function(){
+        it('it should get places by distance', (done) => {
+            request(app)
+                .get(`/api/v1/place/${test['region']}/${test['category']}/${test['bathroom']}/0/
+                ${test['price']}/-1/${3}/distance/28.0340000/120.6967000`)
+                .expect(200)
+                .end((err, response) => {
+                    if(err) throw err;
+                    console.log(response.body);
+                    for(var i = 0; i < response.body.length; i++)
+                    {
+                        response.body[i].region.should.be.equal(test['region']);
+                        response.body[i].category.should.to.equal(test['category']);
+                        if(test['bathroom'] != -1 ) response.body[i].bathroom.should.to.equal(test['bathroom']);
+                        if(test['water'] != -1 ) response.body[i].water.should.to.equal(0);
+                        if(test['price'] != -1 ) response.body[i].price.should.to.equal(test['price']);
+                        expect(response.body[i]).to.have.property('distance');
+                        //response.body[i].updated.should.beforeOrEqualDate(test['before']);
+                    }
+                    done();
+                })
+        })
+
+        it('it should be 400', (done) => {
+            request(app)
+                .get(`/api/v1/place/${test['region']}/${test['category']}/${test['bathroom']}/0/
+                ${test['price']}/-1/${3}/distance/10/190`)
+                .expect(400)
+                .end((err, response) => {
+                    if(err) throw err;
+                    console.log(response.body);
+                    response.body.error.should.equal('lng should be decimal');
+                    done();
+                })
+        })
+    })
+
     describe('POST PLACE /api/v1/place', function(params) {
         //placeName, userID, lat, lng, address, region, content, category, bathroom, water, price, totalPoint, imageKey
         const loginUser = {
@@ -84,7 +123,9 @@ describe('PLACE API', function(){
                         .expect(200)
                         .end((err, response) => {
                             if(err) { throw err;}
-                            expect(response.text).to.equal('success');
+                            expect(response.body).to.have.property('placeID');
+                            insertedPlaceID = response.body.placeID;
+                            console.log(insertedPlaceID);
                             done();
                         });
                     });
@@ -107,6 +148,60 @@ describe('PLACE API', function(){
 
         for(var i = 1; i < testData.postProvier.length; i++){
             invalidTest(testData.postProvier[i], i);
+        }
+    })
+
+    describe('PUT PLACE api/v1/place/:placeID', function() {
+
+        let updateTest = function (placeUpdateProvider, i) {
+            it(`it should be ${placeUpdateProvider.exp} : ${placeUpdateProvider.detail} index[${i}]`, (done) => {
+                request(app)
+                    .put(`/api/v1/place/${placeUpdateProvider.placeID}`)
+                    .send(placeUpdateProvider)
+                    .set('Authorization', 'Bearer ' + accessToken)
+                    .expect(placeUpdateProvider.exp)
+                    .end((err, response) => {
+                        if(err) { throw err;}
+                        if(placeUpdateProvider.exp == 200) response.text.should.equal('success');
+                        else expect(response.body.error).to.equal(placeUpdateProvider.detail);
+                        done();
+                    });
+            })
+        }
+
+        for(var i = 0; i < testData.placeUpdateProvider.length; i++){
+            updateTest(testData.placeUpdateProvider[i],i);
+        }
+    })
+
+    describe('DELETE PLACE api/v1/place/:placeID', function() {
+        it(`it should be 200 : delete place `, (done) => {
+            request(app)
+                .delete(`/api/v1/place/${insertedPlaceID}`)
+                .set('Authorization', 'Bearer ' + accessToken)
+                .expect(200)
+                .end((err, response) => {
+                    if(err) { throw err;}
+                    response.text.should.equal('success');
+                    done();
+                })
+        })
+        let deleteTest = function (input, i) {
+            it(`it should be ${input.exp} : ${input.detail} index[${i}]`, (done) => {
+                request(app)
+                    .delete(`/api/v1/place/${input.placeID}`)
+                    .set('Authorization', 'Bearer ' + accessToken)
+                    .expect(input.exp)
+                    .end((err, response) => {
+                        if(err) { throw err;}
+                        if(input.exp == 200) response.text.should.equal('success');
+                        else expect(response.body.error).to.equal(input.detail);
+                        done();
+                    })
+            })
+        }
+        for(var i = 0; i< testData.deleteProvider.length; i++){
+            deleteTest(testData.deleteProvider[i], i);
         }
     })
 })

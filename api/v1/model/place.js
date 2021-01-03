@@ -1,6 +1,4 @@
-const { util } = require('chai');
 const {checkSchema, check} = require('express-validator');
-const { options } = require('superagent');
 
 // const regionData = ['서울특별시','부산광역시','대구광역시','인천광역시','광주광역시','대전광역시','울산광역시','경기도',
 // '강원도','충청북도','충청남도','전라북도','전라남도','경상북도','경상남도','제주도','세종시']
@@ -126,24 +124,10 @@ var placeSchema = function(optional){
         notEmpty : true,
         trim : true
     },
-    point: {
-        errorMessage: 'point should be 0 to 5',
-        isNumeric : true,
-        notEmpty : true,
-        custom : {
-            options : (value) => {
-                if(value >= 0 && value <= 5) return value;
-
-                const err = new Error('point should be 0 to 5');
-                err.status = 400;
-                throw err;
-            },
-        },
-        trim : true
-    }
 });
 }
-var placeFilterSchema = checkSchema({
+
+var placeCommonFilterSchema = checkSchema({
     region: {
         errorMessage: 'region should not be empty',
         notEmpty : true, 
@@ -224,14 +208,17 @@ var placeFilterSchema = checkSchema({
         errorMessage: 'placeName should not be empty',
         notEmpty : true,
         trim : true
-    },
+    }
+});
+
+var placeFilterSchema = checkSchema({
     option : {
         custom : {
             options : (value) => {
-                if(value == 'point'|| value == 'review' || value == 'date' ){
+                if(value == 'point'|| value == 'review' || value == 'date' || value == 'id' ){
                     return value;
                 }else{
-                    const e = new Error('option should be point, review, date');
+                    const e = new Error('option should be point, review, date, id');
                     e.status = 400;
                     throw e;
                 }
@@ -249,8 +236,8 @@ var placeFilterSchema = checkSchema({
                         e.status = 400;
                         throw e;
                     }else return value;
-                }else if(req.params.option == 'review' || req.params.option == 'point'){
-                    if(Number.isInteger(value)){
+                }else if(req.params.option == 'review' || req.params.option == 'point' || req.params.option == 'id'){
+                    if(!isNaN(value)){
                         return value;
                     }else{
                         const e = new Error('before should be number');
@@ -258,7 +245,7 @@ var placeFilterSchema = checkSchema({
                         throw e;
                     }
                 }else{
-                    const e = new Error('option should be point, review, date');
+                    const e = new Error('option should be point, review, date, id');
                     e.status = 400;
                     throw e;
                 }
@@ -272,6 +259,7 @@ module.exports = {
     placeSchema : placeSchema,
     filter : filter,
     placeFilterSchema : placeFilterSchema,
+    placeCommonFilterSchema : placeCommonFilterSchema,
     categoryList : categoryList,
     regionData : regionData,
     nearRegion : nearRegion,

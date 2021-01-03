@@ -3,18 +3,30 @@ const queryBuilder = require('../utils/filterQueryBuilder.js');
 var Promise = require('promise');
 const placeModel = require('../model/place.js');
 
-let getPlaceList = function(req, res, next){
-    console.log( req.params.placeName);
-    var sql = queryBuilder.filterQueryBuilder(req.params.region, req.params.category, 
-        req.params.bathroom, req.params.water, req.params.price, req.params.placeName,
-        req.params.before, req.params.option, undefined, undefined);
-    console.log(sql);
-    db.query(sql.sql, sql.params, function(err, results) {
-        if(err) return next(err);
-        console.log(this.sql);
-        //console.log(results);
-        res.status(200).send(results);
-    })
+/**
+ * @param {Boolean} byDistance 
+ */
+let getPlaceList = function (byDistance) {
+    return function(req, res, next){
+        console.log( req.params.name);
+        var sql;
+        if(byDistance === true){
+            sql = queryBuilder.filterQueryBuilder(req.params.region, req.params.category, 
+                req.params.bathroom, req.params.water, req.params.price, req.params.placeName,
+                req.params.before, 'distance', req.params.lat, req.params.lng);
+        }else{
+            sql = queryBuilder.filterQueryBuilder(req.params.region, req.params.category, 
+                req.params.bathroom, req.params.water, req.params.price, req.params.placeName,
+                req.params.before, req.params.option, undefined, undefined);
+        }
+        
+        db.query(sql.sql, sql.params, function(err, results) {
+            if(err){ console.log(this.sql);return next(err);}
+            console.log(this.sql);
+            //console.log(results);
+            res.status(200).send(results);
+        })
+    }
 }
 
 let calDistance = function(lat, lng, region) {
@@ -59,10 +71,10 @@ let postPlace = async function(req, res, next) {
 
     var updated = new Date().toISOString().slice(0,10);
 
-    var sql = `INSERT INTO PLACE(placeName, FK_PLACE_userID, updated ,lat, lng, address, region, content, category, bathroom, water, price, totalPoint, imageKey)
-                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+    var sql = `INSERT INTO PLACE(placeName, FK_PLACE_userID, updated ,lat, lng, address, region, content, category, bathroom, water, price, imageKey)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`;
     var params = [req.body.placeName, req.token_userID,updated ,req.body.lat, req.body.lng, req.body.address,req.body.region,req.body.content,
-                    req.body.category, req.body.bathroom,req.body.water,req.body.price,req.body.point, req.body.imageKey];
+                    req.body.category, req.body.bathroom,req.body.water,req.body.price, req.body.imageKey];
     db.query(sql,params, function (err, results) {
         if(err){ 
             console.log(err);
@@ -79,7 +91,9 @@ let postPlace = async function(req, res, next) {
         console.log(results.insertId);
         if(results.affectedRows > 0){
             //next() 해서 aws에 이미지 삽입! 
-            res.status(200).send('success')
+            res.status(200).send({
+                placeID : results.insertId
+            })
         }else{
             next(new Error());
         }
@@ -93,12 +107,13 @@ let putPlace = function(req, res, next) {
         return next(e);
     }
     var sql = `UPDATE PLACE SET placeName = ?, FK_PLACE_userID = ?,
-                content = ?, category = ?, bathroom = ?, water = ?, price = ?, totalPoint = ?
-                WHERE placeID = ? AND userID = ?`;
+                content = ?, category = ?, bathroom = ?, water = ?, price = ?, imageKey = ?
+                WHERE placeID = ? AND FK_PLACE_userID = ?`;
     var params = [req.body.placeName, req.token_userID, req.body.content,req.body.category,
-            req.body.bathroom,req.body.water,req.body.price,req.body.point ,req.params.placeID, req.token_userID];
+            req.body.bathroom,req.body.water,req.body.price,req.body.imageKey ,req.params.placeID, req.token_userID];
     db.query(sql,params, function (err, results) {
         if(err){ 
+            console.log(err);
             if(err.errno == 1062){
                 const error = new Error();
                 error.status = 409;
@@ -120,7 +135,7 @@ let putPlace = function(req, res, next) {
 }
 
 let deletePlace = function (req,res,next) {
-    var sql = 'DELETE FROM PLACE WHERE userID = ? AND placeID = ?';
+    var sql = 'DELETE FROM PLACE WHERE FK_PLACE_userID = ? AND placeID = ?';
     db.query(sql, [req.token_userID, req.params.placeID], function(err, results) {
         if(err) return next(err);
         if(results.affectedRows > 0){
@@ -136,5 +151,5 @@ module.exports = {
     getPlaceList : getPlaceList,
     postPlace : postPlace,
     putPlace : putPlace,
-    deletePlace : deletePlace
+    deletePlace : deletePlace,
 }

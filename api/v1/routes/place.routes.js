@@ -9,20 +9,24 @@ const { options } = require('superagent');
 
 //region, category, bathroom, water , price ,from
 router.get('/:region/:category/:bathroom/:water/:price/:placeName/:before/:option/', 
+    placeModel.placeCommonFilterSchema,
     placeModel.placeFilterSchema,
     checkValidationResult,
-    placeController.getPlaceList );
+    placeController.getPlaceList(false) );
     //get image by place/:placeID/1 
     
-router.get('/:region/:category/:bathroom/:water/:price/:placeName/:before/:option/:lat/:lng', 
-    placeModel.placeFilterSchema,
+router.get('/:region/:category/:bathroom/:water/:price/:placeName/:before/distance/:lat/:lng', 
+    placeModel.placeCommonFilterSchema,
+    check('before').isNumeric().notEmpty().withMessage('before should be number').trim(),
+    check('lat').isDecimal().notEmpty().isFloat({min : -90, max : 90}).withMessage('lat should be decimal').trim(),
+    check('lng').isDecimal().notEmpty().isFloat({min : -180, max : 180}).withMessage('lng should be decimal').trim(),
     checkValidationResult,
-    placeController.getPlaceList );
+    placeController.getPlaceList(true) );
     //get image by place/:placeID/1 
 
 
 router.post('/', //기존 차박지와 간격 500m 차이나는지 확인할것 
-    check('imageKey').notEmpty().isLength({max :300}).withMessage('imageKey should not be number and max 300 chars').trim(),
+    check('imageKey').notEmpty().isString().isLength({max :300}).withMessage('imageKey should be string and max 300 chars').trim(),
     placeModel.placeSchema(false), 
     checkValidationResult,
     jwt.verifyToken(), 
@@ -34,6 +38,7 @@ router.post('/', //기존 차박지와 간격 500m 차이나는지 확인할것
 // [req.body.placeName, req.body.content,req.body.category,
 //     req.body.bathroom,req.body.water,req.body.price,req.body.point ,req.params.placeID];
 router.put('/:placeID',
+    check('imageKey').notEmpty().isString().isLength({max :300}).withMessage('imageKey should be string and max 300 chars').trim(),
     placeModel.placeSchema(true), 
     checkValidationResult,
     jwt.verifyToken(), 
@@ -43,13 +48,12 @@ router.put('/:placeID',
 /*place 삭제 */
 router.delete('/:placeID',
     check('placeID').notEmpty().isNumeric().withMessage('placeID should be number and not be empty').trim(),
-    placeModel.placeSchema, 
+    checkValidationResult, 
     jwt.verifyToken(), 
     placeController.deletePlace
 );
 
 /**
- * 사용자 위치기반으로 겟하는거 위의 겟에다가 사용자 위치 받는거만 추가해주면 된다잉
- * 이름기준으로 서치하는거(위의 겟에 이름만 추가)
+ * 삭제하면 이미지 삭제도 같이 해주기
  */
 module.exports = router;

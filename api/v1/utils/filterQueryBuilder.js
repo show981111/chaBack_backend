@@ -26,14 +26,17 @@ let filterQueryBuilder = function(region, category, bathroom, water , price, pla
         ) AS distance FROM PLACE `;
         paramArray.push(curlat);
         paramArray.push(curlong);
+        paramArray.push(curlat);
     }
-    var common = `updated <= ? order by updated DESC LIMIT 20`;
+    var common = `placeID <= ? order by placeID DESC LIMIT 20`;
     if(standard == 'point'){
         common = `meanPoint <= ? order by meanPoint DESC LIMIT 20`;
     }else if(standard == 'review'){
         common = `reviewCount <= ? order by reviewCount DESC LIMIT 20`;
-    }else  if(standard == 'distance'){
-        common = `distance <= ? order by distance DESC LIMIT 20`;//km 기준이다 
+    }else if(standard == 'distance'){
+        common = `HAVING distance <= ? order by distance DESC LIMIT 20`;//km 기준이다 
+    }else if(standard == 'date'){
+        common = `updated <= ? order by updated DESC LIMIT 20`;
     }
     var where = 'WHERE ';
 
@@ -57,12 +60,19 @@ let filterQueryBuilder = function(region, category, bathroom, water , price, pla
     }
 
     if(index != 0){
-        where += 'AND ' + common;
+        if(standard == 'distance'){
+            where += ' ' + common;
+        }else{
+            where += 'AND ' + common;
+        }
     }else{
-        where += common;
+        if(standard == 'distance'){
+            where = common;
+        }else{
+            where += common;
+        }
     }
     
-    console.log(before);
     paramArray.push(before);
     sql = sql + where;
 
@@ -73,31 +83,31 @@ let filterQueryBuilder = function(region, category, bathroom, water , price, pla
 
 }
 
-let rankingQueryBuilder = function (reviewCount, point, before) {
-    var sql = 'SELECT * FROM PLACE';
-    var condition = '';
-    if(reviewCount != undefined && reviewCount == 1){
-        condition += 'reviewCount DESC'
-    }
+// let rankingQueryBuilder = function (reviewCount, point, before) {
+//     var sql = 'SELECT * FROM PLACE';
+//     var condition = '';
+//     if(reviewCount != undefined && reviewCount == 1){
+//         condition += 'reviewCount DESC'
+//     }
 
-    if(point != undefined && point == 1){
-        if(condition == ''){
-            condition += '(totalPoint/reviewCount) DESC'
-        }else{
-            condition += ',(totalPoint/reviewCount) DESC'
-        }
-    }
+//     if(point != undefined && point == 1){
+//         if(condition == ''){
+//             condition += '(totalPoint/reviewCount) DESC'
+//         }else{
+//             condition += ',(totalPoint/reviewCount) DESC'
+//         }
+//     }
 
-    sql = sql + ' WHERE updated <= ? order by ' + condition + 'LIMIT 20';
-    var params = [before];
-    return {
-        sql : sql,
-        params : params
-    }
-}
+//     sql = sql + ' WHERE updated <= ? order by ' + condition + 'LIMIT 20';
+//     var params = [before];
+//     return {
+//         sql : sql,
+//         params : params
+//     }
+// }
 
 module.exports = {
     filterQueryBuilder : filterQueryBuilder,
-    rankingQueryBuilder : rankingQueryBuilder
+    // rankingQueryBuilder : rankingQueryBuilder
 }
 
