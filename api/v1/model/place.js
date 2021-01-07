@@ -124,6 +124,21 @@ var placeSchema = function(optional){
         notEmpty : true,
         trim : true
     },
+    imageKey : {
+        optional : true,
+        notEmpty: function(array) {
+            return array.length > 0;
+        },
+        isArray : true,
+        custom : {
+            options : (value) => {
+                if(value.length > 5){
+                    throw new Error('out of range');
+                }else return value;
+            }
+        },
+        errorMessage: 'imageKey should be array and max 5',
+    }
 });
 }
 

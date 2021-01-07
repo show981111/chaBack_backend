@@ -44,6 +44,7 @@ let postReply = async function(req, res, next){
             throw error;
         }
         req.body.userID = req.token_userID;
+        req.body.parentID = req.params.replyParentID;
         const post = new Comment(req.body);
         const result = await post.save();
 

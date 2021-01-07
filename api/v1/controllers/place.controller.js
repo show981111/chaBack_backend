@@ -2,6 +2,7 @@ const db = require('../../../dbConnection/mariaDB.js');
 const queryBuilder = require('../utils/filterQueryBuilder.js');
 var Promise = require('promise');
 const placeModel = require('../model/place.js');
+const makeImageKey = require('../utils/makeImageKey.js');
 
 /**
  * @param {Boolean} byDistance 
@@ -71,10 +72,12 @@ let postPlace = async function(req, res, next) {
 
     var updated = new Date().toISOString().slice(0,10);
 
+    var imageKeyWithComma = makeImageKey(req.body.imageKey);
+
     var sql = `INSERT INTO PLACE(placeName, FK_PLACE_userID, updated ,lat, lng, address, region, content, category, bathroom, water, price, imageKey)
                 VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`;
     var params = [req.body.placeName, req.token_userID,updated ,req.body.lat, req.body.lng, req.body.address,req.body.region,req.body.content,
-                    req.body.category, req.body.bathroom,req.body.water,req.body.price, req.body.imageKey];
+                    req.body.category, req.body.bathroom,req.body.water,req.body.price, imageKeyWithComma];
     db.query(sql,params, function (err, results) {
         if(err){ 
             console.log(err);
@@ -106,11 +109,14 @@ let putPlace = function(req, res, next) {
         e.status = 401;
         return next(e);
     }
+
+    var imageKeyWithComma = makeImageKey(req.body.imageKey);
+
     var sql = `UPDATE PLACE SET placeName = ?, FK_PLACE_userID = ?,
                 content = ?, category = ?, bathroom = ?, water = ?, price = ?, imageKey = ?
                 WHERE placeID = ? AND FK_PLACE_userID = ?`;
     var params = [req.body.placeName, req.token_userID, req.body.content,req.body.category,
-            req.body.bathroom,req.body.water,req.body.price,req.body.imageKey ,req.params.placeID, req.token_userID];
+            req.body.bathroom,req.body.water,req.body.price,imageKeyWithComma ,req.params.placeID, req.token_userID];
     db.query(sql,params, function (err, results) {
         if(err){ 
             console.log(err);

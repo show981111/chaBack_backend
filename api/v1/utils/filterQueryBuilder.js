@@ -28,15 +28,15 @@ let filterQueryBuilder = function(region, category, bathroom, water , price, pla
         paramArray.push(curlong);
         paramArray.push(curlat);
     }
-    var common = `placeID <= ? order by placeID DESC LIMIT 20`;
+    var common = `placeID < ? order by placeID DESC LIMIT 20`;
     if(standard == 'point'){
-        common = `meanPoint <= ? order by meanPoint DESC LIMIT 20`;
+        common = `meanPoint < ? order by meanPoint DESC LIMIT 20`;
     }else if(standard == 'review'){
-        common = `reviewCount <= ? order by reviewCount DESC LIMIT 20`;
+        common = `reviewCount < ? order by reviewCount DESC LIMIT 20`;
     }else if(standard == 'distance'){
-        common = `HAVING distance <= ? order by distance DESC LIMIT 20`;//km 기준이다 
+        common = `HAVING distance < ? order by distance DESC LIMIT 20`;//km 기준이다 
     }else if(standard == 'date'){
-        common = `updated <= ? order by updated DESC LIMIT 20`;
+        common = `updated < ? order by updated DESC LIMIT 20`;
     }
     var where = 'WHERE ';
 

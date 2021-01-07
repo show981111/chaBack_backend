@@ -1,5 +1,6 @@
 const db = require('../../../dbConnection/mariaDB.js');
 var Promise = require('promise');
+const makeImageKey = require('../utils/makeImageKey.js');
 
 /**
  * @param {string} option 
@@ -9,13 +10,13 @@ let getReview = function(option){
         var sql;
         var params = [];
         if(option === 'placeID'){
-            sql = 'SELECT * FROM REVIEW WHERE FK_REVIEW_placeID = ? AND reviewID <= ? order by reviewID DESC LIMIT 20';
+            sql = 'SELECT * FROM REVIEW WHERE FK_REVIEW_placeID = ? AND reviewID < ? order by reviewID DESC LIMIT 20';
             params.push(req.params.placeID);
         }else if(option === 'userID'){
-            sql = 'SELECT * FROM REVIEW WHERE FK_REVIEW_userID = ? AND reviewID <= ? order by reviewID DESC LIMIT 20';
+            sql = 'SELECT * FROM REVIEW WHERE FK_REVIEW_userID = ? AND reviewID < ? order by reviewID DESC LIMIT 20';
             params.push(req.params.userID);
         }else{
-            sql = 'SELECT * FROM REVIEW WHERE reviewID <= ? order by reviewID DESC LIMIT 20';
+            sql = 'SELECT * FROM REVIEW WHERE reviewID < ? order by reviewID DESC LIMIT 20';
         }
         params.push(req.params.before);
         db.query(sql, params, function(err, results) {
@@ -58,11 +59,21 @@ let updatePlaceInfo = function(placeID, point, option){
 
 let postReview = function (req, res, next) {
     const updated = new Date().toISOString().slice(0,10);
+    console.log(req.body.imageKey);
+    var imageKeyWithComma = makeImageKey(req.body.imageKey);
+    console.log(imageKeyWithComma);
     const sql = `INSERT INTO REVIEW(FK_REVIEW_placeID, content, updated, FK_REVIEW_userID, point, imageKey)
                     VALUES(?,?,?,?,?,?)`;
-    const params = [req.body.placeID, req.body.content,updated, req.token_userID, req.body.point, req.body.imageKey ];
+    const params = [req.body.placeID, req.body.content,updated, req.token_userID, req.body.point, imageKeyWithComma];
     db.query(sql, params, async function (err, results) {
-        if(err) {console.log(err); return next(err);}
+        if(err) {
+            if(err.errno == 1452){
+                const e = new Error('placeID Not Found');
+                e.status = 404;
+                return next(e);
+            }
+            return next(err);
+        }
 
         if(results.affectedRows > 0){
             try{
@@ -79,15 +90,18 @@ let postReview = function (req, res, next) {
 
 let putReview = function (req, res, next) {
     const updated = new Date().toISOString().slice(0,10);
+    var imageKeyWithComma = makeImageKey(req.body.imageKey);
+
     const sql = `UPDATE REVIEW SET content = ?, updated = ?, point = ?, imageKey = ?
-                    WHERE FK_REVIEW_userID = ? AND reviewID = ?`;
-    const params = [req.body.content, updated, req.body.point, imageKey, req.token_userID, req.params.reviewID ];
+                    WHERE FK_REVIEW_userID = ? AND reviewID = ? AND FK_REVIEW_placeID = ?`;
+    const params = [req.body.content, updated, req.body.point, imageKeyWithComma, req.token_userID, req.params.reviewID
+                        ,req.params.placeID ];
     db.query(sql, params, async function (err, results) {
         if(err) {console.log(err); return next(err);}
 
         if(results.affectedRows > 0){
             try{
-                await updatePlaceInfo(req.params.placeID, req.body.point, 'update');
+                await updatePlaceInfo(req.params.placeID, req.body.pointGap, 'update');
                 res.status(200).send('success');
             } catch(err){
                 return next(err);
@@ -101,8 +115,8 @@ let putReview = function (req, res, next) {
 }
 
 let deleteReview = function (req, res, next) {
-    const sql = 'DELETE FROM PLACE WHERE FK_REVIEW_userID = ? AND reviewID = ?';
-    db.query(sql, [req.token_userID, req.params.reviewID], function(err, results) {
+    const sql = 'DELETE FROM REVIEW WHERE FK_REVIEW_userID = ? AND reviewID = ? AND FK_REVIEW_placeID = ?';
+    db.query(sql, [req.token_userID, req.params.reviewID, req.params.placeID], async function(err, results) {
         if(err) {console.log(err); return next(err);}
 
         if(results.affectedRows > 0){
@@ -116,7 +130,7 @@ let deleteReview = function (req, res, next) {
             const e = new Error('Not Found');
             e.status = 404;
             next(e);
-        }
+        } 
     })
 }
 

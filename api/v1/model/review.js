@@ -24,10 +24,8 @@ let reviewSchema = function (isUpdate) {
             isNumeric : true,
             custom : {
                 options : (value) => {
-                    if(!isUpdate && value >= 0 && value <= 5){
-                        return value;
-                    }else if(isUpdate && value >= -5 && value <= 5){
-                        return value;
+                    if(value >= 0 && value <= 5){
+                         return value;
                     }else{
                         const e = new Error('point out of range');
                         e.status = 400;
@@ -40,14 +38,37 @@ let reviewSchema = function (isUpdate) {
         },
         imageKey : {
             optional : true,
-            notEmpty : true,
-            isLength : {
-                options: { max: 300 },
+            isArray : true,
+            notEmpty: function(array) {
+                return array.length > 0;
             },
-            errorMessage : 'imageKey should not be empty and max 300 chars',
-            trim : true
+            custom : {
+                options : (array) => {
+                    console.log(array);
+                    if(array.length > 5){
+                        throw new Error('out of range');
+                    }else return array;
+                }
+            },
+            errorMessage : 'imageKey should be array and max 5',
         },
-        
+        pointGap : {
+            optional : !isUpdate,
+            isNumeric : true,
+            custom : {
+                options : (value) => {
+                    if(value >= -5 && value <= 5){//현재 - 과거 점수 
+                         return value;
+                    }else{
+                        const e = new Error('pointGap out of range');
+                        e.status = 400;
+                        throw e;
+                    }
+                }
+            },
+            errorMessage : 'pointGap should be number',
+            trim : true
+        }
     });
 }
 
