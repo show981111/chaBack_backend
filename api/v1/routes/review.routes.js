@@ -17,21 +17,21 @@ router.post('/',
 
 /*리뷰 placeID에 따라서 얻기 */
 router.get('/place/:placeID/:before',
-    check('placeID').isNumeric().notEmpty().withMessage('placeID should be number'),
-    check('before').isNumeric().notEmpty().withMessage('before should be number'),
+    check('placeID').isNumeric().notEmpty().withMessage('placeID should be number').trim(),
+    check('before').isNumeric().notEmpty().withMessage('before should be number').trim(),
     checkValidationResult,
     reviewController.getReview('placeID')
 )
 /*리뷰 최신순에 따라서 얻기 */
 router.get('/:before', 
-    check('before').isNumeric().notEmpty().withMessage('before should be number'),
+    check('before').isNumeric().notEmpty().withMessage('before should be number').trim(),
     checkValidationResult,
     reviewController.getReview())
 
 /*리뷰 유저아이디에 따라서 얻기 */
 router.get('/user/:userID/:before', 
-    check('userID').isEmail().notEmpty().withMessage('userID should be email'),
-    check('before').isNumeric().notEmpty().withMessage('before should be number'),
+    check('userID').isEmail().notEmpty().withMessage('userID should be email').trim(),
+    check('before').isNumeric().notEmpty().withMessage('before should be number').trim(),
     checkValidationResult,
     reviewController.getReview('userID'))
 
@@ -44,8 +44,8 @@ router.put('/:reviewID/:placeID',
 )
 
 router.delete('/:reviewID/:placeID',
-    check('reviewID').isNumeric().notEmpty().withMessage('reviewID should be number'),
-    check('placeID').isNumeric().notEmpty().withMessage('placeID should be number'),
+    check('reviewID').isNumeric().notEmpty().withMessage('reviewID should be number').trim(),
+    check('placeID').isNumeric().notEmpty().withMessage('placeID should be number').trim(),
     checkValidationResult,
     jwt.verifyToken(),
     reviewController.deleteReview

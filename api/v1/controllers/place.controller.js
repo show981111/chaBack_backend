@@ -70,7 +70,7 @@ let postPlace = async function(req, res, next) {
         return next(e);
     }
 
-    var updated = new Date().toISOString().slice(0,10);
+    const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
 
     var imageKeyWithComma = makeImageKey(req.body.imageKey);
 

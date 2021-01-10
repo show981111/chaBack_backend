@@ -9,6 +9,7 @@ var userRouter = require('./api/v1/routes/user.routes.js');
 var authRouter = require('./api/v1/routes/auth.routes.js');
 var placeRouter = require('./api/v1/routes/place.routes.js');
 var reviewRouter = require('./api/v1/routes/review.routes.js');
+var replyRouter = require('./api/v1/routes/reply.routes.js');
 
 const bodyParser = require('body-parser')
 
@@ -23,6 +24,8 @@ app.use('/api/v1/user', userRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/place', placeRouter);
 app.use('/api/v1/review', reviewRouter);
+app.use('/api/v1/reply', replyRouter);
+
 
 //error handler
 app.use((err, req, res, next) => {

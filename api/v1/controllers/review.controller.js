@@ -58,7 +58,7 @@ let updatePlaceInfo = function(placeID, point, option){
 }
 
 let postReview = function (req, res, next) {
-    const updated = new Date().toISOString().slice(0,10);
+    const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
     console.log(req.body.imageKey);
     var imageKeyWithComma = makeImageKey(req.body.imageKey);
     console.log(imageKeyWithComma);
@@ -67,6 +67,7 @@ let postReview = function (req, res, next) {
     const params = [req.body.placeID, req.body.content,updated, req.token_userID, req.body.point, imageKeyWithComma];
     db.query(sql, params, async function (err, results) {
         if(err) {
+            console.log(err);
             if(err.errno == 1452){
                 const e = new Error('placeID Not Found');
                 e.status = 404;
@@ -89,7 +90,8 @@ let postReview = function (req, res, next) {
 }
 
 let putReview = function (req, res, next) {
-    const updated = new Date().toISOString().slice(0,10);
+    const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
+
     var imageKeyWithComma = makeImageKey(req.body.imageKey);
 
     const sql = `UPDATE REVIEW SET content = ?, updated = ?, point = ?, imageKey = ?

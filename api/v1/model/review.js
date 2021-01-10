@@ -17,7 +17,8 @@ let reviewSchema = function (isUpdate) {
             notEmpty : true,
             isString : true,
             errorMessage : 'content should be string',
-            trim : true
+            trim : true,
+            escape : true
         },
         point : {
             notEmpty : true,

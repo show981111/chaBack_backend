@@ -5,7 +5,6 @@ const placeController = require('../controllers/place.controller.js');
 const {check, validationResult, checkSchema} = require('express-validator');
 const jwt = require('../middleware/jwt.js');
 const placeModel = require('../model/place.js');
-const { options } = require('superagent');
 
 //region, category, bathroom, water , price ,from
 router.get('/:region/:category/:bathroom/:water/:price/:placeName/:before/:option/', 
@@ -26,7 +25,6 @@ router.get('/:region/:category/:bathroom/:water/:price/:placeName/:before/distan
 
 
 router.post('/', //기존 차박지와 간격 500m 차이나는지 확인할것 
-    check('imageKey').notEmpty().isString().isLength({max :300}).withMessage('imageKey should be string and max 300 chars').trim(),
     placeModel.placeSchema(false), 
     checkValidationResult,
     jwt.verifyToken(), 
@@ -38,7 +36,6 @@ router.post('/', //기존 차박지와 간격 500m 차이나는지 확인할것
 // [req.body.placeName, req.body.content,req.body.category,
 //     req.body.bathroom,req.body.water,req.body.price,req.body.point ,req.params.placeID];
 router.put('/:placeID',
-    check('imageKey').notEmpty().isString().isLength({max :300}).withMessage('imageKey should be string and max 300 chars').trim(),
     placeModel.placeSchema(true), 
     checkValidationResult,
     jwt.verifyToken(), 

@@ -90,7 +90,8 @@ var placeSchema = function(optional){
             options: { max: 200 },
         },
         notEmpty : true,
-        trim : true
+        trim : true,
+        escape : true,
     },
     category: {
         errorMessage: 'category should not be empty',

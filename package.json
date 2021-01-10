@@ -22,7 +22,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "node_modules/.bin/mocha test/review.spec.js"
+    "test": "node_modules/.bin/mocha test/reply.spec.js"
   },
   "author": "yongseung lee",
   "license": "ISC"
