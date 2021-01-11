@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "async": "^3.2.0",
+    "aws-sdk": "^2.824.0",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "dotenv": "^8.2.0",
@@ -20,7 +21,6 @@
     "promise": "^8.1.0",
     "supertest": "^6.0.1"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "node_modules/.bin/mocha test/reply.spec.js"
   },

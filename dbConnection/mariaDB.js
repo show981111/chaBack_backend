@@ -1,10 +1,11 @@
 var mysql = require('mysql');
+require('dotenv').config();
 
 var db = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '981111',
-  database : 'test'
+  host     : process.env.mariaDB_host,
+  user     : process.env.mariaDB_user,
+  password : process.env.mariaDB_password,
+  database : process.env.mariaDB_database,
 });
  
 if(!db._connectCalled ) 

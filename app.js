@@ -1,7 +1,8 @@
 const express = require('express')
+require('dotenv').config();
 const app = express()
-const port = 3000
-const mongoDB = require('./dbConnection/mongoDB.js')
+const port = process.env.port;
+//const mongoDB = require('./dbConnection/mongoDB.js')
 const mariaDB = require('./dbConnection/mariaDB.js')
 var communityRouter = require('./api/v1/routes/communities.routes.js');
 var commentRouter = require('./api/v1/routes/comments.routes.js');
@@ -16,7 +17,11 @@ const bodyParser = require('body-parser')
 
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json())
-mongoDB();
+//mongoDB();
+
+app.get('/', function(req, res){
+    res.send('hello world!');
+})
 
 app.use('/api/v1/community', communityRouter);
 app.use('/api/v1/comment', commentRouter);
@@ -41,7 +46,7 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`ChaBack app listening at http://localhost:${port}`)
 })
 
 module.exports = app;
