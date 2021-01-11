@@ -11,6 +11,7 @@ var authRouter = require('./api/v1/routes/auth.routes.js');
 var placeRouter = require('./api/v1/routes/place.routes.js');
 var reviewRouter = require('./api/v1/routes/review.routes.js');
 var replyRouter = require('./api/v1/routes/reply.routes.js');
+var resourcesRouter = require('./api/v1/routes/resources.routes.js');
 
 const bodyParser = require('body-parser')
 
@@ -30,6 +31,7 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/place', placeRouter);
 app.use('/api/v1/review', reviewRouter);
 app.use('/api/v1/reply', replyRouter);
+app.use('/api/v1/resources', resourcesRouter);
 
 
 //error handler
