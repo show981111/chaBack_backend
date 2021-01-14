@@ -113,7 +113,11 @@ let cryptoPassword = function(userPassword, callback){
             if(err){ return callback(err); }
             else{
                 hashedPW = key.toString('base64');
-                callback(null, hashedPW, salt);
+                result = {
+                    hashedPW : hashedPW,
+                    salt : salt
+                }
+                callback(null, result);
             }
         });
     });
@@ -125,28 +129,40 @@ let register = function(req, res , next){
     async.waterfall([
         async.apply(checkDuplicate, req.body.userID, req.body.userNickName),
         async.apply(cryptoPassword, req.body.userPassword),
-        function(arg1, arg2, callback){
-            var sql = `INSERT INTO USER(userID, userPassword, userNickName, userName, userPhone, salt) VALUES (?,?,?,?,?,?)`;
-            var params = [req.body.userID, arg1, req.body.userNickName, req.body.userName, req.body.userPhone, arg2];
+        async function(arg1){
+            try{
+                arg1.accessToken = await jwt.signJWT({userID : req.body.userID},'15m', 'accessToken');
+                arg1.refreshToken = await jwt.signJWT({userID : req.body.userID},'90d', 'refreshToken');
+                return arg1;
+            }catch(err){
+                return err;
+            }
+        },
+        function(arg1, callback){
+            var sql = `INSERT INTO USER(userID, userPassword, userNickName, userName, userPhone, salt, refreshToken) 
+                         VALUES (?,?,?,?,?,?,?)`;
+            var params = [req.body.userID, arg1.hashedPW, req.body.userNickName, req.body.userName, req.body.userPhone, arg1.salt, arg1.refreshToken];
             db.query(sql, params, function(err, results, fields){
                 if(err) {console.log(err); return callback(err);}
                 
                 if(results.affectedRows > 0)
                 {
-                    callback(null, 'done');
+                    callback(null, 'done', arg1.accessToken);
                 }else{
                     const e = new Error();
                     return callback(e);
                 }  
             })
         }
-    ], function(err, result) {
+    ], function(err, result, final) {
         if(err != null){ 
             next(err); 
             return;
         }
         if(result == 'done'){
-            res.status(200).send('success');
+            res.status(200).send({
+                accessToken : final
+            });
         }else{
             const err = new Error();
             next(err);

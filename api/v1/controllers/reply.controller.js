@@ -63,15 +63,18 @@ let getReply = function(option){
             params = [req.params.replyParentID];
         }
         else{
-            sql = `SELECT A.*, COUNT(B.replyID) as childCount FROM test.REPLY A
-                        LEFT JOIN test.REPLY B ON A.replyID = B.replyParentID 
+            sql = `SELECT A.*, COUNT(B.replyID) as childCount FROM REPLY A
+                        LEFT JOIN REPLY B ON A.replyID = B.replyParentID 
                         WHERE A.FK_REPLY_reviewID = ? AND A.replyParentID IS NULL 
                         group by A.replyID
                         order by A.replyID DESC`;
             params = [req.params.reviewID];
         }
         db.query(sql, params, function(err, results){
-            if(err) return next(err);
+            if(err){ 
+                console.log(err);
+                return next(err);
+            }
 
             res.send(results);
         })

@@ -6,11 +6,6 @@ const {check, validationResult, checkSchema} = require('express-validator');
 const jwt = require('../middleware/jwt.js');
 
 
-router.get('/', function(req, res){
-    res.send('hello this is reply routes');
-    }
-)
-
 router.post('/', 
     check('content').notEmpty().isString().withMessage('content should not be empty and be string').trim().escape(),
     check('reviewID').notEmpty().isNumeric().withMessage('reviewID should be number').trim(),
