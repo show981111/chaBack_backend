@@ -1,0 +1,264 @@
+paths:
+  /place/:region/:category/:bathroom/:water/:price/:placeName/:before/:option/:          
+    get:             
+      tags:               
+        - Place           
+      summary: PLACE 리스트 GET
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: region   
+        schema:
+          type: string
+        description: 조회하고자 하는 지역 / 없으면 - 1
+        required: true  
+      - in: path       
+        name: category   
+        schema:
+          type: string
+        description: 조회하고자 하는 차박지 종류 / 없으면 -1
+        required: true  
+      - in: path       
+        name: bathroom   
+        schema:
+          type: int
+        description: 화장실 유뮤 0 or 1 / 없으면 -1
+        required: true  
+      - in: path       
+        name: water   
+        schema:
+          type: int
+        description: 수도시설 유뮤 0 or 1 / 없으면 -1
+        required: true  
+      - in: path       
+        name: price   
+        schema:
+          type: string
+        description: 가격 유무료 0 or 1 / 없으면 -1
+        required: true  
+      - in: path       
+        name: placeName   
+        schema:
+          type: string
+        description: 차박지 이름 / 없으면 -1
+        required: true  
+      - in: path       
+        name: before   
+        schema:
+          type: number
+        description: 조회 기준(option) 에 따라 해당 기준 전에 것을 조회(get < before).
+        required: true  
+      - in: path       
+        name: option   
+        schema:
+          type: string
+        description: 조회 기준(point, review, date, id) point 는 평점, review는 리뷰수, date 는 날짜, id는 등록 순서 기준 최신순
+        required: true  
+      responses:     
+        200:
+          description: placeList 반환 
+        400:
+          description: Get 파라미터가 형식이 잘못된 경우(error message에 detail 있음)
+        404:
+          description: 유저 아이디 또는 유저 닉네임이 이미 존재할 경우 
+
+  /place/:region/:category/:bathroom/:water/:price/:placeName/:before/distance/:lat/:lng: 
+    get:             
+      tags:               
+        - Place           
+      summary: PLACE 리스트 현위치로부터 거리순으로 GET
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: before   
+        schema:
+          type: number
+        description: 해당 거리(km) 보다 짧은 위치에 있는 place 조회 
+        required: true  
+      - in: path       
+        name: lat   
+        schema:
+          type: string
+        description: 사용자 현재 latitutde
+        required: true  
+      - in: path       
+        name: lng   
+        schema:
+          type: string
+        description: 사용자 현재 longitude / 나머지 파라미터는 위의 겟 파라미터와 동일 
+        required: true  
+      responses:     
+        200:
+          description: placeList 반환 이때 distance 변수에 거리km 담아서 준다
+        400:
+          description: Get 파라미터가 형식이 잘못된 경우(error message에 detail 있음)
+        404:
+          description: 유저 아이디 또는 유저 닉네임이 이미 존재할 경우 
+
+  /place/:      
+    post:                 
+      tags:               
+        - Place            
+      summary: 차박지 등록
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: body       
+        name: Place   
+        description: 차박지 등록
+        required: true  
+        schema:      
+          $ref: '#/definitions/Place' 
+      responses:      
+        200:
+          description: 성공적으로 등록, placeID 반환
+          examples:
+            application/json:
+              {
+                "placeID": 7,
+              }
+        400:
+          description: Post Body 변수 형식 잘못됨
+        401:
+          description: 토큰 인증 안됨
+        403:
+          description: 500m 반경 내에 차박지 존재
+        409:
+          description: 차박지 이름이 이미 존재
+
+  /place/:placeID:      
+    put:                 
+      tags:               
+        - Place            
+      summary: 차박지 정보 수정
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: placeID   
+        description: 수정하려는 placeID
+        required: true 
+      - in: body       
+        name: ChangePlace   
+        description: 차박지 정보 수정
+        required: true  
+        schema:      
+          $ref: '#/definitions/ChangePlace' 
+      responses:      
+        200:
+          description: 성공적으로 차박지 정보 수정
+        400:
+          description: Post Body 에 변수가 형식이 잘못된 경우
+        401:
+          description: 토큰 인증 실패 
+        404:
+          description: 해당 유저가 수정하려는 차박지를 찾지 못함(유저, 차박지아이디 쌍을 찾지 못함)
+        409:
+          description: 차박지 이름이 이미 존재함 
+
+  /place/:placeIDtoDelete:      
+    delete:                 
+      tags:               
+        - Place            
+      summary: 차박지 삭제
+      produces:
+      - application/json
+      parameters:         
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: placeID   
+        description: 삭제하려는 placeID
+        required: true 
+      responses:      
+        200:
+          description: 성공적으로 삭제, 
+        400:
+          description: 변수가 형식이 잘못된 경우
+        401:
+          description: 토큰인증 실패
+        404:
+          description: 해당 유저가 등록한 차박지를 찾지 못함
+
+definitions:      
+  Place:
+    type: object
+    properties:
+      placeName:
+        type: string
+      lat:
+        type: float
+      lng:
+        type: float
+      address:
+        type: string
+      region:
+        type: string
+      content:
+        type: string
+      category:
+        type: string
+      bathroom:
+        type: int
+      water:
+        type: int
+      price:
+        type: int
+      imageKey:
+        type: string
+    example:
+      placeName : adwads3
+      lat : 20.30020000
+      lng : 100.93254000
+      address : asdasdasd adsa dasd
+      region : c
+      content : asdas dsad asd s sadsa dasd sadasd
+      category : b
+      bathroom : 0
+      water : 1
+      price : 0
+      imageKey : [12a2da31dsa,1df213dsf42,fds23f1fds1sae]
+
+  ChangePlace:
+    type: object
+    properties:
+      placeName:
+        type: string
+      content:
+        type: string
+      category:
+        type: string
+      bathroom:
+        type: int
+      water:
+        type: int
+      price:
+        type: int
+      imageKey:
+        type: string
+    example:
+      placeName : updated Place Nam
+      content : updated content
+      category : d
+      bathroom : 1
+      water : 1
+      price : 1
+      imageKey : [a,b,c,d,e]

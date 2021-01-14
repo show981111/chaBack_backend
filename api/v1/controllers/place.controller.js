@@ -47,7 +47,7 @@ let calDistance = function(lat, lng, region) {
             if(err) return reject(err);
             if(results.length > 0){
                 const e = new Error('conflicted place');
-                e.status = 409;
+                e.status = 403;
                 reject(e);
             }else{
                 resolve();
@@ -112,10 +112,10 @@ let putPlace = function(req, res, next) {
 
     var imageKeyWithComma = makeImageKey(req.body.imageKey);
 
-    var sql = `UPDATE PLACE SET placeName = ?, FK_PLACE_userID = ?,
+    var sql = `UPDATE PLACE SET placeName = ?,
                 content = ?, category = ?, bathroom = ?, water = ?, price = ?, imageKey = ?
                 WHERE placeID = ? AND FK_PLACE_userID = ?`;
-    var params = [req.body.placeName, req.token_userID, req.body.content,req.body.category,
+    var params = [req.body.placeName, req.body.content,req.body.category,
             req.body.bathroom,req.body.water,req.body.price,imageKeyWithComma ,req.params.placeID, req.token_userID];
     db.query(sql,params, function (err, results) {
         if(err){ 

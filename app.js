@@ -13,17 +13,27 @@ var reviewRouter = require('./api/v1/routes/review.routes.js');
 var replyRouter = require('./api/v1/routes/reply.routes.js');
 var resourcesRouter = require('./api/v1/routes/resources.routes.js');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerOptions = {
+	swaggerDefinition: {
+		info : {
+			title: 'chaBack',
+			version: '1.0.0',
+			description: 'Api description for chaBack',
+		},
+        basePath: "/api/v1",
+	},
+	apis : ["./api/v1/docs/*.yaml"]
+};
+
 const bodyParser = require('body-parser')
-
-
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json())
 //mongoDB();
 
-app.get('/', function(req, res){
-    res.send('hello world!');
-})
-
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api/v1/community', communityRouter);
 app.use('/api/v1/comment', commentRouter);
 app.use('/api/v1/user', userRouter);

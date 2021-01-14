@@ -1,0 +1,194 @@
+paths:
+  /review:          
+    post:             
+      tags:               
+        - Review           
+      summary: Review 등록
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: body       
+        name: Review   
+        description: 리뷰 등록
+        required: true  
+        schema:      
+          $ref: '#/definitions/Review' 
+      responses:     
+        200:
+          description: 등록 성공, reviewID 반환
+        400:
+          description: Post body 변수 형식 잘못됨
+        404:
+          description: 리뷰를 등록하려는 placeID가 존재하지 않음
+
+  /review/place/:placeID/:before: 
+    get:             
+      tags:               
+        - Place           
+      summary: 리뷰 해당 차박지에 따라서 얻기
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: placeID   
+        description: 리뷰를 조회하려는 차박지 아이디
+        required: true  
+      - in: path       
+        name: before   
+        description: 해당 리뷰 아이디 전으로 조회하겟다
+        required: true  
+      responses:     
+        200:
+          description: review 리스트 반환
+        400:
+          description: Get 파라미터가 형식이 잘못된 경우(error message에 detail 있음)
+
+  /review/:before:      
+    get:                 
+      tags:               
+        - Review            
+      summary: 그냥 리뷰 등록순으로 가져옴
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: before   
+        description: 해당 리뷰 아이디 전으로 조회하겟다
+        required: true  
+      responses:      
+        200:
+          description: review 리스트 반환
+        400:
+          description: Get 파라미터가 형식이 잘못된 경우(error message에 detail 있음)
+
+  /review/user/:userID/:before':      
+    get:                 
+      tags:               
+        - Review            
+      summary: 해당 유저가 등록한 리뷰를 순서대로 조회
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: userID   
+        description: 조회하려는 userID
+        required: true 
+      - in: path       
+        name: before   
+        description: 해당 리뷰 아이디 전으로 조회하겟다
+        required: true  
+      responses:      
+        200:
+          description: review 리스트 반환
+        400:
+          description: Get 파라미터가 형식이 잘못된 경우
+
+  /review/:reviewID/:placeID:      
+    put:                 
+      tags:               
+        - Review            
+      summary: 리뷰 수정
+      produces:
+      - application/json
+      parameters:         
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: placeID   
+        description: 수정하려는 리뷰의 차박지 placeID
+        required: true 
+      - in: path       
+        name: reviewID   
+        description: 수정하려는 reviewID
+        required: true 
+      - in: body       
+        name: ChangePlace   
+        description: 차박지 정보 수정
+        required: true  
+        schema:      
+          $ref: '#/definitions/ChangeReview' 
+      responses:      
+        200:
+          description: 성공적으로 수정, 
+        400:
+          description: 변수가 형식이 잘못된 경우
+        404:
+          description: 해당 유저가 등록한 reviewID를 찾지 못함 또는 해당 placeID를 찾지 못함
+
+  /review/:reviewIDtoDelete/:placeID:     
+    delete:                 
+      tags:               
+        - Review            
+      summary: 리뷰 삭제
+      produces:
+      - application/json
+      parameters:         
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: reviewID   
+        description: 삭제하려는 reviewID
+        required: true 
+      - in: path       
+        name: placeID   
+        description: 삭제하려는 리뷰의 차박지 아이디 placeID
+        required: true
+      responses:      
+        200:
+          description: 성공적으로 삭제, 
+        400:
+          description: 변수가 형식이 잘못된 경우
+        401:
+          description: 토큰인증 실패
+        404:
+          description: 해당 유저가 등록한 리뷰를 찾지 못함
+
+definitions:      
+  Review:
+    type: object
+    properties:
+      placeID:
+        type: string
+      content:
+        type: string
+      point:
+        type: int
+      imageKey:
+        type: string
+    example:
+      placeID : 2
+      content : post review to place ID 2
+      point : 3
+      imageKey : ['a','b','c']
+
+  ChangeReview:
+    type: object
+    properties:
+      content:
+        type: string
+      point:
+        type: int
+      pointGap:
+        type: int
+        description: 현재 점수 - 과거 점수
+      imageKey:
+        type: int
+    example:
+        content : 'updated content haha'
+        point : 5
+        pointGap : 2
+        imageKey : ['asdasd','vasgrae','hdhydth']

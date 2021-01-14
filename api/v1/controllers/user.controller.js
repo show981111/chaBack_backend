@@ -147,21 +147,22 @@ let register = function(req, res , next){
                 
                 if(results.affectedRows > 0)
                 {
-                    callback(null, 'done', arg1.accessToken);
+                    callback(null, 'done', arg1.accessToken, arg1.refreshToken);
                 }else{
                     const e = new Error();
                     return callback(e);
                 }  
             })
         }
-    ], function(err, result, final) {
+    ], function(err, result, acc, ref) {
         if(err != null){ 
             next(err); 
             return;
         }
         if(result == 'done'){
             res.status(200).send({
-                accessToken : final
+                accessToken : acc,
+                refreshToken : ref
             });
         }else{
             const err = new Error();
@@ -172,8 +173,8 @@ let register = function(req, res , next){
 
 /* chage user information(userNickName or userName or userPhone or profileImg(if set, then should be updated to userID)) */
 let updateUserInfo = function(req, res , next){
-    const sql = `UPDATE USER SET userNickName = ?, userName = ? , profileImg = ? , userPhone = ? WHERE userID = ?`;
-    const params = [req.body.userNickName, req.body.userName, req.body.profileImg, req.body.userPhone, req.body.userID];
+    const sql = `UPDATE USER SET userNickName = ?, userName = ? , userPhone = ? WHERE userID = ?`;
+    const params = [req.body.userNickName, req.body.userName, req.body.userPhone, req.body.userID];
     db.query(sql, params, function(err, results){
         if(err){
             if(err.errno == 1062){
@@ -224,7 +225,6 @@ let isVerified = function(userID, callback){
 }
 /* reset user password */
 let resetPassword= function(req, res, next){
-    console.log('resetPassword');
     async.waterfall([
         async.apply(isVerified, req.body.userID),
         async.apply(cryptoPassword, req.body.userPassword),

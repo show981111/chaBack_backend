@@ -23,10 +23,12 @@
     "pm2": "^4.5.1",
     "promise": "^8.1.0",
     "sharp": "^0.27.0",
-    "supertest": "^6.0.1"
+    "supertest": "^6.0.1",
+    "swagger-jsdoc": "^6.0.1",
+    "swagger-ui-express": "^4.1.6"
   },
   "scripts": {
-    "test": "node_modules/.bin/mocha test/reply.spec.js"
+    "test": "node_modules/.bin/mocha test/place.spec.js"
   },
   "author": "yongseung lee",
   "license": "ISC"

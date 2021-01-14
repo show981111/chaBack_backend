@@ -24,7 +24,6 @@ router.post('/register',
 /*회원 정보 수정*/
 router.put('/',
     check('userID').notEmpty().isEmail().withMessage('userID should not be Empty and be email').trim(),
-    check('profileImg').notEmpty().withMessage('profileImg should not be Empty').trim(),
     check('userNickName').notEmpty().withMessage('userNickName should not be Empty').trim(),
     check('userName').notEmpty().withMessage('userName should not be empty').trim(),
     check('userPhone').notEmpty().isNumeric().isLength({min : 11, max :11}).withMessage('userPhone should be an number and not be Empty').trim(),
@@ -41,3 +40,5 @@ router.put('/reset',
 
 
 module.exports = router;
+
+

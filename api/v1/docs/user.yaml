@@ -1,0 +1,160 @@
+paths:
+  /user/register:          
+    post:             
+      tags:               
+        - User           
+      summary: 회원가입
+      produces:
+      - application/json
+      parameters:        
+      - in: body       
+        name: User   
+        description: 회원가입
+        required: true  
+        schema:      
+          $ref: '#/definitions/User' 
+      responses:     
+        200:
+          description: 성공적으로 가입. 엑세스토큰 반환
+          examples:
+            application/json:
+              {
+                "accessToken": "asd312dsaf13412",
+              }
+        400:
+          description: Post Body 에 변수가 형식이 잘못된 경우
+        409:
+          description: 유저 아이디 또는 유저 닉네임이 이미 존재할 경우 
+
+  /user/login:      
+    post:                 
+      tags:               
+        - User            
+      summary: 로그인
+      produces:
+      - application/json
+      parameters:         
+      - in: body       
+        schema:
+          type: object
+          properties:
+            userID:
+              type: string
+            userPassword:
+              type: string
+          example:  
+            userID: "ok@gmail.com"
+            userPassword: "1234"
+        description: 로그인
+      responses:      
+        200:
+          description: 성공적으로 로그인, 
+          examples:
+            application/json:
+              {
+                "userID": "test@gmail.com",
+                "userNickName": "ㅅㅐ유",
+                "userName": "testet",
+                "userPhone": "01033334444",
+                "profileImg": "default",
+                "refreshToken": "eyJhbGciOiJIUdasdiIsInR5cCI6IkpXVCJ9",
+                "accessToken": "eyJhbGciOiJasdaIsInR5cCI6IkpXVCJ9"
+              }
+        400:
+          description: Post Body 에 변수가 형식이 잘못된 경우
+        401:
+          description: 비밀번호 틀림
+        404:
+          description: 유저가 존재하지 않음 
+
+  /user/:      
+    put:                 
+      tags:               
+        - User            
+      summary: 회원정보 수정
+      produces:
+      - application/json
+      parameters:        
+      - in: body       
+        name: ChangeUser   
+        description: 회원정보 수정
+        required: true  
+        schema:      
+          $ref: '#/definitions/Change' 
+      responses:      
+        200:
+          description: 성공적으로 회원 정보 수정
+        204:
+          description: 정보수정에 바뀐 내역이 없음 
+        400:
+          description: Post Body 에 변수가 형식이 잘못된 경우
+        404:
+          description: 유저가 존재하지 않음 
+        409:
+          description: 유저 닉네임이 이미 존재함 
+
+  /user/reset:      
+    post:                 
+      tags:               
+        - User            
+      summary: 비밀번호 수정
+      produces:
+      - application/json
+      parameters:         
+      - in: body       
+        schema:
+          type: object
+          properties:
+            userID:
+              type: string
+            userPassword:
+              type: string
+          example:  
+            userID: "ok@gmail.com"
+            userPassword: "1234"
+        description: 비밀번호 수정
+      responses:      
+        200:
+          description: 성공적으로 로그인, 
+        400:
+          description: Post Body 에 변수가 형식이 잘못된 경우
+        403:
+          description: 이메일 인증 안됨
+
+definitions:        # Schema defination for request body
+  User:
+    type: object
+    properties:
+      userID:
+        type: string
+      userPassword:
+        type: string
+      userNickName:
+        type: string
+      userName:
+        type: string
+      userPhone:
+        type: string
+    example:
+      userID : 'ok6@gmail.com'
+      userPassword : '1234'
+      userNickName : 'ok6'
+      userName : 'hehe'
+      userPhone : '01011112222'
+
+  ChangeUser:
+    type: object
+    properties:
+      userID:
+        type: string
+      userNickName:
+        type: string
+      userName:
+        type: string
+      userPhone:
+        type: string
+    example:
+      userID : 'ok6@gmail.com'
+      userNickName : 'updated User NickName'
+      userName : 'hehe'
+      userPhone : '01011112222'

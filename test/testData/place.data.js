@@ -88,7 +88,7 @@ let postProvier = [
         water : 1,
         price : 0,
         // point : 3,
-        imageKey : '12a2da31dsa,1df213dsf42,fds23f1fds1sae',
+        imageKey : ['12a2da31dsa','1df213dsf42','fds23f1fds1sae'],
         exp : 200
     },
     {
@@ -103,7 +103,7 @@ let postProvier = [
         water : 1,
         price : 0,
         // point : 3,
-        imageKey : '12a2da31dsa,1df213dsf42,fds23f1fds1sae',
+        imageKey : ['12a2da31dsa','1df213dsf42','fds23f1fds1sae'],
         exp : 400,
         detail : 'not in the list'
     },
@@ -119,7 +119,7 @@ let postProvier = [
         water : 4,
         price : 0,
         // point : 3,
-        imageKey : '12a2da31dsa,1df213dsf42,fds23f1fds1sae',
+        imageKey : ['12a2da31dsa','1df213dsf42','fds23f1fds1sae'],
         exp : 400,
         detail : 'water should be 1 or 0'
     },
@@ -135,7 +135,7 @@ let postProvier = [
         water : 2,
         price : 0,
         // point : 3,
-        imageKey : '12a2da31dsa,1df213dsf42,fds23f1fds1sae',
+        imageKey : ['12a2da31dsa','1df213dsf42','fds23f1fds1sae'],
         exp : 400,
         detail : 'lat out of range'
     },
@@ -151,7 +151,7 @@ let postProvier = [
         water : 1,
         price : 0,
         // point : 3,
-        imageKey : '12a2da31dsa,1df213dsf42,fds23f1fds1sae',
+        imageKey : ['12a2da31dsa','1df213dsf42','fds23f1fds1sae'],
         exp : 400,
         detail : 'lng out of range'
     },
@@ -167,8 +167,8 @@ let postProvier = [
         water : 1,
         price : 0,
         // point : 2,
-        imageKey : '12a2da31dsa,1df213dsf42,fds23f1fds1sae',
-        exp : 409,
+        imageKey : ['12a2da31dsa','1df213dsf42','fds23f1fds1sae'],
+        exp : 403,
         detail : 'conflicted place'
     },
     {
@@ -183,7 +183,7 @@ let postProvier = [
         water : 1,
         price : 0,
         // point : 2,
-        imageKey : '12a2da31dsa,1df213dsf42,fds23f1fds1sae',
+        imageKey : ['12a2da31dsa','1df213dsf42','fds23f1fds1sae'],
         exp : 409,
         detail : 'placeName already exist'
     },
@@ -200,7 +200,7 @@ let placeUpdateProvider = [
         water : 1,
         price : 1,
         placeID : 105,
-        imageKey : 'a,b,c,d,e',
+        imageKey : ['a','b','c','d','e'],
         detail : 'update place 105',
         exp : 200
     },
@@ -212,7 +212,7 @@ let placeUpdateProvider = [
         water : 1,
         price : 1,
         exp : 409,
-        imageKey : 'a,b,c,d,e',
+        imageKey : ['a','b','c','d','e'],
         placeID : 105,
         detail : 'placeName already exist'
     },
@@ -224,7 +224,7 @@ let placeUpdateProvider = [
         water : 1,
         price : 1,
         exp : 404,
-        imageKey : 'a,b,c,d,e',
+        imageKey : ['a','b','c','d','e'],
         placeID : 106,
         detail : 'Not Found'
     },
@@ -235,7 +235,7 @@ let placeUpdateProvider = [
         bathroom : 1,
         water : 1,
         price : 1,
-        imageKey : 'a,b,c,d,e',
+        imageKey : ['a','b','c','d','e'],
         exp : 404,
         placeID : 95,
         detail : 'Not Found'

@@ -50,7 +50,6 @@ let postEmail = function(req, res, next){
 }
 
 let verifyUser = function(req,res, next){
-    console.log('verify user');
     const sql = 'INSERT INTO VERIFICATION(userID, verifiedAt) VALUES(?, ?) ON DUPLICATE KEY UPDATE verifiedAt = ? ';
     const params = [req.token_userID, Math.floor(Date.now() / 1000), Math.floor(Date.now() / 1000) ];
     db.query(sql,params, function(err, result){

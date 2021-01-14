@@ -7,7 +7,6 @@ require('dotenv').config();
 /* LOGIN */
 
 let signJWT = function(userInfo, expIn, subject){
-    console.log(Date.now());
     return new Promise((resolve, reject) => {
         jwt.sign({
             userID: userInfo.userID,

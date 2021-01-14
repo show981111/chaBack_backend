@@ -14,8 +14,6 @@ AWS.config.update({
 
 var s3 = new AWS.S3();
 
-console.log('Resources controller called');
-
 
 let upload = multer({
     storage: multerS3({

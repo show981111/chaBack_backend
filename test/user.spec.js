@@ -118,8 +118,7 @@ describe('USER API', function(){
                 userID : 'ok5@gmail.com',
                 userNickName : 'updated NickName',
                 userName : 'updated Name',
-                userPhone : '01011112222',
-                profileImg : 'default'
+                userPhone : '01011112222'
             }
             request(app)
                 .put('/api/v1/user')
