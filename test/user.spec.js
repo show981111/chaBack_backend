@@ -6,12 +6,12 @@ const { expect } = require('chai');
 const testData = require('./testData/user.data.js');
 
 chai.should();
-
+var accessToken;
 describe('USER API', function(){
     const User = {
-        userID : 'ok6@gmail.com',
+        userID : 'okk@gmail.com',
         userPassword : '1234',
-        userNickName : 'ok6',
+        userNickName : 'okk6',
         userName : 'hehe',
         userPhone : '01011112222',
     }
@@ -81,6 +81,7 @@ describe('USER API', function(){
                     if(err) throw err;
                     console.log(response.body);
                     response.body.should.be.a('object');
+                    accessToken = response.body.accessToken;
                     expect(response.body).to.have.property('userID');
                     expect(response.body).to.have.property('userNickName');
                     expect(response.body).to.have.property('userName');
@@ -115,14 +116,14 @@ describe('USER API', function(){
     describe('UPDATE /api/v1/user/', () => {
         it('it should update user information', (done) => {
             const User = {
-                userID : 'ok5@gmail.com',
-                userNickName : 'updated NickName',
+                userNickName : 'updated NickName okk',
                 userName : 'updated Name',
                 userPhone : '01011112222'
             }
             request(app)
                 .put('/api/v1/user')
                 .send(User)
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
@@ -136,6 +137,7 @@ describe('USER API', function(){
                 request(app)
                     .put("/api/v1/user/")
                     .send(invalidUpdateProvider)
+                    .set('Authorization', 'Bearer ' + accessToken)
                     .expect(invalidUpdateProvider.exp)
                     .end((err, response) => {
                         if(err) throw err;

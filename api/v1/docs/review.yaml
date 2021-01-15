@@ -30,7 +30,7 @@ paths:
   /review/place/:placeID/:before: 
     get:             
       tags:               
-        - Place           
+        - Review           
       summary: 리뷰 해당 차박지에 따라서 얻기
       produces:
       - application/json

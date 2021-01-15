@@ -90,15 +90,6 @@ const invalidLoginProvider = [
 
 const updateUserFailProvider = [
     {
-        userID : 'notexist@gmail.com',
-        profileImg : 'default',
-        userNickName : 'dasd',
-        userName : 'sadasd',
-        userPhone : '01011112222',
-        exp : 404,
-        detail : 'user does not exist'
-    },
-    {
         userID : 'ok1@gmail.com',
         profileImg : 'default',
         userNickName : 'ok6',
@@ -108,32 +99,6 @@ const updateUserFailProvider = [
         detail : 'userNickName already exist'
     },
     {
-        userID : 'notexist@gmailcom',
-        profileImg : 'default',
-        userNickName : 'a',
-        userName : 'sadasd',
-        userPhone : '01011112222',
-        exp : 400,
-        detail : 'invalid email'
-    },
-    {
-        profileImg : 'default',
-        userNickName : 'a',
-        userName : 'sadasd',
-        userPhone : '01011112222',
-        exp : 400,
-        detail : 'ID does not exist'
-    },
-    {
-        userID : 'notexist@gmailcom',
-        userNickName : 'ok6',
-        userName : 'sadasd',
-        userPhone : '01011112222',
-        exp : 400,
-        detail : 'profileImg does not exist'
-    },
-    {
-        userID : 'notexist@gmailcom',
         profileImg : 'default',
         userName : 'sadasd',
         userPhone : '01011112222',
@@ -141,7 +106,6 @@ const updateUserFailProvider = [
         detail : 'userNickName deos not exist'
     },
     {
-        userID : 'notexist@gmailcom',
         profileImg : 'default',
         userNickName : 'a',
         userPhone : '01011112222',
@@ -149,7 +113,6 @@ const updateUserFailProvider = [
         detail : 'userName does not exist'
     },
     {
-        userID : 'notexist@gmailcom',
         profileImg : 'default',
         userNickName : 'a',
         userName : 'sadasd',
@@ -157,7 +120,6 @@ const updateUserFailProvider = [
         detail : 'userPhone does not exist'
     },
     {
-        userID : 'notexist@gmailcom',
         profileImg : 'default',
         userNickName : 'a',
         userName : 'sadasd',

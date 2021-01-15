@@ -23,7 +23,7 @@ paths:
               }
         400:
           description: Post Body 에 변수가 형식이 잘못된 경우
-        409:
+        404:
           description: 유저 아이디 또는 유저 닉네임이 이미 존재할 경우 
 
   /user/login:      
@@ -75,12 +75,18 @@ paths:
       produces:
       - application/json
       parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
       - in: body       
         name: ChangeUser   
         description: 회원정보 수정
         required: true  
         schema:      
-          $ref: '#/definitions/Change' 
+          $ref: '#/definitions/ChangeUser' 
       responses:      
         200:
           description: 성공적으로 회원 정보 수정
@@ -145,8 +151,6 @@ definitions:        # Schema defination for request body
   ChangeUser:
     type: object
     properties:
-      userID:
-        type: string
       userNickName:
         type: string
       userName:
@@ -154,7 +158,6 @@ definitions:        # Schema defination for request body
       userPhone:
         type: string
     example:
-      userID : 'ok6@gmail.com'
       userNickName : 'updated User NickName'
       userName : 'hehe'
       userPhone : '01011112222'
