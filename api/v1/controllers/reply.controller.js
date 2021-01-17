@@ -32,8 +32,7 @@ let postReply = function(req, res, next){
 let putReply = function(req, res, next){
     const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
     var sql = 'UPDATE REPLY SET content = ? , updated = ? WHERE replyID = ? AND FK_REPLY_userID = ?';
-    console.log(req.params.replyID)
-    console.log(req.token_userID)
+
     db.query(sql, [req.body.content, updated, req.params.replyID, req.token_userID], function(err, result){
         if(err) return next(err);
 

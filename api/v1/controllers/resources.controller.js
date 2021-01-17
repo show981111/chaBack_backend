@@ -110,7 +110,91 @@ let profileUpload = multer({
     })
 });
 
+let updateProfile = function(req, res, next){
+    const sql = 'UPDATE USER SET profileImg = 1 WHERE userID = ?';
+    db.query(sql, [req.token_userID], async function (err, results) {
+        if(err) {console.log(err); return next(err);}
+
+        if(results.affectedRows > 0){
+            next();
+        }else{
+            const e = new Error('Not Found');
+            e.status = 404;
+            next(e);
+        }
+    })
+}
+
+/**
+ * 
+ * @param {string} option 
+ */
+let downloadImage = function(option){
+    return function(req, res, next){
+        var path;
+        if(option == 'original'){
+            path = `images/${req.params.endPoint}/${req.params.id}/original/${req.params.key}`
+        }else{
+            path = `images/${req.params.endPoint}/${req.params.id}/resize/${req.params.key}`
+        }
+        console.log(path);
+        var params = {
+        Bucket : process.env.BUCKET_NAME,
+        Key : path
+        }
+        s3.getObject(params, function (err, data) {
+            if (err) {
+                console.log(err);
+                if(err.code == 'NoSuchKey'){
+                    const e= new Error('The specified key does not exist')
+                    e.status = 404;
+                    return next(e);
+                }
+                return next(err);
+            } else {
+                res.setHeader('Content-disposition', 'attachment: filename='+req.params.key);
+                res.setHeader('Content-length', data.ContentLength);
+                res.end(data.Body);
+            }
+        });
+    }
+}
+
+let deleteObjects = function(req, res, next){
+    var params = {
+        Bucket: process.env.BUCKET_NAME, 
+        Delete: {
+         Objects: [
+            {
+                Key: `images/${req.params.endPoint}/${req.params.id}/original/${req.params.key}` 
+            }, 
+            {
+                Key: `images/${req.params.endPoint}/${req.params.id}/resize/${req.params.key}` 
+            }
+         ], 
+         Quiet: false
+        }
+       };
+       s3.deleteObjects(params, function(err, data) {
+            if (err) {
+                console.log(err); 
+                if(err.code == 'NoSuchKey'){
+                    const e= new Error('The specified key does not exist')
+                    e.status = 404;
+                    return next(e);
+                }
+                return next(err)
+            } // an error occurred
+            else {
+                console.log(data);
+                res.status(200).send('success');
+            }    
+       });
+}
 module.exports = {
     upload : upload,
-    profileUpload : profileUpload
+    profileUpload : profileUpload,
+    updateProfile : updateProfile,
+    downloadImage : downloadImage,
+    deleteObjects : deleteObjects
 }

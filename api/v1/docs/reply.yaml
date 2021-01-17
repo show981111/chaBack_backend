@@ -1,0 +1,167 @@
+paths:
+  /reply:          
+    post:             
+      tags:               
+        - Reply           
+      summary: 리뷰에 reply 등록
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: body       
+        name: Reply   
+        description: 리뷰에 댓글 등록
+        schema:      
+          $ref: '#/definitions/Reply' 
+      responses:     
+        200:
+          description: 등록 성공, replyID 반환
+        400:
+          description: Post body 변수 형식 잘못됨
+        404:
+          description: 유저 또는 리뷰 아이디를 찾을수 없음(unable to find Foreign Key)
+
+  /reply/:replyID: 
+    put:             
+      tags:               
+        - Reply           
+      summary: reply 수정
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: replyID   
+        description: 수정하려는 reply ID
+        required: true  
+      - in: body       
+        name: content   
+        description: reply 내용
+        required: true  
+      responses:     
+        200:
+          description: 수정 성공
+        400:
+          description: 요청 파라미터가 잘못된 경우 
+        404:
+          description: 해당 유저가 등록한 글을 찾을수 없음
+
+  /reply/review/:reviewID:      
+    get:                 
+      tags:               
+        - Reply            
+      summary: 해당 리뷰에 달린 reply 가져옴
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: reviewID   
+        description: 리뷰아이디
+        required: true  
+      responses:      
+        200:
+          description: reply 리스트 반환 여기서 childCount는 해당 댓글에 달린 대댓글 갯수
+          examples:
+            application/json:
+              [
+                {
+                  replyID: 10,
+                  FK_REPLY_userID: 'ok@gmail.com',
+                  updated: '2020-01-03T02:20:00.000Z',
+                  content: '123',
+                  FK_REPLY_reviewID: 5,
+                  replyParentID: null,
+                  childCount: 4
+                }
+              ]
+        400:
+          description: 요청 파라미터가 잘못됨
+
+  /reply/rereply/:replyParentID:      
+    get:                 
+      tags:               
+        - Reply            
+      summary: 해당 댓글에 달린 대댓글들 조회하기 
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: replyParentID   
+        description: 대댓글을 조회하려는 댓글 
+        required: true 
+      responses:      
+        200:
+          description: reply 리스트 반환 
+        400:
+          description: Get 파라미터가 형식이 잘못된 경우
+
+  /reply/user/:userID:      
+    get:                 
+      tags:               
+        - Reply            
+      summary: 해당 유저가 단 댓글들 조회
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: userID   
+        description: 조회하려는 유저 아이디
+        required: true 
+      responses:      
+        200:
+          description: reply 리스트 반환 
+        400:
+          description: Get 파라미터가 형식이 잘못된 경우
+
+  /reply/:replyIDtoDelete:     
+    delete:                 
+      tags:               
+        - Reply            
+      summary: 댓글 삭제
+      produces:
+      - application/json
+      parameters:         
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: replyID   
+        description: 삭제하려는 replyID
+        required: true 
+
+      responses:      
+        200:
+          description: 성공적으로 삭제
+        400:
+          description: 요청 파라미터가 형식이 잘못됨
+        401:
+          description: 토큰인증 실패
+        404:
+          description: 해당 유저가 올린 댓글을 찾지 못함
+
+
+
+definitions:      
+  Reply:
+    type: object
+    properties:
+      content:
+        type: string
+      reviewID:
+        type: int
+      replyParentID:
+        type: int
+        required: false
+        description: 대댓글 달때, 해당 부모 댓글 ID
+
+    example:
+      content : post reply to review 3
+      reviewID : 3
+      replyParentID : 5

@@ -87,7 +87,6 @@ let login = function(req, res, next){
 /* REGISTER */
 
 var checkDuplicate = function(userID, userNickName ,callback){
-    console.log('find User');
 	var sql = 'SELECT * FROM USER WHERE userID = ? OR userNickName = ?';
 	db.query(sql ,[userID, userNickName] , function(error, results, fields){
         if(error) return callback(error); 
@@ -106,7 +105,6 @@ var checkDuplicate = function(userID, userNickName ,callback){
 
 
 let cryptoPassword = function(userPassword, callback){
-    console.log('crypto User');
     crypto.randomBytes(64, (err, buf) => {
     salt = buf.toString('base64');
     crypto.pbkdf2(userPassword, salt, 100000, 64, 'sha512', (err, key) => {
@@ -125,7 +123,6 @@ let cryptoPassword = function(userPassword, callback){
 
 
 let register = function(req, res , next){
-    console.log('register');
     async.waterfall([
         async.apply(checkDuplicate, req.body.userID, req.body.userNickName),
         async.apply(cryptoPassword, req.body.userPassword),

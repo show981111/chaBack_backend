@@ -91,7 +91,6 @@ let verifyEmailVerification = function(req, res, next){
             }
         }
 
-        console.log(decoded)
         
         if(decoded.sub == 'Email verification')
         {
