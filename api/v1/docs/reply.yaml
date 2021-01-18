@@ -26,7 +26,7 @@ paths:
         404:
           description: 유저 또는 리뷰 아이디를 찾을수 없음(unable to find Foreign Key)
 
-  /reply/:replyID: 
+  /reply/{replyID}: 
     put:             
       tags:               
         - Reply           
@@ -50,7 +50,7 @@ paths:
         404:
           description: 해당 유저가 등록한 글을 찾을수 없음
 
-  /reply/review/:reviewID:      
+  /reply/review/{reviewID}:      
     get:                 
       tags:               
         - Reply            
@@ -81,7 +81,7 @@ paths:
         400:
           description: 요청 파라미터가 잘못됨
 
-  /reply/rereply/:replyParentID:      
+  /reply/rereply/{replyParentID}:      
     get:                 
       tags:               
         - Reply            
@@ -99,7 +99,7 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우
 
-  /reply/user/:userID:      
+  /reply/user/{userID}:      
     get:                 
       tags:               
         - Reply            
@@ -117,7 +117,7 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우
 
-  /reply/:replyIDtoDelete:     
+  /reply/{replyIDtoDelete}:     
     delete:                 
       tags:               
         - Reply            
@@ -132,7 +132,7 @@ paths:
         description : 
           Bearer Auth
       - in: path       
-        name: replyID   
+        name: replyIDtoDelete   
         description: 삭제하려는 replyID
         required: true 
 

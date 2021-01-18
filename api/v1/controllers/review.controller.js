@@ -24,6 +24,10 @@ let getReview = function(option){
                 console.log(err);
                 return next(err);
             }
+            for(var i = 0; i < results.length ; i++){
+                var imageKeyArr = results[i].imageKey.split(',');
+                results[i].imageKey = imageKeyArr;
+            }
             res.status(200).send(results);
         })
     }

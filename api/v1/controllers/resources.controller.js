@@ -27,7 +27,7 @@ let upload = multer({
             {
             id: 'original',
             key: function (req, file, cb) {
-                if(req.body.path == undefined || !req.body.path.trim() ){
+                if(req.body.path == undefined || !req.body.path.trim() || req.body.path.split("/").length < 2 ){
                     const e = new Error('path is required');
                     e.status = 400;
                     return cb(e);
@@ -43,7 +43,7 @@ let upload = multer({
           {
             id: 'thumbnail',
             key: function (req, file, cb) {
-                if(req.body.path == undefined || !req.body.path.trim() ){
+                if(req.body.path == undefined || !req.body.path.trim() || req.body.path.split("/").length < 2){
                     const e = new Error('path is required');
                     e.status = 400;
                     return cb(e);
@@ -76,7 +76,7 @@ let profileUpload = multer({
             {
             id: 'original',
             key: function (req, file, cb) {
-                if(req.token_userID == undefined){
+                if(!req.token_userID){
                     const e = new Error('authentication needed');
                     e.status = 401;
                     return cb(e);
@@ -91,7 +91,7 @@ let profileUpload = multer({
           {
             id: 'thumbnail',
             key: function (req, file, cb) {
-                if(req.token_userID == undefined){
+                if(!req.token_userID){
                     const e = new Error('authentication needed');
                     e.status = 401;
                     return cb(e);
@@ -132,10 +132,19 @@ let updateProfile = function(req, res, next){
 let downloadImage = function(option){
     return function(req, res, next){
         var path;
+        var fileName;
         if(option == 'original'){
             path = `images/${req.params.endPoint}/${req.params.id}/original/${req.params.key}`
+            fileName = req.params.key;
+        }else if(option == 'prof_org'){
+            path = `images/profile/original/${req.params.userID}.jpeg`
+            fileName = `${req.params.userID}.jpeg`;
+        }else if(option == 'prof_res'){
+            path = `images/profile/resize/${req.params.userID}.jpeg`
+            fileName = `${req.params.userID}.jpeg`;
         }else{
             path = `images/${req.params.endPoint}/${req.params.id}/resize/${req.params.key}`
+            fileName = req.params.key;
         }
         console.log(path);
         var params = {
@@ -152,7 +161,7 @@ let downloadImage = function(option){
                 }
                 return next(err);
             } else {
-                res.setHeader('Content-disposition', 'attachment: filename='+req.params.key);
+                res.setHeader('Content-disposition', 'attachment: filename='+fileName);
                 res.setHeader('Content-length', data.ContentLength);
                 res.end(data.Body);
             }
@@ -161,17 +170,22 @@ let downloadImage = function(option){
 }
 
 let deleteObjects = function(req, res, next){
+    var deleteKeys = [];
+    console.log(req.body.key);
+    for(var i = 0; i < req.body.key.length; i++){
+        deleteKeys.push(
+            {
+                Key: `images/${req.params.endPoint}/${req.params.id}/original/${req.body.key[i]}` 
+            },
+            {
+                Key: `images/${req.params.endPoint}/${req.params.id}/resize/${req.body.key[i]}` 
+            },
+        )
+    }
     var params = {
         Bucket: process.env.BUCKET_NAME, 
         Delete: {
-         Objects: [
-            {
-                Key: `images/${req.params.endPoint}/${req.params.id}/original/${req.params.key}` 
-            }, 
-            {
-                Key: `images/${req.params.endPoint}/${req.params.id}/resize/${req.params.key}` 
-            }
-         ], 
+         Objects: deleteKeys,
          Quiet: false
         }
        };

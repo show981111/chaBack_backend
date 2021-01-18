@@ -9,7 +9,7 @@ const jwt = require('../middleware/jwt.js');
 
 router.post('/upload', // body 에 path 담아줄 필요가 있음 
     jwt.verifyToken(), 
-    resourcesController.upload.array('img' , 10) ,
+    resourcesController.upload.array('img' , 5) ,
     (req, res, next) => {
         console.log(req.files)
         res.status(200).send('success');
@@ -42,11 +42,22 @@ router.get('/resize/:endPoint/:id/:key',
     resourcesController.downloadImage('resize')
 )
 
-router.delete('/:endPoint/:id/:key', 
+router.get('/original/profile/:userID', 
+    check('userID').notEmpty().isEmail().withMessage('userID should not be empty').trim(),
+    resourcesController.downloadImage('prof_org')
+)
+
+router.get('/resize/profile/:userID', 
+    check('userID').notEmpty().isEmail().withMessage('userID should not be empty').trim(),
+    resourcesController.downloadImage('prof_res')
+)
+
+router.delete('/:endPoint/:id', 
     check('endPoint').notEmpty().withMessage('endPoint should not be empty').trim(),
     check('id').notEmpty().withMessage('id should not be empty').trim(),
-    check('key').notEmpty().withMessage('key should not be empty').trim(),
+    check('key').notEmpty().isArray().withMessage('key should not be empty'),
     checkValidationResult,
+    jwt.verifyToken(), 
     resourcesController.deleteObjects
 )
 module.exports = router;

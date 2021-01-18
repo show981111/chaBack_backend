@@ -1,5 +1,5 @@
 paths:
-  /place/:region/:category/:bathroom/:water/:price/:placeName/:before/:option/:          
+  /place/{region}/{category}/{bathroom}/{water}/{price}/{placeName}/{before}/{option}/:          
     get:             
       tags:               
         - Place           
@@ -63,7 +63,7 @@ paths:
         404:
           description: 유저 아이디 또는 유저 닉네임이 이미 존재할 경우 
 
-  /place/:region/:category/:bathroom/:water/:price/:placeName/:before/distance/:lat/:lng: 
+  /place/{region}/{category}/{bathroom}/{water}/{price}/{placeName}/{before}/distance/{lat}/{lng}: 
     get:             
       tags:               
         - Place           
@@ -134,7 +134,7 @@ paths:
         409:
           description: 차박지 이름이 이미 존재
 
-  /place/:placeID:      
+  /place/{placeID}:      
     put:                 
       tags:               
         - Place            
@@ -170,7 +170,7 @@ paths:
         409:
           description: 차박지 이름이 이미 존재함 
 
-  /place/:placeIDtoDelete:      
+  /place/{placeIDtoDelete}:      
     delete:                 
       tags:               
         - Place            
@@ -185,7 +185,7 @@ paths:
         description : 
           Bearer Auth
       - in: path       
-        name: placeID   
+        name: placeIDtoDelete   
         description: 삭제하려는 placeID
         required: true 
       responses:      

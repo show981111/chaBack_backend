@@ -9,7 +9,6 @@ const makeImageKey = require('../utils/makeImageKey.js');
  */
 let getPlaceList = function (byDistance) {
     return function(req, res, next){
-        console.log( req.params.name);
         var sql;
         if(byDistance === true){
             sql = queryBuilder.filterQueryBuilder(req.params.region, req.params.category, 
@@ -23,8 +22,11 @@ let getPlaceList = function (byDistance) {
         
         db.query(sql.sql, sql.params, function(err, results) {
             if(err){ console.log(this.sql);return next(err);}
-            console.log(this.sql);
-            //console.log(results);
+            for(var i = 0; i < results.length ; i++){
+                var imageKeyArr = results[i].imageKey.split(',');
+                results[i].imageKey = imageKeyArr;
+            }
+
             res.status(200).send(results);
         })
     }

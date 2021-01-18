@@ -27,7 +27,7 @@ paths:
         404:
           description: 리뷰를 등록하려는 placeID가 존재하지 않음
 
-  /review/place/:placeID/:before: 
+  /review/place/{placeID}/{before}: 
     get:             
       tags:               
         - Review           
@@ -49,7 +49,7 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우(error message에 detail 있음)
 
-  /review/:before:      
+  /review/{before}:      
     get:                 
       tags:               
         - Review            
@@ -67,7 +67,7 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우(error message에 detail 있음)
 
-  /review/user/:userID/:before':      
+  /review/user/{userID}/{before}:      
     get:                 
       tags:               
         - Review            
@@ -89,7 +89,7 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우
 
-  /review/:reviewID/:placeID:      
+  /review/{reviewID}/{placeID}:      
     put:                 
       tags:               
         - Review            
@@ -125,7 +125,7 @@ paths:
         404:
           description: 해당 유저가 등록한 reviewID를 찾지 못함 또는 해당 placeID를 찾지 못함
 
-  /review/:reviewIDtoDelete/:placeID:     
+  /review/{reviewIDtoDelete}/{placeID}:     
     delete:                 
       tags:               
         - Review            
@@ -140,7 +140,7 @@ paths:
         description : 
           Bearer Auth
       - in: path       
-        name: reviewID   
+        name: reviewIDtoDelete   
         description: 삭제하려는 reviewID
         required: true 
       - in: path       
