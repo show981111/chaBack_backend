@@ -10,7 +10,6 @@ var postValidator = [
     check('category').notEmpty().withMessage('category should not be empty').trim(),
     check('content').notEmpty().withMessage('content should not be empty').trim().escape(),
     check('imageKey').optional(),
-    check('image').optional()// AWS S3 연동으로 이미지 저장 필요 있다 
 ];
 
 router.get('/', communityController.getAllPosts);

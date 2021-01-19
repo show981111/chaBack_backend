@@ -82,13 +82,14 @@ let authLogin = function(req, res, next){
 }
 
 let issueNewAccessToken = function(req, res, next){
-    const sql = 'SELECT * FROM USER WHERE userID = ? AND refreshToken = ?';
-    var token = req.headers.authorization;
-	token = token.slice(7, token.length).trimLeft();
-    db.query(sql , [req.params.userID, token],async function(err, result){
+    const sql = 'SELECT * FROM USER WHERE refreshToken = ?';
+    // var token = req.headers.authorization;
+    // token = token.slice(7, token.length).trimLeft();
+    
+    db.query(sql , [req.body.refreshToken],async function(err, result){
         if(err) {console.log(err); return next(err);}
 
-        const userInfo = {userID : req.params.userID};
+        const userInfo = {userID : req.token_userID};
         if(result != undefined && result.length > 0){
             const newAccessToken = await jwt.signJWT(userInfo, '15m', 'accessToken');
             res.status(200).send({accessToken : newAccessToken});

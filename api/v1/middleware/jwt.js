@@ -29,16 +29,20 @@ let signJWT = function(userInfo, expIn, subject){
 let verifyToken = function(role){ 
 
     return function(req, res, next){
+        var token;
         var rejected = new Error('no credential');
         rejected.status = 401;
-        if(!req.headers.authorization|| req.headers.authorization == undefined || !req.headers.authorization.startsWith('Bearer ')) {
-            return next(rejected);
+        if(role == 'refreshToken'){
+            token = req.body.refreshToken;
+        }else{
+            if(!req.headers.authorization|| req.headers.authorization == undefined || !req.headers.authorization.startsWith('Bearer ')) {
+                return next(rejected);
+            }
+            
+            token = req.headers.authorization;
+            token = token.slice(7, token.length).trimLeft();
         }
-        
-        var token = req.headers.authorization;
-        token = token.slice(7, token.length).trimLeft();
-        
-        if(token == undefined){return next(rejected)}
+        if(!token || token == ''){return next(rejected)}
 
         jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
             if(err) {

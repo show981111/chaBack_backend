@@ -2,7 +2,7 @@ const { categoryList } = require("../model/place");
 
 let filterQueryBuilder = function(region, category, bathroom, water , price, placeName ,before, standard, curlat, curlong) {//name 추가
     
-    var sql = 'SELECT * FROM PLACE ';
+    var sql = 'SELECT A.*, B.userNickName, B.profileImg FROM PLACE A ';
     var paramArray = [];
     var params = {
         'region' : region,
@@ -39,7 +39,7 @@ let filterQueryBuilder = function(region, category, bathroom, water , price, pla
         common = `updated < ? order by updated DESC LIMIT 20`;
     }
     var where = 'WHERE ';
-
+    var join = 'JOIN USER B ON A.FK_PLACE_userID = B.userID ';
     var index = 0;
     for(var key in params){
         if(params[key]!= undefined && params[key] != -1 && params[key] != '-1'){
@@ -74,7 +74,7 @@ let filterQueryBuilder = function(region, category, bathroom, water , price, pla
     }
     
     paramArray.push(before);
-    sql = sql + where;
+    sql = sql + join +where;
 
     return {
         sql : sql,

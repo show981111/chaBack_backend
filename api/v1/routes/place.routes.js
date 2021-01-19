@@ -25,9 +25,9 @@ router.get('/:region/:category/:bathroom/:water/:price/:placeName/:before/distan
 
 
 router.post('/', //기존 차박지와 간격 500m 차이나는지 확인할것 
+    jwt.verifyToken(), 
     placeModel.placeSchema(false), 
     checkValidationResult,
-    jwt.verifyToken(), 
     placeController.postPlace
     //, upload images to AWS S3
 );

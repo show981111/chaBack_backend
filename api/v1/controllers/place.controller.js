@@ -3,6 +3,7 @@ const queryBuilder = require('../utils/filterQueryBuilder.js');
 var Promise = require('promise');
 const placeModel = require('../model/place.js');
 const makeImageKey = require('../utils/makeImageKey.js');
+require('dotenv').config();
 
 /**
  * @param {Boolean} byDistance 
@@ -24,7 +25,14 @@ let getPlaceList = function (byDistance) {
             if(err){ console.log(this.sql);return next(err);}
             for(var i = 0; i < results.length ; i++){
                 var imageKeyArr = results[i].imageKey.split(',');
-                results[i].imageKey = imageKeyArr;
+                var resizedImages = [];
+                var originalImages = [];
+                for(var j = 0; j < imageKeyArr.length; j++){
+                    resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${results[i].FK_PLACE_userID}/${imageKeyArr[j]}`);
+                    originalImages.push(`${process.env.BUCKET_PATH}/images/original/${results[i].FK_PLACE_userID}/${imageKeyArr[j]}`);
+                }
+                results[i].resizedImages = resizedImages;
+                results[i].originalImages = originalImages;
             }
 
             res.status(200).send(results);

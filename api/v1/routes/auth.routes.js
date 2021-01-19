@@ -26,8 +26,8 @@ router.get('/login',
 );
 
 /**Get new accesstoken using refreshToken : compare refreshToken in DB and verify token then issue new AccessToken to User*/
-router.get('/refresh/:userID',
-    check('userID').notEmpty().isEmail().withMessage('userID should be email and not Empty').trim(),
+router.post('/refresh/',
+    check('refreshToken').notEmpty().isJWT().withMessage('refreshToken should not be Empty').trim(),
     checkValidationResult,
     jwt.verifyToken('refreshToken'),
     authController.issueNewAccessToken

@@ -226,9 +226,9 @@ let resetPassword= function(req, res, next){
     async.waterfall([
         async.apply(isVerified, req.body.userID),
         async.apply(cryptoPassword, req.body.userPassword),
-        function(arg1, arg2, callback){
+        function(arg1, callback){
             var sql = `UPDATE USER SET userPassword = ? , salt = ? WHERE userID = ?`;
-            var params = [arg1, arg2, req.body.userID];
+            var params = [arg1.hashedPW, arg1.salt, req.body.userID];
             db.query(sql, params, function(err, results, fields){
                 if(err) {console.log(err); return callback(err);}
                 

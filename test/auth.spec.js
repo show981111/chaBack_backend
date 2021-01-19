@@ -14,7 +14,7 @@ var accessToken;
 describe('Auth API', function(){
     
     describe('Send Verification Email To User /api/v1/auth/email/verify', function(){
-        const user = {userID : 'show981111@gmail.com'};
+        const user = {userID : 'test@gmail.com'};
         it('it should send Email to User', (done) => {
             request(app)
                 .post('/api/v1/auth/email/verify')
@@ -140,15 +140,16 @@ describe('Auth API', function(){
 
     })
 
-    describe('Get RefreshToken /api/v1/auth/refresh/:userID', function(){
-        it(`it should get refreshToken`, (done) => {
+    describe('Get new AccessToken /api/v1/auth/refresh/', function(){
+        it(`it should get new AccessToken`, (done) => {
             request(app)
-                .get('/api/v1/auth/refresh/ok@gmail.com')
-                .set('Authorization', 'Bearer ' + refreshToken)
+                .post('/api/v1/auth/refresh/')
+                .set('Authorization', 'Bearer ' + accessToken)
+                .send({refreshToken : refreshToken})
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
-                    console.log(response.body);
+                    //console.log(response.body);
                     response.body.should.be.a('object');
                     expect(response.body).to.have.property('accessToken');
                 })
@@ -157,8 +158,9 @@ describe('Auth API', function(){
 
         it(`it should be 401 due to Wrong Subject `, (done) => {
             request(app)
-                .get('/api/v1/auth/refresh/ok@gmail.com')
+                .post('/api/v1/auth/refresh/')
                 .set('Authorization', 'Bearer ' + accessToken)
+                .send({refreshToken : accessToken})
                 .expect(401)
                 .end((err, response) => {
                     if(err) throw err;
@@ -171,8 +173,9 @@ describe('Auth API', function(){
         let invalidRefreshTest = function(invalidProvider, i ){
             it(`it should ${invalidProvider.exp} : ${invalidProvider.detail} index[${i}] `, (done) => {
                 request(app)
-                    .get('/api/v1/auth/refresh/'+invalidProvider.userID)
-                    .set('Authorization', 'Bearer ' + invalidProvider.token)
+                    .post('/api/v1/auth/refresh/')
+                    .set('Authorization', 'Bearer ' + accessToken)
+                    .send({refreshToken : invalidProvider.token})
                     .expect(invalidProvider.exp)
                     .end((err, response) => {
                         if(err) throw err;
@@ -191,7 +194,7 @@ describe('Auth API', function(){
 
     describe('Change User Password(User API) api/v1/user/reset', function(){
         const user = {
-            userID : 'show981111@gmail.com',
+            userID : 'test@gmail.com',
             userPassword : '12345'
         }
         it('it should change user Password', (done) => {

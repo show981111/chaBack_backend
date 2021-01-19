@@ -7,7 +7,8 @@ var communitiesSchema = new Schema({
     updated : { type: Date, default: Date.now },
     category : {type : String, required : true},
     content : {type : String, required : true},
-    imageKey : [{type : String}],
+    resizedImages : [{type : String}],
+    originalImages : [{type : String}],
     commentsNum : { type: Number, default: 0 },
 });
 communitiesSchema.index({"updated": -1});

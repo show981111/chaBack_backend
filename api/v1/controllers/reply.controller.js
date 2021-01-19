@@ -55,15 +55,16 @@ let getReply = function(option){
         var sql;
         var params;
         if(option == 'userID'){
-            sql = 'SELECT * FROM REPLY WHERE FK_REPLY_userID = ? order by replyID DESC';
+            sql = 'SELECT A.*, B.userNickName, B.profileImg FROM REPLY A JOIN USER B ON A.FK_REPLY_userID = B.userID WHERE A.FK_REPLY_userID = ? order by A.replyID DESC';
             params = [req.params.userID];
         }else if(option == 'rereply'){
-            sql = 'SELECT * FROM REPLY WHERE replyParentID = ?';
+            sql = 'SELECT A.*, B.userNickName, B.profileImg FROM REPLY A JOIN USER B ON A.FK_REPLY_userID = B.userID WHERE A.replyParentID = ?';
             params = [req.params.replyParentID];
         }
         else{
-            sql = `SELECT A.*, COUNT(B.replyID) as childCount FROM REPLY A
+            sql = `SELECT A.*, COUNT(B.replyID), C.userNickName, C.profileImg as childCount FROM REPLY A
                         LEFT JOIN REPLY B ON A.replyID = B.replyParentID 
+                        LEFT JOIN USER C ON A.FK_REPLY_userID = C.userID
                         WHERE A.FK_REPLY_reviewID = ? AND A.replyParentID IS NULL 
                         group by A.replyID
                         order by A.replyID DESC`;

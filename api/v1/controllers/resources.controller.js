@@ -21,20 +21,16 @@ let upload = multer({
         bucket: process.env.BUCKET_NAME,
         shouldTransform : function (req, file, cb) {
             console.log('in should transform ', file)
+            
             cb(null, /^image/i.test(file.mimetype))
         },
         transforms: [
             {
             id: 'original',
             key: function (req, file, cb) {
-                if(req.body.path == undefined || !req.body.path.trim() || req.body.path.split("/").length < 2 ){
-                    const e = new Error('path is required');
-                    e.status = 400;
-                    return cb(e);
-                }
-                req.body.path = req.body.path.trim();
+        
                 var keyName = file.originalname.split(".")[0];
-                cb(null, `images/${req.body.path}/original/${keyName}.jpeg`); 
+                cb(null, `images/original/${req.token_userID}/${keyName}.jpeg`); 
             },
             transform: function (req, file, cb) {
               cb(null, sharp().rotate().jpeg())
@@ -43,14 +39,9 @@ let upload = multer({
           {
             id: 'thumbnail',
             key: function (req, file, cb) {
-                if(req.body.path == undefined || !req.body.path.trim() || req.body.path.split("/").length < 2){
-                    const e = new Error('path is required');
-                    e.status = 400;
-                    return cb(e);
-                }
-                req.body.path = req.body.path.trim();
+              
                 var keyName = file.originalname.split(".")[0];
-                cb(null, `images/${req.body.path}/resize/${keyName}.jpeg`); 
+                cb(null, `images/resize/${req.token_userID}/${keyName}.jpeg`); 
             },
             transform: function (req, file, cb) {
               cb(null, sharp().rotate().resize({
@@ -73,21 +64,6 @@ let profileUpload = multer({
             cb(null, /^image/i.test(file.mimetype))
         },
         transforms: [
-            {
-            id: 'original',
-            key: function (req, file, cb) {
-                if(!req.token_userID){
-                    const e = new Error('authentication needed');
-                    e.status = 401;
-                    return cb(e);
-                }
-                const imagePath = `images/profile/original/${req.token_userID}.jpeg`;
-                cb(null, imagePath); //use Date.now() for unique file keys
-            },
-            transform: function (req, file, cb) {
-              cb(null, sharp().rotate().jpeg())
-            }
-          }, 
           {
             id: 'thumbnail',
             key: function (req, file, cb) {
@@ -96,7 +72,7 @@ let profileUpload = multer({
                     e.status = 401;
                     return cb(e);
                 }
-                const imagePath = `images/profile/resize/${req.token_userID}.jpeg`;
+                const imagePath = `images/resize/${req.token_userID}/${req.token_userID}.jpeg`;
                 cb(null, imagePath); //use Date.now() for unique file keys
             },
             transform: function (req, file, cb) {
@@ -111,12 +87,13 @@ let profileUpload = multer({
 });
 
 let updateProfile = function(req, res, next){
-    const sql = 'UPDATE USER SET profileImg = 1 WHERE userID = ?';
-    db.query(sql, [req.token_userID], async function (err, results) {
+    const sql = 'UPDATE USER SET profileImg = ? WHERE userID = ?';
+    const url = `${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.token_userID}.jpeg`
+    db.query(sql, [url, req.token_userID], async function (err, results) {
         if(err) {console.log(err); return next(err);}
 
         if(results.affectedRows > 0){
-            next();
+            res.status(200).send('success');
         }else{
             const e = new Error('Not Found');
             e.status = 404;
@@ -146,7 +123,6 @@ let downloadImage = function(option){
             path = `images/${req.params.endPoint}/${req.params.id}/resize/${req.params.key}`
             fileName = req.params.key;
         }
-        console.log(path);
         var params = {
         Bucket : process.env.BUCKET_NAME,
         Key : path
@@ -161,7 +137,9 @@ let downloadImage = function(option){
                 }
                 return next(err);
             } else {
+                console.log(fileName);
                 res.setHeader('Content-disposition', 'attachment: filename='+fileName);
+                res.set({'Content-Type': 'image/jpeg'});
                 res.setHeader('Content-length', data.ContentLength);
                 res.end(data.Body);
             }
@@ -175,10 +153,10 @@ let deleteObjects = function(req, res, next){
     for(var i = 0; i < req.body.key.length; i++){
         deleteKeys.push(
             {
-                Key: `images/${req.params.endPoint}/${req.params.id}/original/${req.body.key[i]}` 
+                Key: `images/original/${req.token_userID}/${req.body.key[i]}` 
             },
             {
-                Key: `images/${req.params.endPoint}/${req.params.id}/resize/${req.body.key[i]}` 
+                Key: `images/resize/${req.token_userID}/${req.body.key[i]}`
             },
         )
     }

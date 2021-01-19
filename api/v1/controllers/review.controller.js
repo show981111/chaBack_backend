@@ -10,13 +10,19 @@ let getReview = function(option){
         var sql;
         var params = [];
         if(option === 'placeID'){
-            sql = 'SELECT * FROM REVIEW WHERE FK_REVIEW_placeID = ? AND reviewID < ? order by reviewID DESC LIMIT 20';
+            sql = `SELECT A.*,B.userNickName,B.profileImg FROM REVIEW A
+                    LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID
+                    WHERE A.FK_REVIEW_placeID = ? AND reviewID < ? order by reviewID DESC LIMIT 20`;
             params.push(req.params.placeID);
         }else if(option === 'userID'){
-            sql = 'SELECT * FROM REVIEW WHERE FK_REVIEW_userID = ? AND reviewID < ? order by reviewID DESC LIMIT 20';
+            sql = `SELECT A.*,B.userNickName,B.profileImg FROM REVIEW A
+                    LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID
+                    WHERE FK_REVIEW_userID = ? AND reviewID < ? order by reviewID DESC LIMIT 20`;
             params.push(req.params.userID);
         }else{
-            sql = 'SELECT * FROM REVIEW WHERE reviewID < ? order by reviewID DESC LIMIT 20';
+            sql = `SELECT A.*,B.userNickName,B.profileImg FROM REVIEW A
+                    LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID 
+                    WHERE reviewID < ? order by reviewID DESC LIMIT 20`;
         }
         params.push(req.params.before);
         db.query(sql, params, function(err, results) {
@@ -26,7 +32,14 @@ let getReview = function(option){
             }
             for(var i = 0; i < results.length ; i++){
                 var imageKeyArr = results[i].imageKey.split(',');
-                results[i].imageKey = imageKeyArr;
+                var resizedImages = [];
+                var originalImages = [];
+                for(var j = 0; j < imageKeyArr.length; j++){
+                    resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${results[i].FK_REVIEW_userID}/${imageKeyArr[j]}`);
+                    originalImages.push(`${process.env.BUCKET_PATH}/images/original/${results[i].FK_REVIEW_userID}/${imageKeyArr[j]}`);
+                }
+                results[i].resizedImages = resizedImages;
+                results[i].originalImages = originalImages;
             }
             res.status(200).send(results);
         })

@@ -3,6 +3,16 @@ const Communities = require('../model/communities.js')
 var postPosts = async function(req, res, next){
     try {
         req.body.userID = req.token_userID;
+       
+        var resizedImages = [];
+        var originalImages = [];
+        for(var j = 0; j < req.body.imageKey.length; j++){
+            resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.body.imageKey[j]}`);
+            originalImages.push(`${process.env.BUCKET_PATH}/images/original/${req.token_userID}/${req.body.imageKey[j]}`);
+        }
+        req.body.resizedImages = resizedImages;
+        req.body.originalImages = originalImages;
+        req.body.imageKey = undefined;
         const post = new Communities(req.body);
         console.log(post);
         const result = await post.save();

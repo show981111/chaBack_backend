@@ -36,28 +36,15 @@ let invalidToken = [
 
 let invalidRefreshToken = [
     {
-        userID : 'ok@gmail.com',
-        token : `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJva0BnbWFpbC5jb20iLCJpYXQiOjE2MDkyMDk0MjUsImV4cCI6MTYxNjk4NTQyNSwiaXNzIjoiY2hhYmFjayIsInN1YiI6InJlZnJlc2hUb2tlbiJ9.Uyb9SVUUj1MumIwHFjc1PAhaREX_xx_c5uKBqRVBKl8`,
-        detail : 'user and token pair is not found',
-        exp : 404
-    },
-    {
-        userID : 'ok@gmail.com',
         token : '',
         detail : 'token is empty',
-        exp : 401
-    },
-    {
-        userID : 'dsadas',
-        token : '',
-        detail : 'userID does not exist',
         exp : 400
-    },
+    }
 ]
 let undefinedUser = [
     {
-        userID : 'test@gmail.com',
-        userPassword : '12345',
+        userID : 'ok@gmail.com',
+        userPassword : '123456',
         detail : 'outDated',
         exp : 403
     },

@@ -32,8 +32,8 @@ describe('community api', function(){
                             response.body.should.be.a('array');
                             console.log(response.body);
                             //response.body.length.should.be.eq(3);
+                        done();
                     });
-                done();
             });
         });
 
@@ -47,11 +47,11 @@ describe('community api', function(){
             });
         });
 
-        afterEach(function(){
-            if (this.currentTest.state == 'failed') { 
-                console.log("    Response body: " + util.inspect(response.body,{depth: null, colors: true}) + "\n");
-            }
-        }) 
+        // afterEach(function(){
+        //     if (this.currentTest.state == 'failed') { 
+        //         console.log("    Response body: " + util.inspect(response.body,{depth: null, colors: true}) + "\n");
+        //     }
+        // }) 
     });
 
     describe("GET /api/v1/community/:userID", () => {
@@ -157,17 +157,17 @@ describe('community api', function(){
     });
 
     describe("DELETE /api/v1/community/:postID", function(){
-        it("It should delete post item", (done) => {
-            request(app)
-                .delete("/api/v1/community/"+_id)
-                .set('Authorization', 'Bearer ' + accessToken)
-                .expect(200)
-                .end((err, response) => {
-                    if(err) throw err;
-                    response.body.should.be.a('object');
-                done();
-            });
-        })
+        // it("It should delete post item", (done) => {
+        //     request(app)
+        //         .delete("/api/v1/community/"+_id)
+        //         .set('Authorization', 'Bearer ' + accessToken)
+        //         .expect(200)
+        //         .end((err, response) => {
+        //             if(err) throw err;
+        //             response.body.should.be.a('object');
+        //         done();
+        //     });
+        // })
         it("It should be 404", (done) => {
             request(app)
                 .delete("/api/v1/community/5fe5e8219f70441cac72a8ba")

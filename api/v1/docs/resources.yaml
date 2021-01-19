@@ -17,14 +17,10 @@ paths:
         schema:
           type: object
           properties:
-            path:
-              type: string
-              description : 이미지 저장할 path, endpoint/id 형식
             img:
               type: file
           example:  
-            path: review/3
-            img: file
+            img: file.jpeg
       responses:     
         200:
           description: 등록 성공 'success'
@@ -32,131 +28,6 @@ paths:
           description: path 가 잘못됨
         401:
           description: 토큰 인증 실패
-
-  /profile/upload: 
-    put:             
-      tags:               
-        - Resources           
-      summary: 프로필 사진 업로드 
-      produces:
-      - application/json
-      parameters:        
-      - in: header
-        type: http
-        scheme: bearer
-        name: Authorization
-        description : 
-          Bearer Auth
-      - in: body       
-        schema:
-          type: object
-          properties:
-            img:
-              type: file
-          example:  
-            img: file
-      responses:     
-        200:
-          description: 업로드 성공 
-        401:
-          description: 토큰 인증 안됨
-
-
-  /resources/original/{endPoint}/{id}/{key}:      
-    get:                 
-      tags:               
-        - Resources            
-      summary: 해당 경로에 사진 원본 가져옴 
-      produces:
-      - application/json
-      parameters:        
-      - in: path       
-        name: endPoint   
-        description: 겟 하려는 이미지 위치(review, place 등)
-        required: true  
-      - in: path       
-        name: id   
-        description: 겟 하려는 이미지 ID
-        required: true  
-      - in: path       
-        name: key   
-        description: 이미지 이름(imageKey)
-        required: true  
-      responses:      
-        200:
-          description: 사진 다운로드 됨
-        400:
-          description: 요청 파라미터가 잘못됨
-        404:
-          description: 파일이 존재하지 않음
-
-  /resources/resize/{endPoint}/{id}/{key}:      
-    get:                 
-      tags:               
-        - Resources            
-      summary: 해당 경로에 사진 사이즈 조절된거 가져옴
-      produces:
-      - application/json
-      parameters:        
-      - in: path       
-        name: endPoint   
-        description: 겟 하려는 이미지 위치(review, place 등)
-        required: true  
-      - in: path       
-        name: id   
-        description: 겟 하려는 이미지 ID
-        required: true  
-      - in: path       
-        name: key   
-        description: 이미지 이름(imageKey)
-        required: true  
-      responses:      
-        200:
-          description: 사진 다운로드 됨
-        400:
-          description: 요청 파라미터가 잘못됨
-        404:
-          description: 파일이 존재하지 않음
-
-  /resources/resize/profile/{userID}:      
-    get:                 
-      tags:               
-        - Resources            
-      summary: 해당 경로에 사진 사이즈 조절된거 가져옴
-      produces:
-      - application/json
-      parameters:        
-      - in: path       
-        name: userID   
-        description: 가져오려는 프사의 유저 아이디 
-        required: true  
-      responses:      
-        200:
-          description: 사진 다운로드 됨
-        400:
-          description: 요청 파라미터가 잘못됨
-        404:
-          description: 파일이 존재하지 않음
-
-  /resources/original/profile/{userID}:      
-    get:                 
-      tags:               
-        - Resources            
-      summary: 해당 경로에 원본 사진 가져옴
-      produces:
-      - application/json
-      parameters:        
-      - in: path       
-        name: userID   
-        description: 가져오려는 프사의 유저 아이디 
-        required: true  
-      responses:      
-        200:
-          description: 사진 다운로드 됨
-        400:
-          description: 요청 파라미터가 잘못됨
-        404:
-          description: 파일이 존재하지 않음
 
   /resources/{endPoint}/{id}:      
     delete:                 
