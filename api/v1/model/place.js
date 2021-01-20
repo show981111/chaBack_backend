@@ -241,34 +241,39 @@ var placeFilterSchema = checkSchema({
             },
         },  
     },
-    before : {
+    page : {
         notEmpty : true,
-        custom : {
-            options : (value , {req}) => {
-                if(req.params.option == 'date'){
-                    if(isNaN(Date.parse(value))){
-                        console.log(Date.parse(value));
-                        const e = new Error('before should not be empty and be Date');
-                        e.status = 400;
-                        throw e;
-                    }else return value;
-                }else if(req.params.option == 'review' || req.params.option == 'point' || req.params.option == 'id'){
-                    if(!isNaN(value)){
-                        return value;
-                    }else{
-                        const e = new Error('before should be number');
-                        e.status = 400;
-                        throw e;
-                    }
-                }else{
-                    const e = new Error('option should be point, review, date, id');
-                    e.status = 400;
-                    throw e;
-                }
+        isNumeric : true,
+        withMessage : 'page should be number'
+    }
+    // before : {
+    //     notEmpty : true,
+    //     custom : {
+    //         options : (value , {req}) => {
+    //             if(req.params.option == 'date'){
+    //                 if(isNaN(Date.parse(value))){
+    //                     console.log(Date.parse(value));
+    //                     const e = new Error('before should not be empty and be Date');
+    //                     e.status = 400;
+    //                     throw e;
+    //                 }else return value;
+    //             }else if(req.params.option == 'review' || req.params.option == 'point' || req.params.option == 'id'){
+    //                 if(!isNaN(value)){
+    //                     return value;
+    //                 }else{
+    //                     const e = new Error('before should be number');
+    //                     e.status = 400;
+    //                     throw e;
+    //                 }
+    //             }else{
+    //                 const e = new Error('option should be point, review, date, id');
+    //                 e.status = 400;
+    //                 throw e;
+    //             }
                 
-            },
-        }
-    },
+    //         },
+    //     }
+    // },
 });
 
 module.exports = {

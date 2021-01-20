@@ -149,14 +149,14 @@ let downloadImage = function(option){
 
 let deleteObjects = function(req, res, next){
     var deleteKeys = [];
-    console.log(req.body.key);
-    for(var i = 0; i < req.body.key.length; i++){
+    console.log(req.body.imageKey);
+    for(var i = 0; i < req.body.imageKey.length; i++){
         deleteKeys.push(
             {
-                Key: `images/original/${req.token_userID}/${req.body.key[i]}` 
+                Key: `images/original/${req.token_userID}/${req.body.imageKey[i]}` 
             },
             {
-                Key: `images/resize/${req.token_userID}/${req.body.key[i]}`
+                Key: `images/resize/${req.token_userID}/${req.body.imageKey[i]}`
             },
         )
     }
@@ -179,7 +179,7 @@ let deleteObjects = function(req, res, next){
             } // an error occurred
             else {
                 console.log(data);
-                res.status(200).send('success');
+                next();
             }    
        });
 }

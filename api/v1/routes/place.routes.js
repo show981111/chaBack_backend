@@ -5,18 +5,20 @@ const placeController = require('../controllers/place.controller.js');
 const {check, validationResult, checkSchema} = require('express-validator');
 const jwt = require('../middleware/jwt.js');
 const placeModel = require('../model/place.js');
+const resourcesController = require('../controllers/resources.controller.js');
+
 
 //region, category, bathroom, water , price ,from
-router.get('/:region/:category/:bathroom/:water/:price/:placeName/:before/:option/', 
+router.get('/:region/:category/:bathroom/:water/:price/:placeName/:page/:option/', 
     placeModel.placeCommonFilterSchema,
     placeModel.placeFilterSchema,
     checkValidationResult,
     placeController.getPlaceList(false) );
     //get image by place/:placeID/1 
     
-router.get('/:region/:category/:bathroom/:water/:price/:placeName/:before/distance/:lat/:lng', 
+router.get('/:region/:category/:bathroom/:water/:price/:placeName/:page/distance/:lat/:lng', 
     placeModel.placeCommonFilterSchema,
-    check('before').isNumeric().notEmpty().withMessage('before should be number').trim(),
+    check('page').isNumeric().notEmpty().withMessage('page should be number').trim(),
     check('lat').isDecimal().notEmpty().isFloat({min : -90, max : 90}).withMessage('lat should be decimal').trim(),
     check('lng').isDecimal().notEmpty().isFloat({min : -180, max : 180}).withMessage('lng should be decimal').trim(),
     checkValidationResult,
@@ -45,8 +47,10 @@ router.put('/:placeID',
 /*place 삭제 */
 router.delete('/:placeID',
     check('placeID').notEmpty().isNumeric().withMessage('placeID should be number and not be empty').trim(),
+    check('imageKey').notEmpty().isArray().withMessage('imageKey should not be empty'),
     checkValidationResult, 
     jwt.verifyToken(), 
+    resourcesController.deleteObjects,
     placeController.deletePlace
 );
 

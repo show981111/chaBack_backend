@@ -1,5 +1,5 @@
 paths:
-  /place/{region}/{category}/{bathroom}/{water}/{price}/{placeName}/{before}/{option}/:          
+  /place/{region}/{category}/{bathroom}/{water}/{price}/{placeName}/{page}/{option}/:          
     get:             
       tags:               
         - Place           
@@ -44,10 +44,10 @@ paths:
         description: 차박지 이름 / 없으면 -1
         required: true  
       - in: path       
-        name: before   
+        name: page   
         schema:
           type: number
-        description: 조회 기준(option) 에 따라 해당 기준 전에 것을 조회(get < before).
+        description: 해당 페이지 조회
         required: true  
       - in: path       
         name: option   
@@ -63,7 +63,7 @@ paths:
         404:
           description: 유저 아이디 또는 유저 닉네임이 이미 존재할 경우 
 
-  /place/{region}/{category}/{bathroom}/{water}/{price}/{placeName}/{before}/distance/{lat}/{lng}: 
+  /place/{region}/{category}/{bathroom}/{water}/{price}/{placeName}/{page}/distance/{lat}/{lng}: 
     get:             
       tags:               
         - Place           
@@ -72,10 +72,10 @@ paths:
       - application/json
       parameters:        
       - in: path       
-        name: before   
+        name: page   
         schema:
           type: number
-        description: 해당 거리(km) 보다 짧은 위치에 있는 place 조회 
+        description: 해당 페이지 조회 
         required: true  
       - in: path       
         name: lat   

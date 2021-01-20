@@ -14,8 +14,11 @@ let postComment = async function(req, res, next){
             throw error;
         }
         req.body.userID = req.token_userID;
+        req.body.profileImg = `${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.token_userID}.jpeg`;
         const post = new Comment(req.body);
         const result = await post.save();
+        const updateResult = await Community.findByIdAndUpdate(req.body.parentID,{$inc : {'commentsNum' : 1}}, {new : true});
+
         res.send(result);
     }catch(error){
         console.log(error);
@@ -112,6 +115,7 @@ let deleteComment = async function(req, res, next){
             error.status = 404;
             throw error;
         }
+        const updateResult = await Community.findByIdAndUpdate(req.body.parentID,{$inc : {'commentsNum' : -1}}, {new : true});
         res.send(result);
     } catch (error) {
         console.log(error);

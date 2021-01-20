@@ -27,7 +27,7 @@ paths:
         404:
           description: 리뷰를 등록하려는 placeID가 존재하지 않음
 
-  /review/place/{placeID}/{before}: 
+  /review/place/{placeID}/{page}: 
     get:             
       tags:               
         - Review           
@@ -40,8 +40,8 @@ paths:
         description: 리뷰를 조회하려는 차박지 아이디
         required: true  
       - in: path       
-        name: before   
-        description: 해당 리뷰 아이디 전으로 조회하겟다
+        name: page   
+        description: 해당 페이지 조회
         required: true  
       responses:     
         200:
@@ -49,7 +49,7 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우(error message에 detail 있음)
 
-  /review/{before}:      
+  /review/{page}:      
     get:                 
       tags:               
         - Review            
@@ -58,8 +58,8 @@ paths:
       - application/json
       parameters:        
       - in: path       
-        name: before   
-        description: 해당 리뷰 아이디 전으로 조회하겟다
+        name: page   
+        description: 해당 페이지 조회
         required: true  
       responses:      
         200:
@@ -67,7 +67,7 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우(error message에 detail 있음)
 
-  /review/user/{userID}/{before}:      
+  /review/user/{userID}/{page}:      
     get:                 
       tags:               
         - Review            
@@ -80,8 +80,26 @@ paths:
         description: 조회하려는 userID
         required: true 
       - in: path       
-        name: before   
-        description: 해당 리뷰 아이디 전으로 조회하겟다
+        name: page   
+        description: 해당 페이지 조회
+        required: true  
+      responses:      
+        200:
+          description: review 리스트 반환
+        400:
+          description: Get 파라미터가 형식이 잘못된 경우
+
+  /review/like/{page}:      
+    get:                 
+      tags:               
+        - Review            
+      summary: 좋아요 순서대로 리뷰 조회
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: page   
+        description: 해당 페이지 조회
         required: true  
       responses:      
         200:

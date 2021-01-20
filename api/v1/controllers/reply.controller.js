@@ -62,7 +62,7 @@ let getReply = function(option){
             params = [req.params.replyParentID];
         }
         else{
-            sql = `SELECT A.*, COUNT(B.replyID), C.userNickName, C.profileImg as childCount FROM REPLY A
+            sql = `SELECT A.*, COUNT(B.replyID) as childCount, C.userNickName, C.profileImg FROM REPLY A
                         LEFT JOIN REPLY B ON A.replyID = B.replyParentID 
                         LEFT JOIN USER C ON A.FK_REPLY_userID = C.userID
                         WHERE A.FK_REPLY_reviewID = ? AND A.replyParentID IS NULL 

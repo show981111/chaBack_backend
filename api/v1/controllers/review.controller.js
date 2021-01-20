@@ -12,19 +12,23 @@ let getReview = function(option){
         if(option === 'placeID'){
             sql = `SELECT A.*,B.userNickName,B.profileImg FROM REVIEW A
                     LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID
-                    WHERE A.FK_REVIEW_placeID = ? AND reviewID < ? order by reviewID DESC LIMIT 20`;
+                    WHERE A.FK_REVIEW_placeID = ? order by reviewID DESC LIMIT ${req.params.page} , 20`;
             params.push(req.params.placeID);
         }else if(option === 'userID'){
             sql = `SELECT A.*,B.userNickName,B.profileImg FROM REVIEW A
                     LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID
-                    WHERE FK_REVIEW_userID = ? AND reviewID < ? order by reviewID DESC LIMIT 20`;
+                    WHERE FK_REVIEW_userID = ? order by reviewID DESC LIMIT ${req.params.page} , 20`;
             params.push(req.params.userID);
-        }else{
+        }else if(option =='like'){
+            sql = `SELECT A.*,B.userNickName,B.profileImg FROM REVIEW A
+                    LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID
+                    order by A.likeCount DESC LIMIT ${req.params.page} , 20`;
+        }
+        else{
             sql = `SELECT A.*,B.userNickName,B.profileImg FROM REVIEW A
                     LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID 
-                    WHERE reviewID < ? order by reviewID DESC LIMIT 20`;
+                    order by reviewID DESC LIMIT ${req.params.page} , 20`;
         }
-        params.push(req.params.before);
         db.query(sql, params, function(err, results) {
             if(err) {
                 console.log(err);
@@ -35,6 +39,7 @@ let getReview = function(option){
                 var resizedImages = [];
                 var originalImages = [];
                 for(var j = 0; j < imageKeyArr.length; j++){
+                    if(!imageKeyArr[j] || imageKeyArr[j] == null) continue;
                     resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${results[i].FK_REVIEW_userID}/${imageKeyArr[j]}`);
                     originalImages.push(`${process.env.BUCKET_PATH}/images/original/${results[i].FK_REVIEW_userID}/${imageKeyArr[j]}`);
                 }

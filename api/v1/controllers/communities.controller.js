@@ -10,6 +10,7 @@ var postPosts = async function(req, res, next){
             resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.body.imageKey[j]}`);
             originalImages.push(`${process.env.BUCKET_PATH}/images/original/${req.token_userID}/${req.body.imageKey[j]}`);
         }
+        req.body.profileImg = `${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.token_userID}.jpeg`;
         req.body.resizedImages = resizedImages;
         req.body.originalImages = originalImages;
         req.body.imageKey = undefined;

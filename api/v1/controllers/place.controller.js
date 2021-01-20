@@ -14,11 +14,11 @@ let getPlaceList = function (byDistance) {
         if(byDistance === true){
             sql = queryBuilder.filterQueryBuilder(req.params.region, req.params.category, 
                 req.params.bathroom, req.params.water, req.params.price, req.params.placeName,
-                req.params.before, 'distance', req.params.lat, req.params.lng);
+                req.params.page, 'distance', req.params.lat, req.params.lng);
         }else{
             sql = queryBuilder.filterQueryBuilder(req.params.region, req.params.category, 
                 req.params.bathroom, req.params.water, req.params.price, req.params.placeName,
-                req.params.before, req.params.option, undefined, undefined);
+                req.params.page, req.params.option, undefined, undefined);
         }
         
         db.query(sql.sql, sql.params, function(err, results) {
@@ -28,6 +28,7 @@ let getPlaceList = function (byDistance) {
                 var resizedImages = [];
                 var originalImages = [];
                 for(var j = 0; j < imageKeyArr.length; j++){
+                    if(!imageKeyArr[j] || imageKeyArr[j] == null) continue;
                     resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${results[i].FK_PLACE_userID}/${imageKeyArr[j]}`);
                     originalImages.push(`${process.env.BUCKET_PATH}/images/original/${results[i].FK_PLACE_userID}/${imageKeyArr[j]}`);
                 }

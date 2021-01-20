@@ -10,6 +10,8 @@ var communitiesSchema = new Schema({
     resizedImages : [{type : String}],
     originalImages : [{type : String}],
     commentsNum : { type: Number, default: 0 },
+    placeID : {type : String},
+    profileImg : {type : String, required : true}
 });
 communitiesSchema.index({"updated": -1});
 

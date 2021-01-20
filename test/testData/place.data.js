@@ -6,7 +6,7 @@ let getPlaceInvalidProvider = [
         'water' : 1,
         'price' : -1,
         'placeName' : -1,
-        'before' : '2019-05-01',
+        'page' : 0,
         'option' : 'date',
         exp : 400,
         detail : 'not in the list'
@@ -18,7 +18,7 @@ let getPlaceInvalidProvider = [
         'water' : 1,
         'price' : -1,
         'placeName' : -1,
-        'before' : '2019-05-01',
+        'page' : 0,
         'option' : 'date',
         exp : 400,
         detail : 'not in the list'
@@ -30,7 +30,7 @@ let getPlaceInvalidProvider = [
         'water' : 1,
         'price' : -1,
         'placeName' : -1,
-        'before' : '2019-05-01',
+        'page' : 0,
         'option' : 'date',
         exp : 400,
         detail : 'bathroom should be 1, 0, -1'
@@ -42,7 +42,7 @@ let getPlaceInvalidProvider = [
         'water' : 3,
         'price' : -1,
         'placeName' : -1,
-        'before' : '2019-05-01',
+        'page' : 0,
         'option' : 'date',
         exp : 400,
         detail : 'water should be 1, 0, -1'
@@ -54,22 +54,10 @@ let getPlaceInvalidProvider = [
         'water' : 1,
         'price' : 3,
         'placeName' : -1,
-        'before' : '2019-05-01',
+        'page' : 0,
         'option' : 'date',
         exp : 400,
         detail : 'price should be 1, 0, -1'
-    },
-    {
-        'region' : 'a',
-        'category' : 'a',
-        'bathroom' : 0,
-        'water' : 1,
-        'price' : -1,
-        'placeName' : -1,
-        'before' : '2019-0501',
-        'option' : 'date',
-        exp : 400,
-        detail : 'before should not be empty and be Date'
     },
 
 ]
@@ -172,9 +160,9 @@ let postProvier = [
         detail : 'conflicted place'
     },
     {
-        placeName : 'B1K 1J3',
-        lat : 12.7563000,
-        lng : 41.9579,
+        placeName : 'R8A 4Y8',
+        lat : 80.7563000,
+        lng : 167.9579,
         address : 'asdasdasd adsa dasd',
         region : 'g',
         content : 'asdas dsad asd s sadsa dasd sadasd',
@@ -199,21 +187,21 @@ let placeUpdateProvider = [
         bathroom : 1,
         water : 1,
         price : 1,
-        placeID : 105,
+        placeID : 212,
         imageKey : ['a','b','c','d','e'],
-        detail : 'update place 105',
+        detail : 'update place 212',
         exp : 200
     },
     {
-        placeName : 'adwads',
-        content : 'updated content',
+        placeName : 'N3V 4F7',
+        content : 'N3Vdsadsa 4F7',
         category : 'd',
         bathroom : 1,
         water : 1,
         price : 1,
         exp : 409,
         imageKey : ['a','b','c','d','e'],
-        placeID : 105,
+        placeID : 212,
         detail : 'placeName already exist'
     },
     {
@@ -245,11 +233,13 @@ let placeUpdateProvider = [
 let deleteProvider = [
     {
         placeID : 80,
+        imageKey : ['a','b','c'],
         exp : 404,
         detail : 'Not Found'
     },
     {
         placeID : 'sadasd',
+        imageKey : ['a','b','c'],
         exp : 400,
         detail : 'placeID should be number and not be empty'
     }

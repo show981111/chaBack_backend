@@ -4,6 +4,7 @@ var router = express.Router()
 const communityController = require('../controllers/communities.controller.js');
 const {check, validationResult} = require('express-validator');
 const jwt = require('../middleware/jwt.js')
+const resourcesController = require('../controllers/resources.controller.js');
 
 var postValidator = [
     check('userNickName').notEmpty().withMessage('userNickName should only contain alphabet and number').trim(),
@@ -36,8 +37,10 @@ router.put('/:postID',
 
 router.delete('/:postID',     
     check('postID').notEmpty().isLength({min : 24, max :24}).withMessage('postID should not be empty and 24 hex characters').trim(),
+    check('imageKey').notEmpty().isArray().withMessage('imageKey should not be empty'),
     checkValidationResult,
     jwt.verifyToken(),
+    resourcesController.deleteObjects,
     communityController.deletePosts);
 
 module.exports = router;

@@ -14,29 +14,40 @@ let filterQueryBuilder = function(region, category, bathroom, water , price, pla
     };
     console.log(placeName);
     if(standard == 'distance'){
-        sql = `SELECT * , 
+        sql = `SELECT A.*, B.userNickName, B.profileImg,
         (
             6371 *
             acos(cos(radians(?)) * 
-            cos(radians(lat)) * 
-            cos(radians(lng) - 
+            cos(radians(A.lat)) * 
+            cos(radians(A.lng) - 
             radians(?)) + 
             sin(radians(?)) * 
-            sin(radians(lat)))
-        ) AS distance FROM PLACE `;
+            sin(radians(A.lat)))
+        ) AS distance FROM PLACE A `;
         paramArray.push(curlat);
         paramArray.push(curlong);
         paramArray.push(curlat);
     }
-    var common = `placeID < ? order by placeID DESC LIMIT 20`;
+    // var common = `placeID < ? order by placeID DESC LIMIT 20`;
+    // if(standard == 'point'){
+    //     common = `meanPoint < ? order by meanPoint DESC LIMIT 20`;
+    // }else if(standard == 'review'){
+    //     common = `reviewCount < ? order by reviewCount DESC LIMIT 20`;
+    // }else if(standard == 'distance'){
+    //     common = `HAVING distance < ? order by distance DESC LIMIT 20`;//km 기준이다 
+    // }else if(standard == 'date'){
+    //     common = `updated < ? order by updated DESC LIMIT 20`;
+    // }
+    var common = `order by placeID DESC LIMIT ${before} , 20`;
     if(standard == 'point'){
-        common = `meanPoint < ? order by meanPoint DESC LIMIT 20`;
+        common = `order by meanPoint DESC LIMIT ${before} ,20`;
     }else if(standard == 'review'){
-        common = `reviewCount < ? order by reviewCount DESC LIMIT 20`;
+        common = `order by reviewCount DESC LIMIT ${before} ,20`;
     }else if(standard == 'distance'){
-        common = `HAVING distance < ? order by distance DESC LIMIT 20`;//km 기준이다 
+        common = `order by distance DESC LIMIT ${before}, 20`;//km 기준이다 
+        console.log(before);
     }else if(standard == 'date'){
-        common = `updated < ? order by updated DESC LIMIT 20`;
+        common = `order by updated DESC LIMIT ${before} ,20`;
     }
     var where = 'WHERE ';
     var join = 'JOIN USER B ON A.FK_PLACE_userID = B.userID ';
@@ -60,20 +71,22 @@ let filterQueryBuilder = function(region, category, bathroom, water , price, pla
     }
 
     if(index != 0){
-        if(standard == 'distance'){
-            where += ' ' + common;
-        }else{
-            where += 'AND ' + common;
-        }
+        // if(standard == 'distance'){
+        //     where += ' ' + common;
+        // }else{
+        //     where += 'AND ' + common;
+        // }
+        where += ' ' + common;
     }else{
-        if(standard == 'distance'){
-            where = common;
-        }else{
-            where += common;
-        }
+        // if(standard == 'distance'){
+        //     where = common;
+        // }else{
+        //     where = common;
+        // }
+        where = common;
     }
     
-    paramArray.push(before);
+    //paramArray.push(before);
     sql = sql + join +where;
 
     return {

@@ -6,6 +6,7 @@ var commentsSchema = new Schema({
     parentID : {type : ObjectID, ref : 'community', required : true},
     userID : {type : String, required : true},
     userNickName : {type : String, required : true},
+    profileImg : {type : String, required : true},
     updated : { type: Date, default: Date.now },
     content : { type : String, required : true},
     replies : [{type : ObjectID, ref : 'comments'}]

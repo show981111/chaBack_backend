@@ -93,6 +93,7 @@ describe('REVIEW API', function(){
             it(`it should be ${deleteProvider.exp} : ${deleteProvider.detail} index[${i}]`, (done) =>{
                 request(app)
                     .delete(`/api/v1/review/${deleteProvider.reviewID}/${deleteProvider.placeID}`)
+                    .send({imageKey : deleteProvider.imageKey})
                     .set('Authorization', 'Bearer ' + accessToken)
                     .expect(deleteProvider.exp)
                     .end((err, response) => {
@@ -119,7 +120,7 @@ describe('REVIEW API', function(){
     describe('GET REVIEW API', function(){
         it('it get review list by userID', (done) => {
             request(app)
-                .get('/api/v1/review/user/ok@gmail.com/20')
+                .get('/api/v1/review/user/ok@gmail.com/10')
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
@@ -134,14 +135,14 @@ describe('REVIEW API', function(){
 
         it('it get review list by placeID', (done) => {
             request(app)
-                .get('/api/v1/review/place/3/16')
+                .get('/api/v1/review/place/3/10')
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
                     console.log(response.body);
                     for(var i = 0; i < response.body.length; i++){
                         response.body[i].FK_REVIEW_placeID.should.equal(3);
-                        response.body[i].reviewID.should.be.below(16);
+                        // response.body[i].reviewID.should.be.below(10);
                     }
                     done();
                 })
@@ -149,13 +150,13 @@ describe('REVIEW API', function(){
 
         it('it get all review list', (done) => {
             request(app)
-                .get('/api/v1/review/16')
+                .get('/api/v1/review/0')
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
                     console.log(response.body);
                     for(var i = 0; i < response.body.length; i++){
-                        response.body[i].reviewID.should.be.below(16);
+                        // response.body[i].reviewID.should.be.below(10);
                     }
                     done();
                 })

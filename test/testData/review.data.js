@@ -102,18 +102,21 @@ let reviewDeleteProvider = [
     {
         placeID : 2,
         reviewID : 3,
+        imageKey : ['a','b','c'],
         exp : 200,
         detail : 'delete review successfully'
     },
     {
         placeID : 1,
         reviewID : 2,
+        imageKey : ['a','b','c'],
         exp : 404,
         detail : 'Not Found'//due to reviewID and userID is not matching
     },
     {
         placeID : 1,
         reviewID : 6,
+        imageKey : ['a','b','c'],
         exp : 404,
         detail : 'Not Found'// due to placeID and reviewID is not matching
     },

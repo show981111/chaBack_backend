@@ -21,13 +21,16 @@ router.post('/profile',
     resourcesController.updateProfile
 )
 
-router.delete('/profile', 
-    check('key').notEmpty().isArray().withMessage('key should not be empty'),
+router.delete('/', 
+    check('imageKey').notEmpty().isArray().withMessage('key should not be empty'),
     checkValidationResult,
     jwt.verifyToken(), 
     resourcesController.deleteObjects,
-    /** 여기서 실제 디비와 연동해서 이미지를 삭제처리 해야한다잉 */
+    (req, res, next) => {
+        res.status(200).send('success');
+    }
 )
+
 // router.get('/original/:endPoint/:id/:key', 
 //     check('endPoint').notEmpty().withMessage('endPoint should not be empty').trim(),
 //     check('id').notEmpty().withMessage('id should not be empty').trim(),

@@ -17,17 +17,17 @@ describe('PLACE API', function(){
         'water' : 1,
         'price' : -1,
         'placeName' : '4C',
-        'before' : 5,
+        'page' : 2,
         'option' : 'id'
     };
 
-    describe('GET PLACE /api/v1/place/:region/:category/:bathroom/:water/:price/:placeName/:before/:option', function() {
+    describe('GET PLACE /api/v1/place/:region/:category/:bathroom/:water/:price/:placeName/:page/:option', function() {
 
         console.log(test['placeName']);
         it('it should return place lists' , (done) => {
             request(app)
                 .get(`/api/v1/place/${test['region']}/${test['category']}/${test['bathroom']}/${test['water']}/
-                ${test['price']}/${test['placeName']}/${test['before']}/${test['option']}`)
+                ${test['price']}/${test['placeName']}/${test['page']}/${test['option']}`)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
@@ -50,7 +50,7 @@ describe('PLACE API', function(){
                 request(app)
                     .get(`/api/v1/place/${invalidDataProvider['region']}/${invalidDataProvider['category']}/
                     ${invalidDataProvider['bathroom']}/${invalidDataProvider['water']}/${invalidDataProvider['price']}/
-                    ${invalidDataProvider['placeName']}'/${invalidDataProvider['before']}/${invalidDataProvider['option']}`)
+                    ${invalidDataProvider['placeName']}'/${invalidDataProvider['page']}/${invalidDataProvider['option']}`)
                     .expect(invalidDataProvider.exp)
                     .end((err, response) => {
                         if(err) throw err;
@@ -65,11 +65,11 @@ describe('PLACE API', function(){
         }
     })
 
-    describe('GET PLACE according to current location api/v1/place/:region/:category/:bathroom/:water/:price/:placeName/:before/distance/:lat/:lng', function(){
+    describe('GET PLACE according to current location api/v1/place/:region/:category/:bathroom/:water/:price/:placeName/:page/distance/:lat/:lng', function(){
         it('it should get places by distance', (done) => {
             request(app)
                 .get(`/api/v1/place/${test['region']}/${test['category']}/${test['bathroom']}/0/
-                ${test['price']}/-1/${3}/distance/28.0340000/120.6967000`)
+                ${test['price']}/-1/0/distance/28.0340000/120.6967000`)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
@@ -178,6 +178,7 @@ describe('PLACE API', function(){
         it(`it should be 200 : delete place `, (done) => {
             request(app)
                 .delete(`/api/v1/place/${insertedPlaceID}`)
+                .send({imageKey : ['a','b','c'] })
                 .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
@@ -191,6 +192,7 @@ describe('PLACE API', function(){
                 request(app)
                     .delete(`/api/v1/place/${input.placeID}`)
                     .set('Authorization', 'Bearer ' + accessToken)
+                    .send({imageKey : input.imageKey})
                     .expect(input.exp)
                     .end((err, response) => {
                         if(err) { throw err;}
