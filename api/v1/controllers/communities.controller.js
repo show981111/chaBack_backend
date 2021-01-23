@@ -3,7 +3,7 @@ const Communities = require('../model/communities.js')
 var postPosts = async function(req, res, next){
     try {
         req.body.userID = req.token_userID;
-       
+        
         var resizedImages = [];
         var originalImages = [];
         for(var j = 0; j < req.body.imageKey.length; j++){

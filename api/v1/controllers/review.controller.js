@@ -15,18 +15,21 @@ let getReview = function(option){
                     WHERE A.FK_REVIEW_placeID = ? order by reviewID DESC LIMIT ${req.params.page} , 20`;
             params.push(req.params.placeID);
         }else if(option === 'userID'){
-            sql = `SELECT A.*,B.userNickName,B.profileImg FROM REVIEW A
+            sql = `SELECT A.*,B.userNickName,B.profileImg, C.placeName FROM REVIEW A
                     LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID
+                    LEFT JOIN PLACE C ON A.FK_REVIEW_placeID = C.placeID
                     WHERE FK_REVIEW_userID = ? order by reviewID DESC LIMIT ${req.params.page} , 20`;
             params.push(req.params.userID);
         }else if(option =='like'){
-            sql = `SELECT A.*,B.userNickName,B.profileImg FROM REVIEW A
+            sql = `SELECT A.*,B.userNickName,B.profileImg , C.placeName FROM REVIEW A
                     LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID
+                    LEFT JOIN PLACE C ON A.FK_REVIEW_placeID = C.placeID
                     order by A.likeCount DESC LIMIT ${req.params.page} , 20`;
         }
         else{
-            sql = `SELECT A.*,B.userNickName,B.profileImg FROM REVIEW A
+            sql = `SELECT A.*,B.userNickName,B.profileImg, C.placeName FROM REVIEW A
                     LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID 
+                    LEFT JOIN PLACE C ON A.FK_REVIEW_placeID = C.placeID
                     order by reviewID DESC LIMIT ${req.params.page} , 20`;
         }
         db.query(sql, params, function(err, results) {

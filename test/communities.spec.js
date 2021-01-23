@@ -157,17 +157,17 @@ describe('community api', function(){
     });
 
     describe("DELETE /api/v1/community/:postID", function(){
-        // it("It should delete post item", (done) => {
-        //     request(app)
-        //         .delete("/api/v1/community/"+_id)
-        //         .set('Authorization', 'Bearer ' + accessToken)
-        //         .expect(200)
-        //         .end((err, response) => {
-        //             if(err) throw err;
-        //             response.body.should.be.a('object');
-        //         done();
-        //     });
-        // })
+        it("It should delete post item", (done) => {
+            request(app)
+                .delete("/api/v1/community/"+_id)
+                .set('Authorization', 'Bearer ' + accessToken)
+                .expect(200)
+                .end((err, response) => {
+                    if(err) throw err;
+                    response.body.should.be.a('object');
+                done();
+            });
+        })
         it("It should be 404", (done) => {
             request(app)
                 .delete("/api/v1/community/5fe5e8219f70441cac72a8ba")

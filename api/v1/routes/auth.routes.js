@@ -14,7 +14,7 @@ router.post('/email/verify',
 );
 
 /**Verify  User : get userID from token and post or put into verification table*/
-router.post('/email/verify/:token',
+router.get('/email/verify/:token',
     jwt.verifyEmailVerification,
     authController.verifyUser
 );

@@ -12,6 +12,8 @@ var placeRouter = require('./api/v1/routes/place.routes.js');
 var reviewRouter = require('./api/v1/routes/review.routes.js');
 var replyRouter = require('./api/v1/routes/reply.routes.js');
 var resourcesRouter = require('./api/v1/routes/resources.routes.js');
+var likeRouter = require('./api/v1/routes/like.routes.js');
+var wishRouter = require('./api/v1/routes/wish.routes.js');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
@@ -42,7 +44,8 @@ app.use('/api/v1/place', placeRouter);
 app.use('/api/v1/review', reviewRouter);
 app.use('/api/v1/reply', replyRouter);
 app.use('/api/v1/resources', resourcesRouter);
-
+app.use('/api/v1/like', likeRouter);
+app.use('/api/v1/wish', wishRouter);
 
 //error handler
 app.use((err, req, res, next) => {

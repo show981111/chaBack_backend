@@ -5,10 +5,10 @@ const jwt = require('../middleware/jwt.js');
 
 
 let transporter = nodemailer.createTransport({
-	service: 'kakao',
-	host: 'smtp.kakao.com',
-	port: 465,
-	secure: true,
+	service: 'Naver',
+	host: 'smtp.naver.com',
+	port: 587,
+	secure: false,
 	auth: {
 	  user: process.env.emailUserID,
 	  pass: process.env.emailUserPassword,
@@ -33,13 +33,12 @@ let postEmail = function(req, res, next){
                 let link="http://"+req.headers.host+"/api/v1/auth/email/verify/"+verificationToken;
                 let html = `<p>이메일 인증을 위해서 <a href="${link}">LINK</a> 이 링크를 클릭해주세요! 인증 유효기간은 3분입니다!</p> `;
         
-                // let info = await transporter.sendMail({
-                //     from: `차박의 성지 <${process.env.emailUserID}>`,
-                //     to: req.body.userID,//req.body.userID
-                //     subject: '차박의 성지 이메일 인증',
-                //     html: html,
-                // });
-                // console.log(info);
+                let info = await transporter.sendMail({
+                    from: `차박의 성지 <${process.env.emailUserID}>`,
+                    to: req.body.userID,//req.body.userID
+                    subject: '차박의 성지 이메일 인증',
+                    html: html,
+                });
                 res.status(200).send({token : verificationToken});
         
             }catch(mail_error){
@@ -57,7 +56,7 @@ let verifyUser = function(req,res, next){
         
         console.log(result);
         if(result.affectedRows > 0){
-            res.status(200).send("success");
+            res.status(200).send("성공적으로 인증되었습니다. 앱에서 계속 진행해주세요.");
         }else{
             const e = new Error();
             next(e);

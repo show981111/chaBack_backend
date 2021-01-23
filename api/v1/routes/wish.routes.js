@@ -1,29 +1,29 @@
 const express = require('express')
 var router = express.Router()
 const jwt = require('../middleware/jwt.js')
-const likeController = require('../controllers/like.controller.js');
+const wishController = require('../controllers/wish.controller.js');
 const {check, validationResult} = require('express-validator');
 const checkValidationResult = require('../middleware/checkValidationResult');
 
 //req.body.userID, req.body.id
-router.post('/review',
-    check('id').notEmpty().isNumeric().withMessage('id should not be empty and be a number'),
+router.post('/',
+    check('placeID').notEmpty().isNumeric().withMessage('id should not be empty and be a number'),
     checkValidationResult,
     jwt.verifyToken(),
-    likeController.postLike('review')
+    wishController.postWish
 );
 
-router.delete('/review',
-    check('id').notEmpty().isNumeric().withMessage('id should not be empty and be a number'),
+router.delete('/',
+    check('placeID').notEmpty().isNumeric().withMessage('id should not be empty and be a number'),
     checkValidationResult,  
     jwt.verifyToken(),
-    likeController.deleteLike('review')
+    wishController.deleteWish
 );
 
-router.get('/review/:userID',
+router.get('/:userID',
     check('userID').notEmpty().isEmail().withMessage('userID should not be empty and be an email'),
     checkValidationResult,  
-    likeController.getLike('review')
+    wishController.getWish
 )
 
 module.exports = router;
