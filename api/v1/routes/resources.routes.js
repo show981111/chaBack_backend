@@ -15,7 +15,7 @@ router.post('/upload',
     }
 )
 
-router.post('/profile', 
+router.put('/profile', 
     jwt.verifyToken(), 
     resourcesController.profileUpload.array('img' , 1) ,
     resourcesController.updateProfile

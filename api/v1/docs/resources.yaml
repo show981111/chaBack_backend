@@ -29,6 +29,36 @@ paths:
         401:
           description: 토큰 인증 실패
 
+  /resources/profile:          
+    put:             
+      tags:               
+        - Resources           
+      summary: 프사 수정 
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: body       
+        schema:
+          type: object
+          properties:
+            img:
+              type: file
+          example:  
+            img: file.jpeg
+      responses:     
+        200:
+          description: 등록 성공 'success'
+        400:
+          description: path 가 잘못됨
+        401:
+          description: 토큰 인증 실패
+
   /resources/{endPoint}/{id}:      
     delete:                 
       tags:               

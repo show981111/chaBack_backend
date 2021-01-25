@@ -15,7 +15,7 @@ const nearRegion = {
     'h' : ['h', 'd'],
 }
 
-const categoryList = ['a','b','c','d','e','f','g','h', -1]
+const categoryList = ['노지',  '캠핑장', '주차장' , '도로변',  '사유지' , -1]
 
 let filter = function(value, data){
     for(var i = 0; i < data.length; i++){

@@ -11,6 +11,7 @@ var replyRouter = require('./routes/reply.routes.js');
 var resourcesRouter = require('./routes/resources.routes.js');
 var likeRouter = require('./routes/like.routes.js');
 var wishRouter = require('./routes/wish.routes.js');
+var gearRouter = require('./routes/gear.routes.js');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
@@ -38,6 +39,7 @@ router.use('/reply', replyRouter);
 router.use('/resources', resourcesRouter);
 router.use('/like', likeRouter);
 router.use('/wish', wishRouter);
+router.use('/gear', gearRouter);
 
 module.exports = router;
 

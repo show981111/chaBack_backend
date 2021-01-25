@@ -1,6 +1,5 @@
 const db = require('../../../dbConnection/mariaDB.js');
 var Promise = require('promise');
-const { reject } = require('promise');
 
 let updateReview = function(option, reviewID){
     var sql;

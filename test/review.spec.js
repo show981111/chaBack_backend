@@ -3,9 +3,6 @@ const chai = require('chai');
 let app = require("../app.js");
 const { expect } = require('chai');
 const testData = require('./testData/review.data.js');
-const { sendEmailInvalidInput, undefinedUser } = require('./testData/auth.data.js');
-const { response } = require('express');
-const { post } = require('../app.js');
 
 chai.should();
 var accessToken;
@@ -40,8 +37,8 @@ describe('REVIEW API', function(){
             it(`it should be ${postProvider.exp} : ${postProvider.detail} index[${i}]`, (done) =>{
                 request(app)
                     .post('/api/v1/review')
-                    .send(postProvider)
                     .set('Authorization', 'Bearer ' + accessToken)
+                    .send(postProvider)
                     .expect(postProvider.exp)
                     .end((err, response) => {
                         if(err) throw err;
