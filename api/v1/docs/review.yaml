@@ -35,6 +35,12 @@ paths:
       produces:
       - application/json
       parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
       - in: path       
         name: placeID   
         description: 리뷰를 조회하려는 차박지 아이디
@@ -57,6 +63,12 @@ paths:
       produces:
       - application/json
       parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
       - in: path       
         name: page   
         description: 해당 페이지 조회
@@ -67,7 +79,7 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우(error message에 detail 있음)
 
-  /review/user/{userID}/{page}:      
+  /review/user/{page}:      
     get:                 
       tags:               
         - Review            
@@ -75,6 +87,12 @@ paths:
       produces:
       - application/json
       parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
       - in: path       
         name: userID   
         description: 조회하려는 userID
@@ -97,6 +115,12 @@ paths:
       produces:
       - application/json
       parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
       - in: path       
         name: page   
         description: 해당 페이지 조회

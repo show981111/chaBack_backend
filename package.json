@@ -28,7 +28,7 @@
     "swagger-ui-express": "^4.1.6"
   },
   "scripts": {
-    "test": "node_modules/.bin/mocha test/gear.spec.js"
+    "test": "node_modules/.bin/mocha test/review.spec.js"
   },
   "author": "yongseung lee",
   "license": "ISC"

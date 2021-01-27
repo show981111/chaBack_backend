@@ -27,7 +27,7 @@ var postPosts = async function(req, res, next){
 
 var getAllPosts = async function(req, res, next){
     try {
-        const results = await Communities.find({}).sort({updated : -1});
+        const results = await Communities.find({}).sort({updated : -1});//paging 
         res.status(200).send(results);
     } catch (error) {
         console.log(error);

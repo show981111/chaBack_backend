@@ -26,7 +26,7 @@ let updateReview = function(option, reviewID){
 let postLike =function(endPoint){
     var sql;
     if(endPoint == 'review'){
-        sql = 'INSERT INTO `LIKE`(FK_LIKE_userID, FK_LIKE_reviewID) VALUES(?, ?)';
+        sql = 'INSERT INTO `REVIEW_LIKE`(FK_RLIKE_userID, FK_RLIKE_reviewID) VALUES(?, ?)';
     }
     return function(req, res, next){
         params = [req.token_userID, req.body.id];
@@ -57,7 +57,7 @@ let postLike =function(endPoint){
 let deleteLike =function(endPoint){
     var sql;
     if(endPoint == 'review'){
-        sql = 'DELETE FROM `LIKE` WHERE FK_LIKE_userID = ? AND FK_LIKE_reviewID = ?';
+        sql = 'DELETE FROM `REVIEW_LIKE` WHERE FK_RLIKE_userID = ? AND FK_RLIKE_reviewID = ?';
     }
     return function(req, res, next){
         params = [req.token_userID, req.body.id];
@@ -84,7 +84,7 @@ let deleteLike =function(endPoint){
 let getLike =function(endPoint){
     var sql;
     if(endPoint == 'review'){
-        var sql = 'SELECT * FROM `LIKE` WHERE FK_LIKE_userID = ? AND FK_LIKE_reviewID is not NULL';
+        var sql = 'SELECT * FROM `REVIEW_LIKE` WHERE FK_RLIKE_userID = ? AND FK_RLIKE_reviewID is not NULL';
     }
     return function(req, res, next){
         params = [req.params.userID];

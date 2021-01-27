@@ -118,6 +118,7 @@ describe('REVIEW API', function(){
         it('it get review list by userID', (done) => {
             request(app)
                 .get('/api/v1/review/user/ok@gmail.com/10')
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
@@ -133,6 +134,7 @@ describe('REVIEW API', function(){
         it('it get review list by placeID', (done) => {
             request(app)
                 .get('/api/v1/review/place/3/10')
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
@@ -148,6 +150,7 @@ describe('REVIEW API', function(){
         it('it get all review list', (done) => {
             request(app)
                 .get('/api/v1/review/0')
+                .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;

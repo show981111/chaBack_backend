@@ -55,7 +55,7 @@ describe('GEAR API', function(){
 
     })
 
-    describe('GEAR UPDATE API /api/v1/gear', function(){
+    describe('GEAR UPDATE API /api/v1/gear/:gearID', function(){
         let testPut = function(gearPutProvider, i){
             it(`It should be ${gearPutProvider.exp} : ${gearPutProvider.detail} index[${i}]`, (done) => {
                 request(app)
@@ -77,8 +77,37 @@ describe('GEAR API', function(){
         }
 
         for(var j = 0; j< testData.gearPutProvider.length; j++){
-            console.log(j, testData.gearPutProvider[j].detail)
             testPut(testData.gearPutProvider[j], j);
         }
     })
+
+
+    describe('GEAR DELETE API /api/v1/gear/:gearID', function(){
+        let deleteGear = function(gearDeleteProvider, i){
+            it(`it should be ${gearDeleteProvider.exp} : ${gearDeleteProvider.detail} index[${i}]`, (done) => {
+                request(app)
+                    .delete(`/api/v1/gear/${gearDeleteProvider.gearID}`)
+                    .send(gearDeleteProvider)
+                    .set('Authorization', 'Bearer ' + accessToken)
+                    .expect(gearDeleteProvider.exp)
+                    .end((err, response) => {
+                        if(err) throw err;
+                        if(gearDeleteProvider.exp != 200){
+                            response.body.error.should.equal(gearDeleteProvider.detail)
+                        }else{
+                            console.log(response.body)
+                            response.text.should.equal('success');
+                        }
+                    })
+                    done();
+            })
+        }
+
+        for(var k = 0; k < testData.gearDeleteProvider.length; k++){
+            deleteGear(testData.gearDeleteProvider[k], k);
+        }
+
+    })
+
+    describe('GEAR GET API /api/v1/gear')
 })

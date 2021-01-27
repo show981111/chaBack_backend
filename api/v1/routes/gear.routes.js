@@ -29,10 +29,8 @@ router.delete('/:gearID',
     gearController.deleteGear
 )
 
-/**
- * 이미지 가져오는거 추가해줘야한다~~~~
- */
 router.get('/',
+    jwt.verifyToken(),
     gearController.getGear
 )
 

@@ -68,6 +68,18 @@ let getGear = function(req, res, next){
             return next(new Error());
         }
 
+        for(var i = 0; i < results.length ; i++){
+            var imageKeyArr = results[i].imageKey.split(',');
+            var resizedImages = [];
+            var originalImages = [];
+            for(var j = 0; j < imageKeyArr.length; j++){
+                if(!imageKeyArr[j] || imageKeyArr[j] == null) continue;
+                resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${results[i].FK_GEAR_userID}/${imageKeyArr[j]}`);
+                originalImages.push(`${process.env.BUCKET_PATH}/images/original/${results[i].FK_GEAR_userID}/${imageKeyArr[j]}`);
+            }
+            results[i].resizedImages = resizedImages;
+            results[i].originalImages = originalImages;
+        }
         res.status(200).send(results)
        
     })

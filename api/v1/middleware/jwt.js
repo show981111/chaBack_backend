@@ -129,7 +129,6 @@ let verifyEmailVerification = function(req, res, next){
 }
 
 let adminVerification = function(req, res, next){
-    console.log('asdasdasdasd');
     var token;
     var rejected = new Error('no credential');
     rejected.status = 401;

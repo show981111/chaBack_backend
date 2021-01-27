@@ -85,7 +85,7 @@ describe('LIKE API', function(){
                     console.log(response.body);
                     for(var i = 0; i < response.body.length; i++)
                     {
-                        expect(response.body[i]).to.have.property('FK_LIKE_reviewID');
+                        expect(response.body[i]).to.have.property('FK_RLIKE_reviewID');
                     }
                     done();
                 })

@@ -75,7 +75,26 @@ let gearPutProvider = [//title, content, category ,imageKey
    
 ]
 
+let gearDeleteProvider = [//title, content, category ,imageKey
+    {
+        gearID : 2,
+        exp : 200,
+        detail : 'success'
+    },
+    {
+        exp : 400,
+        detail : 'gearID should not be empty'
+    },
+    {
+        gearID : 123,
+        exp : 404,
+        detail : 'Not Found'
+    },
+   
+]
+
 module.exports = {
     gearPostProvider : gearPostProvider,
-    gearPutProvider : gearPutProvider
+    gearPutProvider : gearPutProvider,
+    gearDeleteProvider : gearDeleteProvider
 }
