@@ -1,62 +1,42 @@
 const db = require('../../../dbConnection/mariaDB.js');
 var Promise = require('promise');
 const makeImageKey = require('../utils/makeImageKey.js');
-
+const buildQuery = require('../utils/getReviewQueryBuilder.js')
+let unLoginedUser = function(err, req, res, next){
+    if(err.status == 401 && err.message == 'no credential'){
+        next();
+    }else{
+        next(err);
+    } 
+}
 /**
  * @param {string} option 
  */
-let getReview = function(option){
+let getReview = function(option, parseNum = 20){
     return function(req, res, next) {
-        var sql;
-        var params = [req.token_userID];
-        if(option === 'placeID'){
-            sql = `SELECT A.*,B.userNickName,B.profileImg, IF(C.FK_RLIKE_userID IS NULL, 0 , 1) AS userLiked FROM REVIEW A
-                    LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID
-                    LEFT JOIN REVIEW_LIKE C ON C.FK_RLIKE_userID = ? AND A.reviewID = C.FK_RLIKE_reviewID
-                    WHERE A.FK_REVIEW_placeID = ? order by reviewID DESC LIMIT ${req.params.page} , 20`;
-            params.push(req.params.placeID);
-        }else if(option === 'userID'){
-            sql = `SELECT A.*,B.userNickName,B.profileImg, C.placeName, IF(D.FK_RLIKE_userID IS NULL, 0 , 1) AS userLiked FROM REVIEW A
-                    LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID
-                    LEFT JOIN PLACE C ON A.FK_REVIEW_placeID = C.placeID
-                    LEFT JOIN REVIEW_LIKE D ON D.FK_RLIKE_userID = ? AND A.reviewID = D.FK_RLIKE_reviewID
-                    WHERE FK_REVIEW_userID = ? order by reviewID DESC LIMIT ${req.params.page} , 20`;
-            params.push(req.token_userID);
-        }else if(option =='like'){
-            sql = `SELECT A.*,B.userNickName,B.profileImg , C.placeName, IF(D.FK_RLIKE_userID IS NULL, 0 , 1) AS userLiked FROM REVIEW A
-                    LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID
-                    LEFT JOIN PLACE C ON A.FK_REVIEW_placeID = C.placeID
-                    LEFT JOIN REVIEW_LIKE D ON D.FK_RLIKE_userID = ? AND A.reviewID = D.FK_RLIKE_reviewID
-                    order by A.likeCount DESC LIMIT ${req.params.page} , 20`;
-        }
-        else{
-            sql = `SELECT A.*,B.userNickName,B.profileImg, C.placeName, IF(D.FK_RLIKE_userID IS NULL, 0 , 1) AS userLiked FROM REVIEW A
-                    LEFT JOIN USER B ON A.FK_REVIEW_userID = B.userID 
-                    LEFT JOIN PLACE C ON A.FK_REVIEW_placeID = C.placeID
-                    LEFT JOIN REVIEW_LIKE D ON D.FK_RLIKE_userID = ? AND A.reviewID = D.FK_RLIKE_reviewID
-                    order by reviewID DESC LIMIT ${req.params.page} , 20`;
-        }
-        db.query(sql, params, function(err, results) {
+        var query = buildQuery(req.token_userID, option, req.params, parseNum);
+
+        db.query(query.sql, query.params, function(err, results) {
             if(err) {
                 console.log(err);
                 return next(err);
             }
-
-            if(option != 'userID')
-            {
-                for(var i = 0; i < results.length ; i++){
-                    var imageKeyArr = results[i].imageKey.split(',');
-                    var resizedImages = [];
-                    var originalImages = [];
-                    for(var j = 0; j < imageKeyArr.length; j++){
-                        if(!imageKeyArr[j] || imageKeyArr[j] == null) continue;
-                        resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${results[i].FK_REVIEW_userID}/${imageKeyArr[j]}`);
-                        originalImages.push(`${process.env.BUCKET_PATH}/images/original/${results[i].FK_REVIEW_userID}/${imageKeyArr[j]}`);
-                    }
-                    results[i].resizedImages = resizedImages;
-                    results[i].originalImages = originalImages;
+            console.log(this.sql);
+            // if(option != 'userID')
+            // {
+            for(var i = 0; i < results.length ; i++){
+                var imageKeyArr = results[i].imageKey.split(',');
+                var resizedImages = [];
+                var originalImages = [];
+                for(var j = 0; j < imageKeyArr.length; j++){
+                    if(!imageKeyArr[j] || imageKeyArr[j] == null) continue;
+                    resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${results[i].FK_REVIEW_userID}/${imageKeyArr[j]}`);
+                    originalImages.push(`${process.env.BUCKET_PATH}/images/original/${results[i].FK_REVIEW_userID}/${imageKeyArr[j]}`);
                 }
+                results[i].resizedImages = resizedImages;
+                results[i].originalImages = originalImages;
             }
+            // }
             res.status(200).send(results);
         })
     }
@@ -173,5 +153,6 @@ module.exports = {
     getReview : getReview,
     postReview : postReview,
     putReview : putReview,
-    deleteReview : deleteReview
+    deleteReview : deleteReview,
+    unLoginedUser : unLoginedUser
 }

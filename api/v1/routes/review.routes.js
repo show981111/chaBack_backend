@@ -21,6 +21,7 @@ router.get('/place/:placeID/:page',
     check('page').isNumeric().notEmpty().withMessage('page should be number').trim(),
     checkValidationResult,
     jwt.verifyToken(),
+    reviewController.unLoginedUser,
     reviewController.getReview('placeID')
 )
 /*리뷰 최신순에 따라서 얻기 */
@@ -28,6 +29,7 @@ router.get('/:page',
     check('page').isNumeric().notEmpty().withMessage('page should be number').trim(),
     checkValidationResult,
     jwt.verifyToken(),
+    reviewController.unLoginedUser,
     reviewController.getReview())
 
 /*리뷰 좋아요 수에 따라서 얻기 */
@@ -35,13 +37,16 @@ router.get('/like/:page',
     check('page').isNumeric().notEmpty().withMessage('page should be number').trim(),
     checkValidationResult,
     jwt.verifyToken(),
+    reviewController.unLoginedUser,
     reviewController.getReview('like'))
 
 /*리뷰 유저아이디에 따라서 얻기 */
-router.get('/user/:page', 
+router.get('/user/:userID/:page', 
     check('page').isNumeric().notEmpty().withMessage('page should be number').trim(),
+    check('userID').isEmail().notEmpty().withMessage('userID should be email and not be empty').trim(),
     checkValidationResult,
     jwt.verifyToken(),
+    reviewController.unLoginedUser,
     reviewController.getReview('userID'))
 
 

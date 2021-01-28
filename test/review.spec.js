@@ -125,6 +125,7 @@ describe('REVIEW API', function(){
                     console.log(response.body);
                     for(var i = 0; i < response.body.length; i++){
                         response.body[i].FK_REVIEW_userID.should.equal('ok@gmail.com');
+                        response.body[i].should.have.property('userLiked');
                         response.body[i].reviewID.should.be.below(20);
                     }
                     done();
@@ -133,7 +134,7 @@ describe('REVIEW API', function(){
 
         it('it get review list by placeID', (done) => {
             request(app)
-                .get('/api/v1/review/place/3/10')
+                .get('/api/v1/review/place/3/0')
                 .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
@@ -141,6 +142,7 @@ describe('REVIEW API', function(){
                     console.log(response.body);
                     for(var i = 0; i < response.body.length; i++){
                         response.body[i].FK_REVIEW_placeID.should.equal(3);
+                        response.body[i].should.have.property('userLiked');
                         // response.body[i].reviewID.should.be.below(10);
                     }
                     done();
@@ -150,14 +152,14 @@ describe('REVIEW API', function(){
         it('it get all review list', (done) => {
             request(app)
                 .get('/api/v1/review/0')
-                .set('Authorization', 'Bearer ' + accessToken)
+                //.set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
                     console.log(response.body);
-                    for(var i = 0; i < response.body.length; i++){
-                        // response.body[i].reviewID.should.be.below(10);
-                    }
+                    // for(var i = 0; i < response.body.length; i++){
+                    //     // response.body[i].reviewID.should.be.below(10);
+                    // }
                     done();
                 })
         })

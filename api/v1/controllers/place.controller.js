@@ -1,7 +1,7 @@
 const db = require('../../../dbConnection/mariaDB.js');
 const queryBuilder = require('../utils/filterQueryBuilder.js');
 var Promise = require('promise');
-const placeModel = require('../model/place.js');
+//const placeModel = require('../model/place.js');
 const makeImageKey = require('../utils/makeImageKey.js');
 require('dotenv').config();
 
@@ -51,10 +51,10 @@ let calDistance = function(lat, lng, region) {
                     radians(?)) + 
                     sin(radians(?)) * 
                     sin(radians(lat)))
-                ) AS distance FROM PLACE WHERE region in (?) HAVING distance < 0.5 ORDER BY distance ASC LIMIT 1`
-    var nearRegionArray = placeModel.nearRegion[region];
+                ) AS distance FROM PLACE WHERE region = ? HAVING distance < 0.5 ORDER BY distance ASC LIMIT 1`
+    //var nearRegionArray = placeModel.nearRegion[region];
     return new Promise(function(resolve, reject){
-        db.query(searchInRegion, [lat, lng , lat, nearRegionArray], function(err, results) {
+        db.query(searchInRegion, [lat, lng , lat, region], function(err, results) {
             if(err) return reject(err);
             if(results.length > 0){
                 const e = new Error('conflicted place');

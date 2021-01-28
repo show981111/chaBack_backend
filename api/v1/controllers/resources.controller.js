@@ -19,17 +19,19 @@ let upload = multer({
     storage: multerS3({
         s3: s3,
         bucket: process.env.BUCKET_NAME,
+        contentType: multerS3.AUTO_CONTENT_TYPE,
         shouldTransform : function (req, file, cb) {
-            console.log('in should transform ', file)
-            
-            cb(null, /^image/i.test(file.mimetype))
+            console.log(req.token_userID);
+            console.log('in should transform ', file);
+            cb(null, true);
         },
         transforms: [
             {
             id: 'original',
             key: function (req, file, cb) {
-        
+                console.log(file);
                 var keyName = file.originalname.split(".")[0];
+                // console.log(keyName);
                 cb(null, `images/original/${req.token_userID}/${keyName}.jpeg`); 
             },
             transform: function (req, file, cb) {
@@ -41,6 +43,7 @@ let upload = multer({
             key: function (req, file, cb) {
               
                 var keyName = file.originalname.split(".")[0];
+                // console.log(keyName);
                 cb(null, `images/resize/${req.token_userID}/${keyName}.jpeg`); 
             },
             transform: function (req, file, cb) {
