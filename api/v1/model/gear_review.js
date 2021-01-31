@@ -7,7 +7,7 @@ const {checkSchema, check} = require('express-validator');
 let gearReviewSchema = function (isUpdate) {
     return checkSchema({
         gearID : {
-            // optional : isUpdate,
+            //optional : isUpdate,
             notEmpty : true,
             isNumeric : true,
             errorMessage : 'gearID should be number',
@@ -21,6 +21,7 @@ let gearReviewSchema = function (isUpdate) {
             escape : true
         },
         point : {
+            errorMessage : 'point should be number',
             notEmpty : true,
             isNumeric : true,
             custom : {
@@ -34,7 +35,6 @@ let gearReviewSchema = function (isUpdate) {
                     }
                 }
             },
-            errorMessage : 'point should be number',
             trim : true
         },
         pointGap : {

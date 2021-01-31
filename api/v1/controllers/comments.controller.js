@@ -14,6 +14,7 @@ let postComment = async function(req, res, next){
             throw error;
         }
         req.body.userID = req.token_userID;
+        req.body.userNickName = req.token_userNickName;
         req.body.profileImg = `${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.token_userID}.jpeg`;
         const post = new Comment(req.body);
         const result = await post.save();
@@ -47,7 +48,10 @@ let postReply = async function(req, res, next){
             throw error;
         }
         req.body.userID = req.token_userID;
+        req.body.userNickName = req.token_userNickName;
         req.body.parentID = req.params.replyParentID;
+        req.body.profileImg = `${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.token_userID}.jpeg`;
+
         const post = new Comment(req.body);
         const result = await post.save();
 

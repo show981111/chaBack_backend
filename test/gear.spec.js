@@ -7,7 +7,7 @@ const testData = require('./testData/gear.data.js');
 
 chai.should();
 var accessToken;
-
+var insertId;
 
 describe('GEAR API', function(){
 
@@ -43,9 +43,12 @@ describe('GEAR API', function(){
                         }else{
                             console.log(response.body)
                             expect(response.body).to.have.property('gearID');
+                            insertId = response.body.gearID;
+                            testData.gearDeleteProvider[0].gearID = insertId;
+                            console.log('insert ID ',insertId);
                         }
+                        done();
                     })
-                    done();
             })
         }
 
@@ -71,13 +74,13 @@ describe('GEAR API', function(){
                             console.log(response.body)
                             response.text.should.equal('success');
                         }
+                        done();
                     })
-                    done();
             })
         }
 
-        for(var j = 0; j< testData.gearPutProvider.length; j++){
-            testPut(testData.gearPutProvider[j], j);
+        for(var k = 0; k< testData.gearPutProvider.length; k++){
+            testPut(testData.gearPutProvider[k], k);
         }
     })
 
@@ -98,8 +101,8 @@ describe('GEAR API', function(){
                             console.log(response.body)
                             response.text.should.equal('success');
                         }
+                        done();
                     })
-                    done();
             })
         }
 
@@ -109,5 +112,16 @@ describe('GEAR API', function(){
 
     })
 
-    describe('GEAR GET API /api/v1/gear')
+    describe('GEAR GET API /api/v1/gear', function(){
+        it('it should get gear list', (done) => {
+            request(app)
+                .get(`/api/v1/gear/0`)
+                .expect(200)
+                .end((err, response) => {
+                    if(err) throw err;
+                    console.log(response.body);
+                })
+                done();
+        })
+    })
 })

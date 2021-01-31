@@ -33,14 +33,12 @@ router.delete('/:gearID/:gearReviewID/:point',
 router.get('/gear/:gearID',
     check('gearID').notEmpty().isNumeric().withMessage('gearID should not be empty').trim(),
     checkValidationResult,
-    jwt.verifyToken(),
     gearReviewController.getGearReview('gearID')
 )
 
 router.get('/user/:userID',
     check('userID').notEmpty().isEmail().withMessage('userID should not be empty').trim(),
     checkValidationResult,
-    jwt.verifyToken(),
     gearReviewController.getGearReview('userID')
 )
 

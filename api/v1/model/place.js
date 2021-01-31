@@ -165,9 +165,8 @@ var placeSchema = function(optional){
                 }else{
                     for(var i = 0; i < value.length; i++){
                         var last = value[i].split("/");
-                        value[i] = last[last.length - 1].split(".")[0] + '.jpeg';
+                        value[i] = last[last.length - 1].split(".")[0].trim() + '.jpeg';
                     }
-                    console.log(value);
                     return value;
                 } 
             }

@@ -2,7 +2,15 @@ const db = require('../../../dbConnection/mariaDB.js');
 var Promise = require('promise');
 const makeImageKey = require('../utils/makeImageKey.js');
 
+
+
 let postGear = function(req, res, next){
+
+    if(!req.isAdmin) {
+        const e = new Error('not admin');
+        e.status = 401;
+        return next(e)
+    }
     var imageKeyWithComma = makeImageKey(req.body.imageKey);
     const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
 
@@ -20,6 +28,12 @@ let postGear = function(req, res, next){
 }
 
 let deleteGear = function(req, res, next){
+    if(!req.isAdmin) {
+        const e = new Error('not admin');
+        e.status = 401;
+        return next(e)
+    }
+
     const sql = 'DELETE FROM GEAR WHERE gearID = ?';
 
     db.query(sql, [req.params.gearID], function(err, result){
@@ -38,6 +52,12 @@ let deleteGear = function(req, res, next){
 }
 
 let putGear = function(req, res, next){
+    if(!req.isAdmin) {
+        const e = new Error('not admin');
+        e.status = 401;
+        return next(e)
+    }
+    
     var imageKeyWithComma = makeImageKey(req.body.imageKey);
 
     const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');

@@ -13,6 +13,8 @@ var postPosts = async function(req, res, next){
         req.body.profileImg = `${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.token_userID}.jpeg`;
         req.body.resizedImages = resizedImages;
         req.body.originalImages = originalImages;
+        req.body.userNickName = req.token_userNickName;
+
         req.body.imageKey = undefined;
         const post = new Communities(req.body);
         console.log(post);

@@ -40,7 +40,7 @@ let postGearReview = function(req, res, next){
             return next(err);
         };
 
-        if(results.affectedRows > 0){
+        if(result.affectedRows > 0){
             try{
                 await updateGearInfo(req.body.gearID, req.body.point, 'insert');
                 res.status(200).send({ gearReviewID : result.insertId });
@@ -65,9 +65,10 @@ let putGearReview = function (req, res, next) {
 
         if(results.affectedRows > 0){
             try{
-                await updatePlaceInfo(req.body.gearID, req.body.pointGap, 'update');
+                await updateGearInfo(req.body.gearID, req.body.pointGap, 'update');
                 res.status(200).send('success');
             } catch(err){
+                console.log(err);
                 return next(err);
             }
         }else{
@@ -85,7 +86,7 @@ let deleteGearReview = function (req, res, next) {
 
         if(results.affectedRows > 0){
             try{
-                await updatePlaceInfo(req.params.gearID, req.params.point, 'delete');
+                await updateGearInfo(req.params.gearID, req.params.point, 'delete');
                 res.status(200).send('success');
             } catch(err){
                 return next(err);
@@ -103,12 +104,12 @@ let getGearReview = function(option){
         var sql;
         var params =[];
         if(option == 'userID'){
-            sql = 'SELECT * FROM GEAR_REVIEW WHERE FK_GREVIEW_userID = ?';
+            sql = 'SELECT * FROM GEAR_REVIEW WHERE FK_GREVIEW_userID = ? order by gearReviewID DESC';
             params.push(req.params.userID);
         }else{
             sql = `SELECT A.*, B.userNickName, B.profileImg FROM GEAR_REVIEW A
                     LEFT JOIN USER B ON A.FK_GREVIEW_userID = B.userID
-                    WHERE FK_GREVIEW_gearID = ?`;
+                    WHERE FK_GREVIEW_gearID = ? order by gearReviewID DESC`;
             params.push(req.params.gearID);
         }
         db.query(sql, params, function(err, results){

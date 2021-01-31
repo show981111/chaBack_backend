@@ -53,8 +53,7 @@ describe('Auth API', function(){
                 .post('/api/v1/auth/email/verify/'+verificationToken)
                 .expect(200)
                 .end((err, response) => {
-                    if(err) throw err;
-                    expect(response.text).to.equal('success');
+                    if(err) {console.log(err);throw err;}
                 done();
             })
         })
@@ -150,8 +149,8 @@ describe('Auth API', function(){
                     //console.log(response.body);
                     response.body.should.be.a('object');
                     expect(response.body).to.have.property('accessToken');
+                    done();
                 })
-            done();
         })
 
         it(`it should be 401 due to Wrong Subject `, (done) => {
@@ -164,8 +163,8 @@ describe('Auth API', function(){
                     if(err) throw err;
                     console.log(response.body);
                     response.body.should.be.a('object');
+                    done();
                 })
-            done();
         })
 
         let invalidRefreshTest = function(invalidProvider, i ){
@@ -180,8 +179,9 @@ describe('Auth API', function(){
                         console.log(response.body);
                         expect(response.body).to.have.property('error');
                         expect(response.body).to.not.have.property('accessToken');
+                        done();
+
                     })
-                done();
             })
         }
 
@@ -203,8 +203,8 @@ describe('Auth API', function(){
                 .end((err, response) => {
                     if(err) throw err;
                     expect(response.text).to.equal('success');
+                    done();
                 })
-            done();
         })
 
         let undefinedUserTest = function(invalidInput , i )
@@ -219,8 +219,8 @@ describe('Auth API', function(){
                         console.log(response.body);
                         expect(response.body).to.have.property('error');
                         expect(response.body.error).to.equal(invalidInput.detail);
+                        done();
                     })
-                done();
             })
         }
 

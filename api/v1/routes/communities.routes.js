@@ -5,13 +5,7 @@ const communityController = require('../controllers/communities.controller.js');
 const {check, validationResult} = require('express-validator');
 const jwt = require('../middleware/jwt.js')
 const resourcesController = require('../controllers/resources.controller.js');
-
-var postValidator = [
-    check('userNickName').notEmpty().withMessage('userNickName should only contain alphabet and number').trim(),
-    check('category').notEmpty().withMessage('category should not be empty').trim(),
-    check('content').notEmpty().withMessage('content should not be empty').trim().escape(),
-    check('imageKey').optional(),
-];
+const communitySchema = require('../model/communities.check.js');
 
 router.get('/', communityController.getAllPosts);
 
@@ -20,7 +14,7 @@ router.get('/:userID',
     checkValidationResult,
     communityController.getPostsByID);
 
-router.post('/', postValidator,
+router.post('/', communitySchema,
     checkValidationResult,
     jwt.verifyToken(),
     communityController.postPosts);
@@ -37,7 +31,7 @@ router.put('/:postID',
 
 router.delete('/:postID',     
     check('postID').notEmpty().isLength({min : 24, max :24}).withMessage('postID should not be empty and 24 hex characters').trim(),
-    check('imageKey').notEmpty().isArray().withMessage('imageKey should not be empty'),
+    check('imageKey').optional().notEmpty().isArray().withMessage('imageKey should not be empty'),
     checkValidationResult,
     jwt.verifyToken(),
     resourcesController.deleteObjects,

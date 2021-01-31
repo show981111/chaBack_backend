@@ -47,7 +47,7 @@ router.put('/:placeID',
 /*place 삭제 */
 router.delete('/:placeID',
     check('placeID').notEmpty().isNumeric().withMessage('placeID should be number and not be empty').trim(),
-    check('imageKey').notEmpty().isArray().withMessage('imageKey should not be empty'),
+    check('imageKey').optional().notEmpty().isArray().withMessage('imageKey should not be empty'),
     checkValidationResult, 
     jwt.verifyToken(), 
     resourcesController.deleteObjects,
@@ -55,6 +55,12 @@ router.delete('/:placeID',
 );
 
 /**
- * 삭제하면 이미지 삭제도 같이 해주기
+ * 조회수 UP
  */
+
+router.put('/view/:placeID',
+    check('placeID').notEmpty().isNumeric().withMessage('placeID should be number and not be empty').trim(),
+    checkValidationResult, 
+    placeController.updateViewCount
+    )
 module.exports = router;

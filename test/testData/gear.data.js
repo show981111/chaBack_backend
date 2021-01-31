@@ -47,7 +47,7 @@ let gearPostProvider = [//title, content, category ,imageKey
 
 let gearPutProvider = [//title, content, category ,imageKey
     {
-        gearID : 2,
+        gearID : 3,
         title : 'updated chaBack tent',
         content : 'updated content ',
         category : 'd',
@@ -64,7 +64,7 @@ let gearPutProvider = [//title, content, category ,imageKey
         detail : 'gearID should not be empty'
     },
     {
-        gearID : 17,
+        gearID : 100,
         title : 'updated chaBack tent',
         content : 'dasdasdasdasdasdasdasdsadasdasdasas',
         category : 'c',

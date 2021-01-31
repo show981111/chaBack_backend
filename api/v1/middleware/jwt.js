@@ -10,6 +10,8 @@ let signJWT = function(userInfo, expIn, subject){
     return new Promise((resolve, reject) => {
         jwt.sign({
             userID: userInfo.userID,
+            userNickName : userInfo.userNickName,
+            //profileImg : userInfo.profileImg,
             iat : Math.floor(Date.now() / 1000)
         }, 
         process.env.JWT_KEY, 
@@ -81,7 +83,12 @@ let verifyToken = function(role){
                 role = 'accessToken';
             }
             if(decoded.sub == role && decoded.userID != undefined){
+                if(decoded.role == 'admin'){
+                    req.isAdmin = true;
+                }
                 req.token_userID = decoded.userID;
+                req.token_userNickName = decoded.userNickName;
+                //req.token_profileImg = decoded.profileImg;
                 next();
             }else{
                 console.log('Wrong Token ' + decoded.sub);
@@ -128,51 +135,10 @@ let verifyEmailVerification = function(req, res, next){
 	});
 }
 
-let adminVerification = function(req, res, next){
-    var token;
-    var rejected = new Error('no credential');
-    rejected.status = 401;
-    if(!req.headers.authorization|| req.headers.authorization == undefined || !req.headers.authorization.startsWith('Bearer ')) {
-        return next(rejected);
-    }
-    
-    token = req.headers.authorization;
-    token = token.slice(7, token.length).trimLeft();
-    
-
-    if(!token || token == ''){return next(rejected)}
-    
-    jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
-    	if(err) { 
-            console.log(err);
-            if(err.name === 'TokenExpiredError'){
-                var e = new Error();
-                e.status = 401;
-                e.message = 'Token Expired';
-                return next(e); 
-            }else{
-                return next(err); 
-            }
-        }
-
-        if(decoded.role == 'admin')
-        {
-            req.isAdmin = true;
-            req.token_userID = decoded.userID;
-            next();
-        }else{
-            var e = new Error();
-            e.status = 403;
-            e.message = 'Forbbiden';
-            return next(e);
-        }
-	});
-}
 
 module.exports = {
     signJWT : signJWT,
     verifyToken : verifyToken,
     verifyEmailVerification : verifyEmailVerification,
     signAdminToken : signAdminToken,
-    adminVerification : adminVerification
 }

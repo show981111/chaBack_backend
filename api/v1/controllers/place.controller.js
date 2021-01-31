@@ -164,9 +164,23 @@ let deletePlace = function (req,res,next) {
         }
     })
 }
+
+let updateViewCount = function(req, res, next){
+    var sql = 'UPDATE PLACE SET viewCount = viewCount + 1 WHERE placeID = ?';
+    db.query(sql, [req.params.placeID], function(err , result){
+        if(err) {return next(err);}
+
+        res.status(200).send();
+    })
+}
+
+// let getPlaceRanking = function(req, res, next){
+//     var sql = 'SELECT * FROM PLACE order by reviewCount + '
+// }
 module.exports = {
     getPlaceList : getPlaceList,
     postPlace : postPlace,
     putPlace : putPlace,
     deletePlace : deletePlace,
+    updateViewCount : updateViewCount
 }

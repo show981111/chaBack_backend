@@ -1,0 +1,87 @@
+let postProvider = [
+    {
+        gearID : 3,
+        point : 4,
+        content : 'this is review to gearID 3',
+        exp : 200,
+        detail : 'success'
+    },
+    {
+        point : 4,
+        content : 'this is review to gearID 3',
+        exp : 400,
+        detail : 'gearID should be number'
+    },
+    {
+        gearID : 3,
+        point : 'dsadasdas',
+        content : 'this is review to gearID 3',
+        exp : 400,
+        detail : 'point should be number'
+    },
+    {
+        gearID : 4,
+        point : 8,
+        content : 'this is review to gearID 3',
+        exp : 400,
+        detail : 'point out of range'
+    },
+    {
+        gearID : 432,
+        point : 4,
+        content : 'this is review to gearID 432',
+        exp : 404,
+        detail : 'unable to find Foreign Key'
+    },
+]
+
+let putProvider = [
+    {
+        gearReviewID : 2,
+        gearID : 3,
+        point : 3,
+        pointGap : 2,
+        content : 'update the review content of 2',
+        exp : 200,
+        detail : 'success'
+    },
+    {
+        gearReviewID : 2,
+        gearID : 3,
+        point : 3,
+        content : 'update the review content of 2',
+        exp : 400,
+        detail : 'pointGap should be number'
+    },
+    {
+        gearReviewID : 543,
+        gearID : 3,
+        point : 3,
+        pointGap : 2,
+        content : 'update the review content of 2',
+        exp : 404,
+        detail : 'Not Found'
+    },
+]
+
+let deleteProvider = [
+    {
+        gearID : 3,
+        gearReviewID : 4,
+        point : 4,
+        exp : 200,
+        detail : 'success',
+    },
+    {
+        gearID : 9,
+        gearReviewID : 4,
+        point : 4,
+        exp : 404,
+        detail : 'Not Found',
+    },
+]
+module.exports = {
+    postProvider : postProvider,
+    putProvider : putProvider,
+    deleteProvider : deleteProvider
+}

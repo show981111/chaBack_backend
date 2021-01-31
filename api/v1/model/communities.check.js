@@ -1,18 +1,7 @@
 const {checkSchema, check} = require('express-validator');
 
-/**
- * 
- * @param {Boolean} isUpdate 
- */
-
-const cat = ['a','b','c','d']
-
-let gearSchema = checkSchema({
-    title : {
-        notEmpty : true,
-        errorMessage : 'title should not be empty',
-        trim : true
-    },
+const cat = ['실시간 현황', 'QnA']
+let communitiesSchema = checkSchema({
     content : {
         notEmpty : true,
         isString : true,
@@ -38,6 +27,7 @@ let gearSchema = checkSchema({
         trim : true
     },
     imageKey : {
+        optional : true,
         notEmpty: function(array) {
             return array.length > 0;
         },
@@ -60,6 +50,4 @@ let gearSchema = checkSchema({
 });
 
 
-module.exports = {
-    gearSchema : gearSchema,
-};
+module.exports = communitiesSchema;

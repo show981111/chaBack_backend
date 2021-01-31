@@ -36,8 +36,9 @@ describe('Comment API', function(){
                             console.log('------------')
                             console.log(_id)
                             response.body.should.be.a('object');
+                            done();
                     });
-                done();
+
             });
         })
 
@@ -199,15 +200,15 @@ describe('Comment API', function(){
             const commentItem = {
                 parentID : '5fe5e6a789cccc1b4534038a',
                 userNickName : 'testUser',
-                content : 'reply to 5fe6f0c4f4ef276059634af9 hello~~',
+                content : 'reply to ObjectId("5fe6f0cff4ef276059634afa") hello~~',
             };
             request(app)
-                .post("/api/v1/comment/5fe6f0c4f4ef276059634af9")
+                .post("/api/v1/comment/5fe6f0cff4ef276059634afa")
                 .send(commentItem)
                 .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)
                 .end((err, response) => {
-                    if(err) throw err;
+                    if(err) {console.log(err) ;throw err;}
                     response.body.should.be.a('object');
                 done();
             });

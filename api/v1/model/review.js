@@ -44,11 +44,16 @@ let reviewSchema = function (isUpdate) {
                 return array.length > 0;
             },
             custom : {
-                options : (array) => {
-                    console.log(array);
-                    if(array.length > 5){
+                options : (value) => {
+                    if(value.length > 5){
                         throw new Error('out of range');
-                    }else return array;
+                    }else{
+                        for(var i = 0; i < value.length; i++){
+                            var last = value[i].split("/");
+                            value[i] = last[last.length - 1].split(".")[0].trim() + '.jpeg';
+                        }
+                        return value;
+                    } 
                 }
             },
             errorMessage : 'imageKey should be array and max 5',
