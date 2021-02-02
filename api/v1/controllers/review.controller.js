@@ -1,7 +1,8 @@
 const db = require('../../../dbConnection/mariaDB.js');
 var Promise = require('promise');
 const makeImageKey = require('../utils/makeImageKey.js');
-const buildQuery = require('../utils/getReviewQueryBuilder.js')
+const buildQuery = require('../utils/getReviewQueryBuilder.js');
+const makeImageArray = require('../utils/makeImageArray.js');
 let unLoginedUser = function(err, req, res, next){
     if(err.status == 401 && err.message == 'no credential'){
         next();
@@ -24,19 +25,7 @@ let getReview = function(option, parseNum = 20){
             console.log(this.sql);
             // if(option != 'userID')
             // {
-            for(var i = 0; i < results.length ; i++){
-                var imageKeyArr = results[i].imageKey.split(',');
-                var resizedImages = [];
-                var originalImages = [];
-                for(var j = 0; j < imageKeyArr.length; j++){
-                    if(!imageKeyArr[j] || imageKeyArr[j] == null) continue;
-                    resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${results[i].FK_REVIEW_userID}/${imageKeyArr[j]}`);
-                    originalImages.push(`${process.env.BUCKET_PATH}/images/original/${results[i].FK_REVIEW_userID}/${imageKeyArr[j]}`);
-                }
-                results[i].resizedImages = resizedImages;
-                results[i].originalImages = originalImages;
-            }
-            // }
+            results = makeImageArray(results, 'review');
             res.status(200).send(results);
         })
     }

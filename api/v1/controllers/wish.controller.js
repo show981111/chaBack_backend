@@ -1,5 +1,6 @@
 const db = require('../../../dbConnection/mariaDB.js');
 var Promise = require('promise');
+const makeImageArray = require('../utils/makeImageArray.js')
 
 let updatePlace = function(option, placeID){
     var sql;
@@ -25,7 +26,7 @@ let updatePlace = function(option, placeID){
 
 let postWish = function(req, res, next){
     var sql = 'INSERT INTO WISH(FK_WISH_userID, FK_WISH_placeID) VALUES(?,?)';
-    var params = [req.token_userID,req.body.placeID];
+    var params = [req.token_userID,req.params.placeID];
 
     db.query(sql, params, async function(err, result){
         
@@ -42,7 +43,7 @@ let postWish = function(req, res, next){
         }
 
         try{
-            await updatePlace('post', req.body.placeID);
+            await updatePlace('post', req.params.placeID);
         }catch(e){
             return next(e);
         }
@@ -53,14 +54,14 @@ let postWish = function(req, res, next){
 
 let deleteWish = function(req, res, next){
     var sql = 'DELETE FROM WISH WHERE FK_WISH_userID = ? AND FK_WISH_placeID = ?';
-    params = [req.token_userID, req.body.placeID];
+    params = [req.token_userID, req.params.placeID];
 
     db.query(sql , params, async function(err, result){
         if(err) {console.log(err); return next(err)}
 
         if(result.affectedRows > 0){ 
             try{
-                await updatePlace('delete', req.body.placeID);
+                await updatePlace('delete', req.params.placeID);
             }catch(e){
                 return next(e);
             }
@@ -75,12 +76,14 @@ let deleteWish = function(req, res, next){
 
 
 let getWish = function(req, res, next){
-    var sql = 'SELECT * FROM WISH WHERE FK_WISH_userID = ?';
+    var sql = `SELECT A.*, plc.* FROM WISH A
+                LEFT JOIN PLACE plc ON A.FK_WISH_placeID = plc.placeID
+                WHERE FK_WISH_userID = ?`;
     params = [req.params.userID];
 
     db.query(sql , params, function(err, result){
         if(err) {console.log(err); return next(err)}
-
+        result = makeImageArray(result, 'place');
         res.status(200).send(result);
     })
 }

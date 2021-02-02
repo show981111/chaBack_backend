@@ -1,6 +1,6 @@
 const {checkSchema, check} = require('express-validator');
 
-const cat = ['실시간 현황', 'QnA']
+const cat = [0, 1, 2]
 let communitiesSchema = checkSchema({
     content : {
         notEmpty : true,
@@ -12,15 +12,21 @@ let communitiesSchema = checkSchema({
     category : {
         notEmpty : true,
         custom : {
-            options : (value) => {
-                for(var i = 0; i < cat.length; i++){
-                    if(cat[i] == value){
-                        return value;
+            options : (value, {req}) => {
+                if(value == 0 || value == 1 || value == 2){
+                    if(value == 2){
+                        if(!req.body.placeID){
+                            const e = new Error('invalid placeID');
+                            e.status = 400;
+                            throw e;
+                        }
                     }
+                    return value;
+                }else{
+                    const e = new Error('invalid category');
+                    e.status = 400;
+                    throw e;
                 }
-                const e = new Error('invalid category');
-                e.status = 400;
-                throw e;
             }
         },
         errorMessage : 'category should not be empty',

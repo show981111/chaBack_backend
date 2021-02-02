@@ -1,0 +1,115 @@
+paths:
+  /wish/{placeID}:          
+    post:             
+      tags:               
+        - WISH           
+      summary: 찜하기 
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: placeID   
+        schema:
+          type: number
+        description: 찜하기 할 차박지 아이디
+        required: true  
+      responses:     
+        200:
+          description: 성공적으로 찜하기
+        204:
+          description: 이미 찜하기 되있음 
+        401:
+          description: 토큰 인증 실패 
+        404:
+          description: 해당 차박지아이디 찾지 못함 
+
+  /wish/{idToDelete}:      
+    delete:                 
+      tags:               
+        - WISH            
+      summary: 찜하기 취소 
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: idToDelete   
+        schema:
+          type: number
+        description: 찜하기 취소할 리뷰 아이디
+        required: true  
+      produces:
+      - application/json
+      responses:      
+        200:
+          description: 찜하기 잘 취소함
+        401:
+          description: 토큰 인증 실패  
+        404:
+          description: 아이디 찾지 못함 
+
+  /wish/{userID}:      
+    get:                 
+      tags:               
+        - WISH            
+      summary: 유저가 찜하기 한 목록 가져오기
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: userID   
+        schema:
+          type: string
+        description: 유저 아이디 
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+               {
+                  "FK_WISH_userID": "ok@gmail.com",
+                  "FK_WISH_placeID": 10,
+                  "placeID": 10,
+                  "placeName": "O0H 7H6",
+                  "FK_PLACE_userID": "ok@gmail.com",
+                  "updated": "2019-05-18T15:00:00.000Z",
+                  "lat": 2.99983,
+                  "lng": 171.06742,
+                  "address": "762-2565 Amet Rd.",
+                  "region": "b",
+                  "content": "enim consequat purus. Maecenas libero",
+                  "wishCount": 3027,
+                  "reviewCount": 4372,
+                  "viewCount": 0,
+                  "category": "b",
+                  "bathroom": 1,
+                  "water": 1,
+                  "price": 0,
+                  "totalPoint": 2171,
+                  "imageKey": "0",
+                  "meanPoint": 0.5,
+                  "resizedImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/0"
+                  ],
+                  "originalImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/0"
+                  ]
+              }
+        401:
+          description: 토큰 인증실패 

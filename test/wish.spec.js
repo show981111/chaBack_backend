@@ -31,7 +31,7 @@ describe('WISH API', function(){
         let postWishTest = function(postWishData, i){
             it(`It should be ${postWishData.exp} : ${postWishData.detail} index[${i}]`, (done) => {
                 request(app)
-                    .post("/api/v1/wish/")
+                    .post("/api/v1/wish/"+postWishData.placeID)
                     .send(postWishData)
                     .set('Authorization', 'Bearer ' + accessToken)
                     .expect(postWishData.exp)
@@ -55,8 +55,7 @@ describe('WISH API', function(){
         let deleteWishTest = function(deleteTestData, i){
             it(`It should be ${deleteTestData.exp} : ${deleteTestData.detail} index[${i}]`, (done) => {
                 request(app)
-                    .delete("/api/v1/wish/")
-                    .send(deleteTestData)
+                    .delete("/api/v1/wish/" + deleteTestData.placeID)
                     .set('Authorization', 'Bearer ' + accessToken)
                     .expect(deleteTestData.exp)
                     .end((err, response) => {

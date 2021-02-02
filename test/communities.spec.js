@@ -83,7 +83,7 @@ describe('community api', function(){
         it("It should create post", (done) => {
             const postItem = {
                 userNickName : 'testUser',
-                category : '실시간 현황',
+                category : 2,
                 content : 'blablablablablabads',
                 imageKey : ['first', 'sec', 'third']
             };

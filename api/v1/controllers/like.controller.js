@@ -1,5 +1,6 @@
 const db = require('../../../dbConnection/mariaDB.js');
 var Promise = require('promise');
+const makeImageArray = require('../utils/makeImageArray.js')
 
 let updateReview = function(option, reviewID){
     var sql;
@@ -29,7 +30,7 @@ let postLike =function(endPoint){
         sql = 'INSERT INTO `REVIEW_LIKE`(FK_RLIKE_userID, FK_RLIKE_reviewID) VALUES(?, ?)';
     }
     return function(req, res, next){
-        params = [req.token_userID, req.body.id];
+        params = [req.token_userID, req.params.id];
 
         db.query(sql , params, async function(err, result){
             if(err) {
@@ -45,7 +46,7 @@ let postLike =function(endPoint){
             }
 
             try{
-                await updateReview('post', req.body.id);
+                await updateReview('post', req.params.id);
             }catch(e){
                 return next(e);
             }
@@ -60,14 +61,14 @@ let deleteLike =function(endPoint){
         sql = 'DELETE FROM `REVIEW_LIKE` WHERE FK_RLIKE_userID = ? AND FK_RLIKE_reviewID = ?';
     }
     return function(req, res, next){
-        params = [req.token_userID, req.body.id];
+        params = [req.token_userID, req.params.id];
 
         db.query(sql , params, async function(err, result){
             if(err) {return next(err)}
 
             if(result.affectedRows > 0){ 
                 try{
-                    await updateReview('delete', req.body.id);
+                    await updateReview('delete', req.params.id);
                 }catch(e){
                     return next(e);
                 }
@@ -84,14 +85,16 @@ let deleteLike =function(endPoint){
 let getLike =function(endPoint){
     var sql;
     if(endPoint == 'review'){
-        var sql = 'SELECT * FROM `REVIEW_LIKE` WHERE FK_RLIKE_userID = ? AND FK_RLIKE_reviewID is not NULL';
+        var sql = `SELECT A.*, rv.* FROM REVIEW_LIKE A
+                    LEFT JOIN REVIEW rv ON A.FK_RLIKE_reviewID = rv.reviewID
+                    WHERE FK_RLIKE_userID = ? AND FK_RLIKE_reviewID is not NULL`;
     }
     return function(req, res, next){
         params = [req.params.userID];
 
         db.query(sql , params, function(err, result){
             if(err) {console.log(err); return next(err)}
-
+            result = makeImageArray(result);
             res.status(200).send(result);
         })
     }

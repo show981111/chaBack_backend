@@ -1,0 +1,102 @@
+paths:
+  /like/review/{id}:          
+    post:             
+      tags:               
+        - LIKE           
+      summary: 리뷰 좋아요 함 
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: id   
+        schema:
+          type: number
+        description: 좋아요할 리뷰 아이디
+        required: true  
+      responses:     
+        200:
+          description: 성공적으로 좋아요함
+        204:
+          description: 이미 좋아요 되있음 
+        401:
+          description: 토큰 인증 실패 
+        404:
+          description: 해당 리뷰아이디 찾지 못함 
+
+  /like/review/{idToDelete}:      
+    delete:                 
+      tags:               
+        - LIKE            
+      summary: 좋아요 취소 
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: idToDelete   
+        schema:
+          type: number
+        description: 좋아요 취소할 리뷰 아이디
+        required: true  
+      produces:
+      - application/json
+      responses:      
+        200:
+          description: 좋아요 잘 취소함
+        401:
+          description: 토큰 인증 실패  
+        404:
+          description: 아이디 찾지 못함 
+
+  /like/review/{userID}:      
+    get:                 
+      tags:               
+        - LIKE            
+      summary: 유저가 라이크 한 목록 가져오기
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: userID   
+        schema:
+          type: string
+        description: 유저 아이디 
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+              {
+                "FK_RLIKE_userID": "ok@gmail.com",
+                "FK_RLIKE_reviewID": 5,
+                "reviewID": 5,
+                "FK_REVIEW_placeID": 2,
+                "content": "updated content haha",
+                "updated": "2021-01-28T07:05:12.000Z",
+                "FK_REVIEW_userID": "ok@gmail.com",
+                "point": 5,
+                "likeCount": 2,
+                "imageKey": "asdasd,vasgrae,hdhydth",
+                "resizedImages": [
+                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/undefined/asdasd",
+                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/undefined/vasgrae",
+                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/undefined/hdhydth"
+                ],
+                "originalImages": [
+                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/undefined/asdasd",
+                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/undefined/vasgrae",
+                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/undefined/hdhydth"
+                ]
+            }
+        401:
+          description: 토큰 인증실패 

@@ -31,8 +31,7 @@ describe('LIKE API', function(){
         let postLikeTest = function(postTestData, i){
             it(`It should be ${postTestData.exp} : ${postTestData.detail} index[${i}]`, (done) => {
                 request(app)
-                    .post("/api/v1/like/review")
-                    .send(postTestData)
+                    .post("/api/v1/like/review/"+ postTestData.id)
                     .set('Authorization', 'Bearer ' + accessToken)
                     .expect(postTestData.exp)
                     .end((err, response) => {
@@ -55,8 +54,7 @@ describe('LIKE API', function(){
         let deleteLikeTest = function(deleteTestData, i){
             it(`It should be ${deleteTestData.exp} : ${deleteTestData.detail} index[${i}]`, (done) => {
                 request(app)
-                    .delete("/api/v1/like/review")
-                    .send(deleteTestData)
+                    .delete("/api/v1/like/review/"+ deleteTestData.id)
                     .set('Authorization', 'Bearer ' + accessToken)
                     .expect(deleteTestData.exp)
                     .end((err, response) => {

@@ -6,14 +6,14 @@ const {check, validationResult} = require('express-validator');
 const checkValidationResult = require('../middleware/checkValidationResult');
 
 //req.body.userID, req.body.id
-router.post('/',
+router.post('/:placeID',
     check('placeID').notEmpty().isNumeric().withMessage('id should not be empty and be a number'),
     checkValidationResult,
     jwt.verifyToken(),
     wishController.postWish
 );
 
-router.delete('/',
+router.delete('/:placeID',
     check('placeID').notEmpty().isNumeric().withMessage('id should not be empty and be a number'),
     checkValidationResult,  
     jwt.verifyToken(),

@@ -2,18 +2,28 @@ const Communities = require('../model/communities.js')
 
 var postPosts = async function(req, res, next){
     try {
-        req.body.userID = req.token_userID;
-        
-        var resizedImages = [];
-        var originalImages = [];
-        for(var j = 0; j < req.body.imageKey.length; j++){
-            resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.body.imageKey[j]}`);
-            originalImages.push(`${process.env.BUCKET_PATH}/images/original/${req.token_userID}/${req.body.imageKey[j]}`);
+        if(req.body.category == 0){
+            req.body.category = '자유게시판';
+        }else if(req.body.category == 1){
+            req.body.category = 'QnA';
+        }else if(req.body.category == 2){
+            req.body.category = '실시간 현황';
         }
-        req.body.profileImg = `${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.token_userID}.jpeg`;
-        req.body.resizedImages = resizedImages;
-        req.body.originalImages = originalImages;
+        req.body.userID = req.token_userID;
         req.body.userNickName = req.token_userNickName;
+        req.body.profileImg = `${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.token_userID}.jpeg`;
+
+        if(req.body.imageKey)
+        {
+            var resizedImages = [];
+            var originalImages = [];
+            for(var j = 0; j < req.body.imageKey.length; j++){
+                resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.body.imageKey[j]}`);
+                originalImages.push(`${process.env.BUCKET_PATH}/images/original/${req.token_userID}/${req.body.imageKey[j]}`);
+            }
+            req.body.resizedImages = resizedImages;
+            req.body.originalImages = originalImages;
+        }
 
         req.body.imageKey = undefined;
         const post = new Communities(req.body);

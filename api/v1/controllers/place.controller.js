@@ -2,6 +2,7 @@ const db = require('../../../dbConnection/mariaDB.js');
 const queryBuilder = require('../utils/filterQueryBuilder.js');
 var Promise = require('promise');
 //const placeModel = require('../model/place.js');
+const makeImageArray = require('../utils/makeImageArray.js')
 const makeImageKey = require('../utils/makeImageKey.js');
 require('dotenv').config();
 
@@ -23,19 +24,7 @@ let getPlaceList = function (byDistance) {
         
         db.query(sql.sql, sql.params, function(err, results) {
             if(err){ console.log(this.sql);return next(err);}
-            for(var i = 0; i < results.length ; i++){
-                var imageKeyArr = results[i].imageKey.split(',');
-                var resizedImages = [];
-                var originalImages = [];
-                for(var j = 0; j < imageKeyArr.length; j++){
-                    if(!imageKeyArr[j] || imageKeyArr[j] == null) continue;
-                    resizedImages.push(`${process.env.BUCKET_PATH}/images/resize/${results[i].FK_PLACE_userID}/${imageKeyArr[j]}`);
-                    originalImages.push(`${process.env.BUCKET_PATH}/images/original/${results[i].FK_PLACE_userID}/${imageKeyArr[j]}`);
-                }
-                results[i].resizedImages = resizedImages;
-                results[i].originalImages = originalImages;
-            }
-
+            results = makeImageArray(results, 'place');
             res.status(200).send(results);
         })
     }

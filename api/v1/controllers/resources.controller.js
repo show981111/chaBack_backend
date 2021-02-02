@@ -49,7 +49,7 @@ let upload = multer({
             transform: function (req, file, cb) {
               cb(null, sharp().rotate().resize({
                     fit: sharp.fit.contain,
-                    width: 100
+                    width: 200
                 }).jpeg())
             }
           }
