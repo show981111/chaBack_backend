@@ -1,0 +1,242 @@
+paths:
+  /comment/:          
+    post:             
+      tags:               
+        - Comment           
+      summary: 커뮤니티에 댓글 담
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: body       
+        name: content   
+        description: 댓글 내용
+        required: true  
+      - in: body       
+        name: parentID   
+        description: 댓글 달 부모 글의 아이디
+        required: true  
+      responses:     
+        200:
+          description: 성공적으로 글 등록 
+        400:
+          description: 요청 변수 잘못됨
+        401:
+          description: 토큰 인증 실패 
+        404:
+          description: 부모 아이디 찾지 못함
+
+  /comment/{replyParentID}:      
+    post:                 
+      tags:               
+        - Comment            
+      summary: 글 수정
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: replyParentID   
+        schema:
+          type: string
+        description: 대댓글을 달 댓글의 아이디
+        required: true  
+      - in: body       
+        name: content   
+        description: 댓글 내용
+        required: true  
+      - in: body       
+        name: parentID   
+        description: 댓글 달 부모 "게시글"의 아이디
+        required: true  
+      produces:
+      - application/json
+      responses:     
+        200:
+          description: 성공적으로 글 등록 
+        400:
+          description: 요청 변수 잘못됨
+        401:
+          description: 토큰 인증 실패 
+        404:
+          description: 부모 아이디 찾지 못함
+
+  /comment/{commentID}:      
+    put:                 
+      tags:               
+        - Comment            
+      summary: 해당 글을 수정함 
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: commentID   
+        schema:
+          type: string
+        description: 수정할 댓글 아이디 
+        required: true  
+      - in: body       
+        name: content   
+        description: 수정할 내용
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 삭제함
+        401:
+          description: 토큰 인증실패 
+        404:
+          description: 해당 글을 찾지 못함 
+
+  /comment/{commentIDtoDelete}:      
+    delete:                 
+      tags:               
+        - Comment            
+      summary: 해당 글을 삭제함 
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: commentIDtoDelete   
+        schema:
+          type: string
+        description: 삭제할 댓글 아이디 
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 삭제함
+        401:
+          description: 토큰 인증실패 
+        404:
+          description: 해당 글을 찾지 못함 
+
+  /comment/user/{userID}:      
+    get:                 
+      tags:               
+        - Comment            
+      summary: 유저가 단 댓글 다 가져옴
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: userID   
+        schema:
+          type: string
+        description: 유저 아이디
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+              [
+                  {
+                      "replies": [],
+                      "_id": "5fec3999283ac123b39657d8",
+                      "parentID": {
+                          "resizedImages": [],
+                          "originalImages": [],
+                          "commentsNum": 1,
+                          "_id": "5fe5e6a789cccc1b4534038a",
+                          "imageKey": [
+                              "sdasdsa"
+                          ],
+                          "userID": "testUser@gmalom.com",
+                          "userNickName": "123",
+                          "category": "5216",
+                          "content": "blasd",
+                          "updated": "2020-12-25T13:38:34.986Z",
+                          "__v": 0
+                      },
+                      "userID": "test@gmail.com",
+                      "userNickName": "testUser",
+                      "content": "reply to 5fe6f0c4f4ef276059634af9 hello~~",
+                      "updated": "2020-12-30T08:26:01.071Z",
+                      "__v": 0
+                  },
+              ]
+
+  /comment/parent/{parentID}:      
+    get:                 
+      tags:               
+        - Comment            
+      summary: 게시글에 달린 댓글 다 가져옴 
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: parentID   
+        schema:
+          type: string
+        description: 게시글 아이디
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+              [
+                {
+                    "replies": [
+                        {
+                            "replies": [],
+                            "_id": "5fe6fddfd058156b5c03f1d7",
+                            "parentID": "5fe5e6a789cccc1b4534038a",
+                            "userID": "test@gmail.com",
+                            "userNickName": "testUser",
+                            "content": "reply to 5fe6f0c4f4ef276059634af9 hello~~",
+                            "updated": "2020-12-26T09:09:51.206Z",
+                            "__v": 0
+                        },
+                        {
+                            "replies": [],
+                            "_id": "5fe6fe60b71d6e6bcb0cc2d7",
+                            "parentID": "5fe5e6a789cccc1b4534038a",
+                            "userID": "test@gmail.com",
+                            "userNickName": "testUser",
+                            "content": "reply to 5fe6f0c4f4ef276059634af9 hello~~",
+                            "updated": "2020-12-26T09:12:00.371Z",
+                            "__v": 0
+                        },
+                    ],
+                    "_id": "5fe6f0c4f4ef276059634af9",
+                    "userID": "test@gmail.com",
+                    "userNickName": "test",
+                    "parentID": "5fe5e6a789cccc1b4534038a",
+                    "content": "blasd",
+                    "updated": "2020-12-26T08:13:56.817Z",
+                    "__v": 0
+                }
+             ]
+
+
+
+definitions:      
+  Community:
+    type: object
+    properties:
+      placeName:
+        type: string
+        description : 실시간 현황 등록시에만 필요
+      placeID:
+        type: string
+        description : 실시간 현황 등록시에만 필요 
+      content:
+        type: string
+      category:
+        type: int
+      imageKey:
+        type: string
+    example:
+      placeName : N3V 4F7
+      placeID : post review to place ID 2
+      content : 3
+      category : 2
+      imageKey : ['a','b','c']

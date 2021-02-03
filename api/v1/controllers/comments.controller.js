@@ -93,10 +93,10 @@ let getCommentsByUserID = async function(req, res, next){
 
 let updateComment = async function(req, res, next){
     try{
-        const commentID = req.params.commentID;
+        const filter = { userID : req.token_userID, _id : req.params.commentID};
         const options = { new: true };
         // console.log(postID);
-        const result = await Comment.findByIdAndUpdate(commentID, {content : req.body.content, updated : Date.now()}, options);
+        const result = await Comment.findOneAndUpdate(filter, {content : req.body.content, updated : Date.now()}, options);
         if (!result) {
             const error = new Error();
             error.message = 'commentID is Not found';
@@ -110,9 +110,10 @@ let updateComment = async function(req, res, next){
 }
 
 let deleteComment = async function(req, res, next){
-    const commentID = req.params.commentID;
     try {
-        const result = await Comment.findByIdAndDelete(commentID);
+        const filter = { userID : req.token_userID, _id : req.params.commentID};
+
+        const result = await Comment.findOneAndDelete(filter);
         if (!result) {
             const error = new Error();
             error.message = 'commentID is Not found';

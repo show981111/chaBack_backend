@@ -76,27 +76,29 @@ paths:
           description: 성공적으로 가져옴
           examples:
             application/json:
-              {
-                "FK_RLIKE_userID": "ok@gmail.com",
-                "FK_RLIKE_reviewID": 5,
-                "reviewID": 5,
-                "FK_REVIEW_placeID": 2,
-                "content": "updated content haha",
-                "updated": "2021-01-28T07:05:12.000Z",
-                "FK_REVIEW_userID": "ok@gmail.com",
-                "point": 5,
-                "likeCount": 2,
-                "imageKey": "asdasd,vasgrae,hdhydth",
-                "resizedImages": [
-                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/undefined/asdasd",
-                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/undefined/vasgrae",
-                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/undefined/hdhydth"
-                ],
-                "originalImages": [
-                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/undefined/asdasd",
-                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/undefined/vasgrae",
-                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/undefined/hdhydth"
-                ]
-            }
+              [
+                {
+                  "FK_RLIKE_userID": "ok@gmail.com",
+                  "FK_RLIKE_reviewID": 5,
+                  "reviewID": 5,
+                  "FK_REVIEW_placeID": 2,
+                  "content": "updated content haha",
+                  "updated": "2021-01-28T07:05:12.000Z",
+                  "FK_REVIEW_userID": "ok@gmail.com",
+                  "point": 5,
+                  "likeCount": 2,
+                  "imageKey": "asdasd,vasgrae,hdhydth",
+                  "resizedImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/undefined/asdasd",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/undefined/vasgrae",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/undefined/hdhydth"
+                  ],
+                  "originalImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/undefined/asdasd",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/undefined/vasgrae",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/undefined/hdhydth"
+                  ]
+                }
+              ]
         401:
           description: 토큰 인증실패 

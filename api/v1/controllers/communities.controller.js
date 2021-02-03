@@ -38,8 +38,17 @@ var postPosts = async function(req, res, next){
 }
 
 var getAllPosts = async function(req, res, next){
+    if(req.params.category == 0){
+        req.params.category = '자유게시판';
+    }else if(req.params.category == 1){
+        req.params.category = 'QnA';
+    }else if(req.params.category == 2){
+        req.params.category = '실시간 현황';
+    }
     try {
-        const results = await Communities.find({}).sort({updated : -1});//paging 
+        const results = await Communities.find({category : req.params.category}).sort({updated : -1})
+                                                    .skip( req.params.pageNumber)
+                                                    .limit( 20 );//paging 
         res.status(200).send(results);
     } catch (error) {
         console.log(error);
@@ -49,8 +58,19 @@ var getAllPosts = async function(req, res, next){
 
 var getPostsByID = async function(req, res , next){
     try{
-        const results = await Communities.find({userID : req.params.userID}).sort({updated : -1});
-        console.log(results);
+        const results = await Communities.find({userID : req.params.userID}).sort({updated : -1})     
+        res.send(results);
+    }catch (error) {
+        console.log(error);
+        next(error);
+    }   
+}
+
+var getPostsByPlaceID = async function(req, res , next){
+    try{
+        const results = await Communities.find({placeID : req.params.placeID, category : '실시간 현황'}).sort({updated : -1})
+                                            .skip( req.params.pageNumber )
+                                            .limit( req.params.parseNum );//paging ;
         res.send(results);
     }catch (error) {
         console.log(error);
@@ -60,13 +80,14 @@ var getPostsByID = async function(req, res , next){
 
 var updatePosts = async function(req, res, next){
     try {
-        const postID = req.params.postID;
+        const filter = { userID : req.token_userID, _id : req.params.postID};
+
         req.body.updated = Date.now();
         req.body.userID = req.token_userID;
         const updates = req.body;
         const options = { new: true };
         // console.log(postID);
-        const result = await Communities.findByIdAndUpdate(postID, updates, options);
+        const result = await Communities.findOneAndUpdate(filter, updates, options);
         if (!result) {
             const error = new Error();
             error.message = 'postID is Not found';
@@ -81,9 +102,10 @@ var updatePosts = async function(req, res, next){
 }
 
 var deletePosts = async function(req, res, next){
-    const postID = req.params.postID;
+    const filter = { userID : req.token_userID, _id : req.params.postID};
+
     try {
-        const result = await Communities.findByIdAndDelete(postID);
+        const result = await Communities.findOneAndDelete(filter);
         // console.log(result);
         if (!result) {
             const error = new Error();
@@ -103,5 +125,6 @@ module.exports = {
     getAllPosts : getAllPosts,
     getPostsByID : getPostsByID,
     updatePosts : updatePosts,
-    deletePosts : deletePosts
+    deletePosts : deletePosts,
+    getPostsByPlaceID : getPostsByPlaceID
 }

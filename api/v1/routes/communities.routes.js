@@ -7,21 +7,39 @@ const jwt = require('../middleware/jwt.js')
 const resourcesController = require('../controllers/resources.controller.js');
 const communitySchema = require('../model/communities.check.js');
 
-router.get('/', communityController.getAllPosts);
-
 router.get('/:userID',
     check('userID').notEmpty().isEmail().withMessage('userID should be email and not Empty').trim(),
     checkValidationResult,
     communityController.getPostsByID);
 
-router.post('/', communitySchema,
+router.get('/:category/:pageNumber', 
+    check('category').notEmpty().isFloat({min : 0, max : 2}).withMessage('category should not be empty').trim().toInt(),
+    check('pageNumber').notEmpty().isNumeric().withMessage('pageNumber should not be empty').trim().toInt(),
+    checkValidationResult,
+    communityController.getAllPosts);
+
+router.get('/place/:placeID/:pageNumber/:parseNum', 
+    check('pageNumber').notEmpty().isNumeric().withMessage('pageNumber should not be empty').trim().toInt(),
+    check('placeID').notEmpty().isNumeric().withMessage('placeID should not be empty').trim().toInt(),
+    check('parseNum').notEmpty().isNumeric().withMessage('parseNum should not be empty').trim().toInt(),
+    checkValidationResult,
+    communityController.getPostsByPlaceID);
+
+router.post('/board', communitySchema(false),
+    checkValidationResult,
+    jwt.verifyToken(),
+    communityController.postPosts);
+
+router.post('/current', communitySchema(true),
     checkValidationResult,
     jwt.verifyToken(),
     communityController.postPosts);
 
 router.put('/:postID',
     [
-        check('userNickName').isEmpty().withMessage('should not contain userNickName').trim(),
+        check('userNickName').isEmpty().withMessage('should not contain userNickName'),
+        check('placeID').isEmpty().withMessage('should not contain placeID'),
+        check('placeName').isEmpty().withMessage('should not contain placeName'),
         check('content').notEmpty().withMessage('content should not be empty').trim().escape(), 
         check('postID').notEmpty().isLength({min : 24, max :24}).withMessage('postID should not be empty and 24 hex characters').trim()
     ],

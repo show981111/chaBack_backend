@@ -1,0 +1,152 @@
+paths:
+  /gear:          
+    post:             
+      tags:               
+        - Gear           
+      summary: 차박용품 등록
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth 
+      - in: body       
+        name: Review   
+        description: 차박용품 등록
+        required: true  
+        schema:      
+          $ref: '#/definitions/Gear' 
+      responses:     
+        200:
+          description: 등록 성공, gearID 반환
+        400:
+          description: Post body 변수 형식 잘못됨
+        401:
+          description: 관리자 토큰 인증 실패 
+
+  /gear/{gearID}: 
+    put:             
+      tags:               
+        - Gear           
+      summary: 차박용품 글 수정 
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: gearID   
+        description: 수정하려는 차박 용품 아이디 
+        required: true  
+      - in: body       
+        name: Review   
+        description: 차박용품 등록
+        required: true  
+        schema:      
+          $ref: '#/definitions/Gear' 
+      responses:     
+        200:
+          description: 성공적으로 수정 
+        400:
+          description: 요청 파라미터 잘못됨
+        401:
+          description: 관리자 토큰 인증 실패 
+        404: 
+          description: 차박용품 아이디 찾지 못함
+
+  /gear/{gearIDtoDelete}:      
+    delete:                 
+      tags:               
+        - Gear            
+      summary: 차박용품 삭제
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: gearIDtoDelete   
+        description: 삭제하려는 차박 용품 
+        required: true  
+      - in: body       
+        name: imageKey   
+        description: 해당 차박용품의 이미지 키 
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 삭제
+        400:
+          description: 요청 파라미터 잘못됨
+        401:
+          description: 관리자 토큰 인증 실패 
+        404: 
+          description: 차박용품 아이디 찾지 못함
+
+  /gear/{page}:      
+    get:                 
+      tags:               
+        - Gear            
+      summary: 차박 용품 조회 
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: page   
+        description: 해당 페이지 조회
+        required: true  
+      responses:      
+        200:
+          description: 차박 용품 리스트 반환
+          examples:
+            application/json:
+              [
+                {
+                  "gearID": 28,
+                  "category": "c",
+                  "title": "chaBack tent",
+                  "content": "dasdasdasdasdasdasdasdsadasdasdasas",
+                  "updated": "2021-01-30T01:08:54.000Z",
+                  "FK_GEAR_userID": "ok2@gmail.com",
+                  "imageKey": "asd,fds .jpg",
+                  "reviewCount": 0,
+                  "totalPoint": 0,
+                  "meanPoint": null,
+                  "resizedImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok2@gmail.com/asd",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok2@gmail.com/fds .jpg"
+                  ],
+                  "originalImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok2@gmail.com/asd",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok2@gmail.com/fds .jpg"
+                  ]
+                },
+              ]
+
+definitions:      
+  Gear:
+    type: object
+    properties:
+      title:
+        type: string
+      content:
+        type: string
+      category:
+        type: string
+      imageKey:
+        type: string
+    example:
+      title : chaback tent
+      content : awesome chavback tent 
+      category : something
+      imageKey : ['a','b','c']

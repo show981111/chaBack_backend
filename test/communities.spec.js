@@ -25,7 +25,7 @@ describe('community api', function(){
                     if(err) throw err;
                     accessToken = response.body.accessToken;
                     request(app)
-                        .get("/api/v1/community")
+                        .get("/api/v1/community/2/0")
                         .expect(200)
                         .end((err, response) => {
                             if(err) throw err;
@@ -39,7 +39,7 @@ describe('community api', function(){
 
         it("It should NOT GET all the tasks", (done) => {
             request(app)
-                .get("/api/community")
+                .get("/api/community/0")
                 .expect(404)
                 .end((err, response) => {
                     if(err) throw err;
@@ -83,12 +83,14 @@ describe('community api', function(){
         it("It should create post", (done) => {
             const postItem = {
                 userNickName : 'testUser',
+                placeID : 3,
+                placeName : 'N3V 4F7',
                 category : 2,
                 content : 'blablablablablabads',
                 imageKey : ['first', 'sec', 'third']
             };
             request(app)
-                .post("/api/v1/community")
+                .post("/api/v1/community/current")
                 .send(postItem)
                 .set('Authorization', 'Bearer ' + accessToken)
                 .expect(200)

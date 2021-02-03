@@ -40,9 +40,6 @@ let reviewSchema = function (isUpdate) {
         imageKey : {
             optional : true,
             isArray : true,
-            notEmpty: function(array) {
-                return array.length > 0;
-            },
             custom : {
                 options : (value) => {
                     if(value.length > 5){

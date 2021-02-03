@@ -11,6 +11,7 @@ var communitiesSchema = new Schema({
     originalImages : [{type : String}],
     commentsNum : { type: Number, default: 0 },
     placeID : {type : String},
+    placeName : {type : String},
     profileImg : {type : String, required : true}
 });
 communitiesSchema.index({"updated": -1});

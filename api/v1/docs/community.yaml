@@ -1,0 +1,304 @@
+paths:
+  /community/current:          
+    post:             
+      tags:               
+        - Community           
+      summary: 커뮤니티에 실시간 현황 올림
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: body       
+        name: Community   
+        description: 커뮤니티에 글 등록
+        required: true  
+        schema:      
+          $ref: '#/definitions/Current' 
+      responses:     
+        200:
+          description: 성공적으로 글 등록 
+        400:
+          description: 요청 변수 잘못됨
+        401:
+          description: 토큰 인증 실패 
+
+  /community/board:          
+    post:             
+      tags:               
+        - Community           
+      summary: 커뮤니티에 글 올림
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: body       
+        name: Community   
+        description: 커뮤니티에 글 등록
+        required: true  
+        schema:      
+          $ref: '#/definitions/Board' 
+      responses:     
+        200:
+          description: 성공적으로 글 등록 
+        400:
+          description: 요청 변수 잘못됨
+        401:
+          description: 토큰 인증 실패 
+
+  /community/{postID}:      
+    put:                 
+      tags:               
+        - Community            
+      summary: 글 수정
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: postID   
+        schema:
+          type: string
+        description: 수정할 아이디 
+        required: true  
+      - in: body       
+        name: content   
+        description: 수정할 내용
+        required: true  
+      produces:
+      - application/json
+      responses:      
+        200:
+          description: 잘 수정함
+        401:
+          description: 토큰 인증 실패  
+        404:
+          description: 해당 글을 찾지 못함 
+
+  /community/{postIDtoDelete}:      
+    delete:                 
+      tags:               
+        - Community            
+      summary: 해당 글을 삭제함 
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: postIDtoDelete   
+        schema:
+          type: string
+        description: 삭제할 글 아이디
+        required: true  
+      - in: body       
+        name: imageKey   
+        description: 해당 글이 이미지를 담고 있다면 해당 이미지 키
+        required: false  
+      responses:      
+        200:
+          description: 성공적으로 삭제함
+        401:
+          description: 토큰 인증실패 
+        404:
+          description: 해당 글을 찾지 못함 
+
+  /community/{userID}:      
+    get:                 
+      tags:               
+        - Community            
+      summary: 유저가 작성한 글 목록 가져옴 
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: userID   
+        schema:
+          type: string
+        description: 유저 아이디 
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+              [
+                {
+                  "resizedImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/first",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/sec",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/third"
+                  ],
+                  "originalImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/first",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/sec",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/third"
+                  ],
+                  "commentsNum": 0,
+                  "_id": "6016853e11d7b74165b93b4a",
+                  "userNickName": "",
+                  "category": "실시간 현황",
+                  "content": "blablablablablabads",
+                  "userID": "ok@gmail.com",
+                  "profileImg": "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/ok@gmail.com.jpeg",
+                  "updated": "2021-01-31T10:23:58.297Z",
+                  "__v": 0
+                },
+              ]
+
+  /community/{category}/{pageNumber}:      
+    get:                 
+      tags:               
+        - Community            
+      summary: 카테고리별로 글 가져옴  
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: category   
+        schema:
+          type: string
+        description: 카테고리 (0 - 자유게시판, 1 - QnA, 2 - 실시간 현황)
+        required: true  
+      - in: pageNumber       
+        name: userID   
+        schema:
+          type: string
+        description: 페이지
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+              [
+                {
+                  "resizedImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/first",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/sec",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/third"
+                  ],
+                  "originalImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/first",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/sec",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/third"
+                  ],
+                  "commentsNum": 0,
+                  "_id": "6016853e11d7b74165b93b4a",
+                  "userNickName": "",
+                  "category": "실시간 현황",
+                  "content": "blablablablablabads",
+                  "userID": "ok@gmail.com",
+                  "profileImg": "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/ok@gmail.com.jpeg",
+                  "updated": "2021-01-31T10:23:58.297Z",
+                  "__v": 0
+                },
+              ]
+
+  /community/place/{placeID}/{pageNumber}/{parseNum}:      
+    get:                 
+      tags:               
+        - Community            
+      summary: 차박지에 따른 실시간 현황 가져옴  
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: placeID   
+        schema:
+          type: string
+        description: 차박지 아이디
+        required: true  
+      - in: pageNumber       
+        name: userID   
+        schema:
+          type: string
+        description: 페이지
+        required: true  
+      - in: parseNum       
+        name: category   
+        schema:
+          type: string
+        description: 몇개 가져올지(ex. 5 이면 현황 5개 가져옴)
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+              [
+                {
+                  "resizedImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/first",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/sec",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/third"
+                  ],
+                  "originalImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/first",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/sec",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/third"
+                  ],
+                  "commentsNum": 0,
+                  "_id": "6016853e11d7b74165b93b4a",
+                  "userNickName": "",
+                  "category": "실시간 현황",
+                  "content": "blablablablablabads",
+                  "userID": "ok@gmail.com",
+                  "profileImg": "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/ok@gmail.com.jpeg",
+                  "updated": "2021-01-31T10:23:58.297Z",
+                  "__v": 0
+                },
+              ]
+
+
+
+
+definitions:      
+  Current:
+    type: object
+    properties:
+      placeName:
+        type: string
+        description : 실시간 현황 등록시에만 필요
+      placeID:
+        type: string
+        description : 실시간 현황 등록시에만 필요 
+      content:
+        type: string
+      category:
+        type: int
+      imageKey:
+        type: string
+    example:
+      placeName : N3V 4F7
+      placeID : post review to place ID 2
+      content : sadsafafa
+      category : 2
+      imageKey : ['a','b','c']
+
+  Board:
+    type: object
+    properties:
+      title:
+        type: string
+      content:
+        type: string
+      category:
+        type: int
+      imageKey:
+        type: string
+    example:
+      title : sadasdas
+      content : asfwefweafaewvcwea
+      category : 1
+      imageKey : ['a','b','c']
