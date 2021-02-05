@@ -15,12 +15,12 @@ require('dotenv').config();
 var mongoDB = function(){
 
     mongoose.connect(process.env.MONGO_URL, 
-        // {
-        // useNewUrlParser: true,
-        // ssl: true,
-        // sslValidate: false,
-        // sslCA: fs.readFileSync(path.resolve(__dirname, './rds-combined-ca-bundle.pem'))
-        // }
+        {
+        useNewUrlParser: true,
+        ssl: true,
+        sslValidate: false,
+        sslCA: fs.readFileSync(path.resolve(__dirname, './rds-combined-ca-bundle.pem'))
+        }
     )
     
 

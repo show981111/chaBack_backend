@@ -2,13 +2,6 @@ const Communities = require('../model/communities.js')
 
 var postPosts = async function(req, res, next){
     try {
-        if(req.body.category == 0){
-            req.body.category = '자유게시판';
-        }else if(req.body.category == 1){
-            req.body.category = 'QnA';
-        }else if(req.body.category == 2){
-            req.body.category = '실시간 현황';
-        }
         req.body.userID = req.token_userID;
         req.body.userNickName = req.token_userNickName;
         req.body.profileImg = `${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.token_userID}.jpeg`;
@@ -38,13 +31,6 @@ var postPosts = async function(req, res, next){
 }
 
 var getAllPosts = async function(req, res, next){
-    if(req.params.category == 0){
-        req.params.category = '자유게시판';
-    }else if(req.params.category == 1){
-        req.params.category = 'QnA';
-    }else if(req.params.category == 2){
-        req.params.category = '실시간 현황';
-    }
     try {
         const results = await Communities.find({category : req.params.category}).sort({updated : -1})
                                                     .skip( req.params.pageNumber)
@@ -59,18 +45,6 @@ var getAllPosts = async function(req, res, next){
 var getPostsByID = async function(req, res , next){
     try{
         const results = await Communities.find({userID : req.params.userID}).sort({updated : -1})     
-        res.send(results);
-    }catch (error) {
-        console.log(error);
-        next(error);
-    }   
-}
-
-var getPostsByPlaceID = async function(req, res , next){
-    try{
-        const results = await Communities.find({placeID : req.params.placeID, category : '실시간 현황'}).sort({updated : -1})
-                                            .skip( req.params.pageNumber )
-                                            .limit( req.params.parseNum );//paging ;
         res.send(results);
     }catch (error) {
         console.log(error);
@@ -125,6 +99,5 @@ module.exports = {
     getAllPosts : getAllPosts,
     getPostsByID : getPostsByID,
     updatePosts : updatePosts,
-    deletePosts : deletePosts,
-    getPostsByPlaceID : getPostsByPlaceID
+    deletePosts : deletePosts
 }

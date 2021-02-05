@@ -35,7 +35,7 @@ paths:
     post:                 
       tags:               
         - Comment            
-      summary: 글 수정
+      summary: 대댓글 단다
       parameters:        
       - in: header
         type: http

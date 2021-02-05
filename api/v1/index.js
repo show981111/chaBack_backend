@@ -13,6 +13,7 @@ var likeRouter = require('./routes/like.routes.js');
 var wishRouter = require('./routes/wish.routes.js');
 var gearRouter = require('./routes/gear.routes.js');
 var gearReviewRouter = require('./routes/gear_review.routes.js');
+var realTimeRouter = require('./routes/realTime.routes.js');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
@@ -42,6 +43,7 @@ router.use('/like', likeRouter);
 router.use('/wish', wishRouter);
 router.use('/gear', gearRouter);
 router.use('/gear-review/',gearReviewRouter);
+router.use('/real-time', realTimeRouter);
 
 module.exports = router;
 

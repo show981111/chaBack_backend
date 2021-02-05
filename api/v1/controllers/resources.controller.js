@@ -64,7 +64,7 @@ let profileUpload = multer({
         bucket: process.env.BUCKET_NAME,
         shouldTransform : function (req, file, cb) {
             console.log('in should transform ', file)
-            cb(null, /^image/i.test(file.mimetype))
+            cb(null, true)
         },
         transforms: [
           {

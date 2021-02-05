@@ -1,32 +1,4 @@
 paths:
-  /community/current:          
-    post:             
-      tags:               
-        - Community           
-      summary: 커뮤니티에 실시간 현황 올림
-      produces:
-      - application/json
-      parameters:        
-      - in: header
-        type: http
-        scheme: bearer
-        name: Authorization
-        description : 
-          Bearer Auth
-      - in: body       
-        name: Community   
-        description: 커뮤니티에 글 등록
-        required: true  
-        schema:      
-          $ref: '#/definitions/Current' 
-      responses:     
-        200:
-          description: 성공적으로 글 등록 
-        400:
-          description: 요청 변수 잘못됨
-        401:
-          description: 토큰 인증 실패 
-
   /community/board:          
     post:             
       tags:               
@@ -168,7 +140,7 @@ paths:
         name: category   
         schema:
           type: string
-        description: 카테고리 (0 - 자유게시판, 1 - QnA, 2 - 실시간 현황)
+        description: 카테고리 (0 - 자유게시판, 1 - QnA)
         required: true  
       - in: pageNumber       
         name: userID   

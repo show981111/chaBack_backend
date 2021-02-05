@@ -1,5 +1,30 @@
 const db = require('../../../dbConnection/mariaDB.js');
 
+let updateReviewInfo = function(reviewID, option){
+    var sql;
+    if(option == 'insert'){
+        sql = 'UPDATE REVIEW SET replyCount = replyCount + 1 WHERE reviewID = ?';
+    }else{
+        sql = 'UPDATE REVIEW SET replyCount = replyCount - 1 WHERE reviewID = ?';
+    }   
+    return new Promise(function(resolve, reject) {
+        db.query(sql, [reviewID], function(err, results) {
+            if(err) {
+                console.log(err);
+                reject(err);
+            }
+            
+            if(results.affectedRows > 0){
+                resolve();
+            }else{
+                const e = new Error('Not Found');
+                e.status = 404;
+                reject(e);
+            }
+        })
+    });
+}
+
 let postReply = function(req, res, next){
     var sql;
     const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
@@ -10,7 +35,7 @@ let postReply = function(req, res, next){
         sql = 'INSERT INTO REPLY(content, FK_REPLY_userID, updated, FK_REPLY_reviewID, replyParentID) VALUES(?,?,?,?,?)';
         params.push(req.body.replyParentID);
     }
-    db.query(sql, params, function(err, result){
+    db.query(sql, params, async function(err, result){
         if(err){
             //console.log(err);
             if(err.errno == 1452){
@@ -22,7 +47,13 @@ let postReply = function(req, res, next){
         };
 
         if(result.affectedRows > 0){
-            res.status(200).send({ replyID : result.insertId });
+
+            try{
+                await updateReviewInfo(req.body.reviewID, 'insert');
+                res.status(200).send({ replyID : result.insertId });
+            }catch(error){
+                return next(error);
+            }
         }else{
             return next(new Error());
         }
@@ -84,11 +115,18 @@ let getReply = function(option){
 let deleteReply = function(req, res, next){
     var sql = 'DELETE FROM REPLY WHERE FK_REPLY_userID = ? AND replyID = ?';
 
-    db.query(sql, [req.token_userID, req.params.replyID], function(err, result){
+    db.query(sql, [req.token_userID, req.params.replyID], async function(err, result){
         if(err) return next(err);
 
         if(result.affectedRows > 0){
-            res.send('success');
+
+            try{
+                await updateReviewInfo(req.params.reviewID, 'delete');
+                res.send('success');
+            }catch(e){
+                return next(e);
+            }
+
         }else{
             const e = new Error('Not Found');
             e.status = 404;

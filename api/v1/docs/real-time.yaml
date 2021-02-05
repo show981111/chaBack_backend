@@ -1,0 +1,153 @@
+paths:
+  /real-time/:          
+    post:             
+      tags:               
+        - RealTime           
+      summary: 실시간 현황에 글 올림 
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: body       
+        name: RealTime   
+        description: 실시간 현황에 글 등록
+        required: true  
+        schema:      
+          $ref: '#/definitions/Real-Time' 
+      responses:     
+        200:
+          description: 성공적으로 글 등록, realTimeID 반환
+        400:
+          description: 요청 변수 잘못됨
+        401:
+          description: 토큰 인증 실패
+        404:
+          description: placeID 찾지 못함 
+
+  /real-time/{realTimeID}:      
+    delete:                 
+      tags:               
+        - RealTime            
+      summary: 글 삭제
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: realTimeID   
+        schema:
+          type: string
+        description: 삭제할 실시간 현황 아이디 
+        required: true  
+      produces:
+      - application/json
+      responses:      
+        200:
+          description: 잘 수정함
+        401:
+          description: 토큰 인증 실패  
+        404:
+          description: 해당 글을 찾지 못함 
+
+  /real-time/{pageNumber}/{parseNum}:      
+    get:                 
+      tags:               
+        - RealTime            
+      summary: 실시간 현황 그냥 다 가져옴
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: pageNumber   
+        schema:
+          type: string
+        description: 페이지
+        required: true  
+      - in: path       
+        name: parseNum   
+        schema:
+          type: string
+        description: 몇개 가져올건지 
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 삭제함
+          examples:
+            application/json:
+              [
+                {
+                    "realTimeID": 22,
+                    "content": "realtime data for place ID 3",
+                    "FK_REALTIME_placeID": 3,
+                    "FK_REALTIME_userID": "ok@gmail.com",
+                    "updated": "2021-02-04T20:38:31.000Z",
+                    "placeName": "N3V 4F7",
+                    "userNickName": "updated NickName okk",
+                    "profileImg": "default"
+                },
+              ]
+
+
+  /real-time/place/{placeID}/{pageNumber}/{parseNum}:      
+    get:                 
+      tags:               
+        - RealTime            
+      summary: 실시간 현황 차박지에 따라 가져옴 
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: placeID   
+        schema:
+          type: string
+        description: 차박지 아이디
+        required: true  
+      - in: path       
+        name: pageNumber   
+        schema:
+          type: string
+        description: 페이지 
+        required: true  
+      - in: path       
+        name: parseNum   
+        schema:
+          type: string
+        description: 몇개씩 가져올건지 
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+              [
+                {
+                    "realTimeID": 22,
+                    "content": "realtime data for place ID 3",
+                    "FK_REALTIME_placeID": 3,
+                    "FK_REALTIME_userID": "ok@gmail.com",
+                    "updated": "2021-02-04T20:38:31.000Z",
+                    "userNickName": "updated NickName okk",
+                    "profileImg": "default"
+                },
+              ]
+
+definitions:      
+  Real-Time:
+    type: object
+    properties:
+      placeID:
+        type: string
+        description : 차박지 아이디 
+      content:
+        type: string
+    example:
+      placeID : 2
+      content : sadsafafa

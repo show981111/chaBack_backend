@@ -42,15 +42,18 @@ let reviewSchema = function (isUpdate) {
             isArray : true,
             custom : {
                 options : (value) => {
-                    if(value.length > 5){
-                        throw new Error('out of range');
-                    }else{
-                        for(var i = 0; i < value.length; i++){
-                            var last = value[i].split("/");
-                            value[i] = last[last.length - 1].split(".")[0].trim() + '.jpeg';
-                        }
-                        return value;
-                    } 
+                    if(value)
+                    {
+                        if(value.length > 5){
+                            throw new Error('out of range');
+                        }else{
+                            for(var i = 0; i < value.length; i++){
+                                var last = value[i].split("/");
+                                value[i] = last[last.length - 1].split(".")[0].trim() + '.jpeg';
+                            }
+                            return value;
+                        } 
+                    }
                 }
             },
             errorMessage : 'imageKey should be array and max 5',

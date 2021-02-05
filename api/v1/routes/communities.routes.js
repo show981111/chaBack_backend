@@ -13,24 +13,12 @@ router.get('/:userID',
     communityController.getPostsByID);
 
 router.get('/:category/:pageNumber', 
-    check('category').notEmpty().isFloat({min : 0, max : 2}).withMessage('category should not be empty').trim().toInt(),
+    check('category').notEmpty().isFloat({min : 0, max : 1}).withMessage('category should not be empty').trim().toInt(),
     check('pageNumber').notEmpty().isNumeric().withMessage('pageNumber should not be empty').trim().toInt(),
     checkValidationResult,
     communityController.getAllPosts);
 
-router.get('/place/:placeID/:pageNumber/:parseNum', 
-    check('pageNumber').notEmpty().isNumeric().withMessage('pageNumber should not be empty').trim().toInt(),
-    check('placeID').notEmpty().isNumeric().withMessage('placeID should not be empty').trim().toInt(),
-    check('parseNum').notEmpty().isNumeric().withMessage('parseNum should not be empty').trim().toInt(),
-    checkValidationResult,
-    communityController.getPostsByPlaceID);
-
-router.post('/board', communitySchema(false),
-    checkValidationResult,
-    jwt.verifyToken(),
-    communityController.postPosts);
-
-router.post('/current', communitySchema(true),
+router.post('/board', communitySchema,
     checkValidationResult,
     jwt.verifyToken(),
     communityController.postPosts);

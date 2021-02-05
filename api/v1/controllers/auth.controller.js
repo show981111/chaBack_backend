@@ -88,7 +88,7 @@ let issueNewAccessToken = function(req, res, next){
     db.query(sql , [req.body.refreshToken],async function(err, result){
         if(err) {console.log(err); return next(err);}
 
-        const userInfo = {userID : req.token_userID};
+        const userInfo = {userID : req.token_userID, userNickName : req.token_userNickName};
         if(result != undefined && result.length > 0){
             const newAccessToken = await jwt.signJWT(userInfo, '15m', 'accessToken');
             res.status(200).send({accessToken : newAccessToken});
