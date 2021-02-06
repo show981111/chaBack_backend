@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express()
 
-var communityRouter = require('./routes/communities.routes.js');
-var commentRouter = require('./routes/comments.routes.js');
+var communityRouter = require('./routes/community.routes.js');
+var commentRouter = require('./routes/comment.routes.js');
 var userRouter = require('./routes/user.routes.js');
 var authRouter = require('./routes/auth.routes.js');
 var placeRouter = require('./routes/place.routes.js');

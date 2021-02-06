@@ -91,7 +91,6 @@ let postPlace = async function(req, res, next) {
             }
             return;
         }
-        console.log(results.insertId);
         if(results.affectedRows > 0){
             //next() 해서 aws에 이미지 삽입! 
             res.status(200).send({

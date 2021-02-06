@@ -40,6 +40,22 @@ router.get('/like/:page',
     reviewController.unLoginedUser,
     reviewController.getReview('like'))
 
+/*리뷰 전체 랭킹 상위 5개*/
+router.get('/rank/:page', 
+    check('page').isNumeric().notEmpty().withMessage('page should be number').trim(),
+    checkValidationResult,
+    jwt.verifyToken(),
+    reviewController.unLoginedUser,
+    reviewController.getReview('rank', 5))
+
+/*각 차박지의 베스트리뷰 5개*/
+router.get('/best/:placeID/:page', 
+    check('page').isNumeric().notEmpty().withMessage('page should be number').trim(),
+    checkValidationResult,
+    jwt.verifyToken(),
+    reviewController.unLoginedUser,
+    reviewController.getReview('best', 5))
+
 /*리뷰 유저아이디에 따라서 얻기 */
 router.get('/user/:userID/:page', 
     check('page').isNumeric().notEmpty().withMessage('page should be number').trim(),

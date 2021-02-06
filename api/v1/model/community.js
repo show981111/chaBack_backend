@@ -16,10 +16,12 @@ let communitiesSchema = checkSchema({
         escape : true
     },
     category : {
+        notEmpty : true,
+        isNumeric : true,
         custom : {
             options : (value) => {
                 if(value == 0 || value == 1){
-                    return value;                    
+                    return true;                    
                 }else{
                     const e = new Error('invalid category');
                     e.status = 400;

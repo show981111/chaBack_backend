@@ -7,11 +7,11 @@ require('dotenv').config();
 /* LOGIN */
 
 let signJWT = function(userInfo, expIn, subject){
+
     return new Promise((resolve, reject) => {
         jwt.sign({
             userID: userInfo.userID,
             userNickName : userInfo.userNickName,
-            //profileImg : userInfo.profileImg,
             iat : Math.floor(Date.now() / 1000)
         }, 
         process.env.JWT_KEY, 
