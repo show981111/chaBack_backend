@@ -63,4 +63,10 @@ router.put('/view/:placeID',
     checkValidationResult, 
     placeController.updateViewCount
     )
+
+router.get('/:placeID', 
+    check('placeID').notEmpty().isNumeric().withMessage('placeID should be number and not be empty').trim(),
+    checkValidationResult, 
+    placeController.getPlaceInfoByID
+    )
 module.exports = router;

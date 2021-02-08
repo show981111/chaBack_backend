@@ -198,6 +198,75 @@ paths:
         404:
           description: 해당 유저가 등록한 차박지를 찾지 못함
 
+  /place/{placeIDtoGet}:      
+    get:                 
+      tags:               
+        - Place            
+      summary: 차박지 정보 겟
+      produces:
+      - application/json
+      parameters:         
+      - in: path       
+        name: placeIDtoGet   
+        description: 겟하려는 placeID
+        required: true 
+      responses:      
+        200:
+          description: 성공적으로 차박지 정보 겟
+          examples:
+            application/json:
+              {
+                "placeID": 3,
+                "placeName": "N3V 4F7",
+                "FK_PLACE_userID": "test@gmail.com",
+                "updated": "2018-12-06T15:00:00.000Z",
+                "lat": -5.62675,
+                "lng": 167.99071,
+                "address": "104-9732 Proin Avenue",
+                "region": "a",
+                "content": "Mauris magna. Duis dignissim tempor arcu. Vestibulum ut",
+                "wishCount": 4770,
+                "reviewCount": 793,
+                "viewCount": 0,
+                "category": "a",
+                "bathroom": 0,
+                "water": 1,
+                "price": 1,
+                "totalPoint": 620,
+                "imageKey": "0",
+                "meanPoint": 0.78
+              }
+        400:
+          description: 변수가 형식이 잘못된 경우
+        404:
+          description: 차박지 찾지 못함
+
+  /place/view/{placeID}:      
+    put:                 
+      tags:               
+        - Place            
+      summary: 차박지 조회수 업 
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: placeID   
+        description: 수정하려는 placeID
+        required: true 
+      responses:      
+        200:
+          description: 성공적으로 차박지 조회수 업
+        400:
+          description: 요청 변수가 형식이 잘못된 경우
+        401:
+          description: 토큰 인증 실패 
+
 definitions:      
   Place:
     type: object

@@ -162,6 +162,21 @@ let updateViewCount = function(req, res, next){
     })
 }
 
+let getPlaceInfoByID = function(req, res, next){
+    const sql = 'SELECT * FROM PLACE WHERE placeID = ?';
+    db.query(sql, [req.params.placeID], function(err, result){
+        if(err) return next(err);
+
+        if(result.length > 0)
+        {
+            res.status(200).send(result[0]);
+        }else{
+            const e = new Error('row not found');
+            e.status = 404;
+            return next(e);
+        }
+    })
+}
 // let getPlaceRanking = function(req, res, next){
 //     var sql = 'SELECT * FROM PLACE order by reviewCount + '
 // }
@@ -170,5 +185,6 @@ module.exports = {
     postPlace : postPlace,
     putPlace : putPlace,
     deletePlace : deletePlace,
-    updateViewCount : updateViewCount
+    updateViewCount : updateViewCount,
+    getPlaceInfoByID : getPlaceInfoByID
 }

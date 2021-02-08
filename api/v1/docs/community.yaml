@@ -27,7 +27,7 @@ paths:
         401:
           description: 토큰 인증 실패 
 
-  /community/{postID}:      
+  /community/{communityID}:      
     put:                 
       tags:               
         - Community            
@@ -40,15 +40,23 @@ paths:
         description : 
           Bearer Auth
       - in: path       
-        name: postID   
+        name: communityID   
         schema:
-          type: string
-        description: 수정할 아이디 
+          type: number
+        description: 수정할 글 아이디
+        required: true  
+      - in: body       
+        name: title   
+        description: 글 제목 
         required: true  
       - in: body       
         name: content   
-        description: 수정할 내용
+        description: 글 내용
         required: true  
+      - in: body       
+        name: imageKey   
+        description: 이미지 키
+        required: false  
       produces:
       - application/json
       responses:      
@@ -59,7 +67,7 @@ paths:
         404:
           description: 해당 글을 찾지 못함 
 
-  /community/{postIDtoDelete}:      
+  /community/{communityIDtoDelete}:      
     delete:                 
       tags:               
         - Community            
@@ -68,7 +76,7 @@ paths:
       - application/json
       parameters:
       - in: path       
-        name: postIDtoDelete   
+        name: communityIDtoDelete   
         schema:
           type: string
         description: 삭제할 글 아이디
@@ -85,7 +93,7 @@ paths:
         404:
           description: 해당 글을 찾지 못함 
 
-  /community/{userID}:      
+  /community/user/{userID}/{pageNumber}:      
     get:                 
       tags:               
         - Community            
@@ -99,6 +107,12 @@ paths:
           type: string
         description: 유저 아이디 
         required: true  
+      - in: path       
+        name: pageNumber   
+        schema:
+          type: string
+        description: 페이지
+        required: true  
       responses:      
         200:
           description: 성공적으로 가져옴
@@ -106,25 +120,26 @@ paths:
             application/json:
               [
                 {
-                  "resizedImages": [
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/first",
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/sec",
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/third"
-                  ],
-                  "originalImages": [
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/first",
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/sec",
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/third"
-                  ],
-                  "commentsNum": 0,
-                  "_id": "6016853e11d7b74165b93b4a",
-                  "userNickName": "",
-                  "category": "실시간 현황",
-                  "content": "blablablablablabads",
-                  "userID": "ok@gmail.com",
-                  "profileImg": "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/ok@gmail.com.jpeg",
-                  "updated": "2021-01-31T10:23:58.297Z",
-                  "__v": 0
+                    "communityID": 26,
+                    "title": "community post  0",
+                    "content": "dasdasdasvaljlkMlkdn;e sad Fea vaevb e",
+                    "category": 0,
+                    "FK_COMMUNITY_userID": "ok@gmail.com",
+                    "imageKey": "dasdsad.jpeg,dsadas.jpeg,asd.jpeg",
+                    "updated": "2021-02-06T05:41:53.000Z",
+                    "commentsNum": 0,
+                    "userNickName": "updated NickName okk",
+                    "profileImg": "",
+                    "resizedImages": [
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/dasdsad.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/dsadas.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/asd.jpeg"
+                    ],
+                    "originalImages": [
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/dasdsad.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/dsadas.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/asd.jpeg"
+                    ]
                 },
               ]
 
@@ -155,109 +170,30 @@ paths:
             application/json:
               [
                 {
-                  "resizedImages": [
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/first",
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/sec",
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/third"
-                  ],
-                  "originalImages": [
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/first",
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/sec",
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/third"
-                  ],
-                  "commentsNum": 0,
-                  "_id": "6016853e11d7b74165b93b4a",
-                  "userNickName": "",
-                  "category": "실시간 현황",
-                  "content": "blablablablablabads",
-                  "userID": "ok@gmail.com",
-                  "profileImg": "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/ok@gmail.com.jpeg",
-                  "updated": "2021-01-31T10:23:58.297Z",
-                  "__v": 0
+                    "communityID": 26,
+                    "title": "community post  0",
+                    "content": "dasdasdasvaljlkMlkdn;e sad Fea vaevb e",
+                    "category": 0,
+                    "FK_COMMUNITY_userID": "ok@gmail.com",
+                    "imageKey": "dasdsad.jpeg,dsadas.jpeg,asd.jpeg",
+                    "updated": "2021-02-06T05:41:53.000Z",
+                    "commentsNum": 0,
+                    "userNickName": "updated NickName okk",
+                    "profileImg": "",
+                    "resizedImages": [
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/dasdsad.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/dsadas.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/asd.jpeg"
+                    ],
+                    "originalImages": [
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/dasdsad.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/dsadas.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/asd.jpeg"
+                    ]
                 },
               ]
-
-  /community/place/{placeID}/{pageNumber}/{parseNum}:      
-    get:                 
-      tags:               
-        - Community            
-      summary: 차박지에 따른 실시간 현황 가져옴  
-      produces:
-      - application/json
-      parameters:
-      - in: path       
-        name: placeID   
-        schema:
-          type: string
-        description: 차박지 아이디
-        required: true  
-      - in: pageNumber       
-        name: userID   
-        schema:
-          type: string
-        description: 페이지
-        required: true  
-      - in: parseNum       
-        name: category   
-        schema:
-          type: string
-        description: 몇개 가져올지(ex. 5 이면 현황 5개 가져옴)
-        required: true  
-      responses:      
-        200:
-          description: 성공적으로 가져옴
-          examples:
-            application/json:
-              [
-                {
-                  "resizedImages": [
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/first",
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/sec",
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/third"
-                  ],
-                  "originalImages": [
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/first",
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/sec",
-                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/third"
-                  ],
-                  "commentsNum": 0,
-                  "_id": "6016853e11d7b74165b93b4a",
-                  "userNickName": "",
-                  "category": "실시간 현황",
-                  "content": "blablablablablabads",
-                  "userID": "ok@gmail.com",
-                  "profileImg": "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/ok@gmail.com.jpeg",
-                  "updated": "2021-01-31T10:23:58.297Z",
-                  "__v": 0
-                },
-              ]
-
-
-
 
 definitions:      
-  Current:
-    type: object
-    properties:
-      placeName:
-        type: string
-        description : 실시간 현황 등록시에만 필요
-      placeID:
-        type: string
-        description : 실시간 현황 등록시에만 필요 
-      content:
-        type: string
-      category:
-        type: int
-      imageKey:
-        type: string
-    example:
-      placeName : N3V 4F7
-      placeID : post review to place ID 2
-      content : sadsafafa
-      category : 2
-      imageKey : ['a','b','c']
-
   Board:
     type: object
     properties:
@@ -268,7 +204,7 @@ definitions:
       category:
         type: int
       imageKey:
-        type: string
+        type: array
     example:
       title : sadasdas
       content : asfwefweafaewvcwea

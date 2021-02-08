@@ -36,6 +36,7 @@ let postComment = function(req, res, next){
 
     db.query(sql, params, async function(err, result){
         if(err){
+            console.log(err);
             if(err.errno == 1452){
                 const e = new Error('unable to find Foreign Key');
                 e.status = 404;
@@ -48,6 +49,7 @@ let postComment = function(req, res, next){
             await updateCommunityInfo(req.body.communityID, 'insert');
             res.status(200).send({commentID : result.insertId})
         }catch(e){
+            console.log(e);
             return next(e);
         }
     })
@@ -55,7 +57,9 @@ let postComment = function(req, res, next){
 
 //get Comments By parent ID 
 let getCommentsByParent = function(req, res, next){
-    const sql = 'SELECT * FROM COMMENT WHERE FK_COMMENT_communityID = ?';
+    const sql = `SELECT C.*, U.userNickName, U.profileImg FROM COMMENT C 
+                    LEFT JOIN USER U ON U.userID = C.FK_COMMENT_userID
+                    WHERE C.FK_COMMENT_communityID = ?`;
     db.query(sql, [req.params.communityID], function(err, results){
         if(err) return next(err);
 
@@ -65,7 +69,9 @@ let getCommentsByParent = function(req, res, next){
 
 //get Comments By userID w/ posts 
 let getCommentsByUserID = function(req, res, next){
-    const sql = 'SELECT * FROM COMMENT WHERE FK_COMMENT_userID = ?';
+    const sql = `SELECT C.*, U.userNickName, U.profileImg FROM COMMENT C
+                    LEFT JOIN USER U ON U.userID = C.FK_COMMENT_userID
+                    WHERE C.FK_COMMENT_userID = ? LIMIT ${req.params.pageNumber}, 20`;
     db.query(sql, [req.params.userID], function(err, results){
         if(err) return next(err);
 
@@ -89,8 +95,8 @@ let updateComment = function(req, res, next){
 }
 
 let deleteComment = function(req, res, next){
-    const sql = 'DELETE FROM COMMENT WHERE FK_COMMENT_userID = ? AND commentID = ?';
-    db.query(sql, [req.token_userID, req.params.commentID], async function(err, result){
+    const sql = 'DELETE FROM COMMENT WHERE FK_COMMENT_userID = ? AND commentID = ? AND FK_COMMENT_communityID';
+    db.query(sql, [req.token_userID, req.params.commentID,req.params.communityID], async function(err, result){
         if(err) return next(err);
 
         if(result.affectedRows > 0 ){

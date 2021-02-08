@@ -18,8 +18,8 @@ paths:
         description: 댓글 내용
         required: true  
       - in: body       
-        name: parentID   
-        description: 댓글 달 부모 글의 아이디
+        name: communityID   
+        description: 댓글 달 부모 커뮤니티 글의 아이디
         required: true  
       responses:     
         200:
@@ -29,45 +29,7 @@ paths:
         401:
           description: 토큰 인증 실패 
         404:
-          description: 부모 아이디 찾지 못함
-
-  /comment/{replyParentID}:      
-    post:                 
-      tags:               
-        - Comment            
-      summary: 대댓글 단다
-      parameters:        
-      - in: header
-        type: http
-        scheme: bearer
-        name: Authorization
-        description : 
-          Bearer Auth
-      - in: path       
-        name: replyParentID   
-        schema:
-          type: string
-        description: 대댓글을 달 댓글의 아이디
-        required: true  
-      - in: body       
-        name: content   
-        description: 댓글 내용
-        required: true  
-      - in: body       
-        name: parentID   
-        description: 댓글 달 부모 "게시글"의 아이디
-        required: true  
-      produces:
-      - application/json
-      responses:     
-        200:
-          description: 성공적으로 글 등록 
-        400:
-          description: 요청 변수 잘못됨
-        401:
-          description: 토큰 인증 실패 
-        404:
-          description: 부모 아이디 찾지 못함
+          description: 부모 커뮤니티 아이디 찾지 못함
 
   /comment/{commentID}:      
     put:                 
@@ -89,13 +51,13 @@ paths:
         required: true  
       responses:      
         200:
-          description: 성공적으로 삭제함
+          description: 성공적으로 수정함
         401:
           description: 토큰 인증실패 
         404:
           description: 해당 글을 찾지 못함 
 
-  /comment/{commentIDtoDelete}:      
+  /comment/{communityID}/{commentID}:      
     delete:                 
       tags:               
         - Comment            
@@ -104,9 +66,15 @@ paths:
       - application/json
       parameters:
       - in: path       
-        name: commentIDtoDelete   
+        name: communityID   
         schema:
-          type: string
+          type: number
+        description: 삭제할 댓글의 부모 커뮤니티 아이디 
+        required: true  
+      - in: path       
+        name: commentID   
+        schema:
+          type: number
         description: 삭제할 댓글 아이디 
         required: true  
       responses:      
@@ -117,11 +85,42 @@ paths:
         404:
           description: 해당 글을 찾지 못함 
 
-  /comment/user/{userID}:      
+  /comment/parent/{communityID}:      
     get:                 
       tags:               
         - Comment            
-      summary: 유저가 단 댓글 다 가져옴
+      summary: 해당 커뮤니티 글에 달린 댓글 가져옴 
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: communityID   
+        schema:
+          type: number
+        description: 커뮤니티 글 아이디
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+              [
+                {
+                    "commentID": 9,
+                    "FK_COMMENT_userID": "ok@gmail.com",
+                    "FK_COMMENT_communityID": 5,
+                    "content": "comment to communityID",
+                    "updated": "2021-02-06T06:05:01.000Z",
+                    "userNickName": "updated NickName okk",
+                    "profileImg": ""
+                },
+              ]
+
+  /comment/user/{userID}/{pageNumber}:      
+    get:                 
+      tags:               
+        - Comment            
+      summary: 유저가 단 댓글 가져옴 
       produces:
       - application/json
       parameters:
@@ -131,51 +130,11 @@ paths:
           type: string
         description: 유저 아이디
         required: true  
-      responses:      
-        200:
-          description: 성공적으로 가져옴
-          examples:
-            application/json:
-              [
-                  {
-                      "replies": [],
-                      "_id": "5fec3999283ac123b39657d8",
-                      "parentID": {
-                          "resizedImages": [],
-                          "originalImages": [],
-                          "commentsNum": 1,
-                          "_id": "5fe5e6a789cccc1b4534038a",
-                          "imageKey": [
-                              "sdasdsa"
-                          ],
-                          "userID": "testUser@gmalom.com",
-                          "userNickName": "123",
-                          "category": "5216",
-                          "content": "blasd",
-                          "updated": "2020-12-25T13:38:34.986Z",
-                          "__v": 0
-                      },
-                      "userID": "test@gmail.com",
-                      "userNickName": "testUser",
-                      "content": "reply to 5fe6f0c4f4ef276059634af9 hello~~",
-                      "updated": "2020-12-30T08:26:01.071Z",
-                      "__v": 0
-                  },
-              ]
-
-  /comment/parent/{parentID}:      
-    get:                 
-      tags:               
-        - Comment            
-      summary: 게시글에 달린 댓글 다 가져옴 
-      produces:
-      - application/json
-      parameters:
       - in: path       
-        name: parentID   
+        name: pageNumber   
         schema:
-          type: string
-        description: 게시글 아이디
+          type: number
+        description: 페이지
         required: true  
       responses:      
         200:
@@ -184,37 +143,15 @@ paths:
             application/json:
               [
                 {
-                    "replies": [
-                        {
-                            "replies": [],
-                            "_id": "5fe6fddfd058156b5c03f1d7",
-                            "parentID": "5fe5e6a789cccc1b4534038a",
-                            "userID": "test@gmail.com",
-                            "userNickName": "testUser",
-                            "content": "reply to 5fe6f0c4f4ef276059634af9 hello~~",
-                            "updated": "2020-12-26T09:09:51.206Z",
-                            "__v": 0
-                        },
-                        {
-                            "replies": [],
-                            "_id": "5fe6fe60b71d6e6bcb0cc2d7",
-                            "parentID": "5fe5e6a789cccc1b4534038a",
-                            "userID": "test@gmail.com",
-                            "userNickName": "testUser",
-                            "content": "reply to 5fe6f0c4f4ef276059634af9 hello~~",
-                            "updated": "2020-12-26T09:12:00.371Z",
-                            "__v": 0
-                        },
-                    ],
-                    "_id": "5fe6f0c4f4ef276059634af9",
-                    "userID": "test@gmail.com",
-                    "userNickName": "test",
-                    "parentID": "5fe5e6a789cccc1b4534038a",
-                    "content": "blasd",
-                    "updated": "2020-12-26T08:13:56.817Z",
-                    "__v": 0
-                }
-             ]
+                    "commentID": 3,
+                    "FK_COMMENT_userID": "ok@gmail.com",
+                    "FK_COMMENT_communityID": 5,
+                    "content": "updated content",
+                    "updated": "2021-02-06T05:59:59.000Z",
+                    "userNickName": "updated NickName okk",
+                    "profileImg": ""
+                },
+              ]
 
 
 

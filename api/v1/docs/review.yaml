@@ -131,6 +131,109 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우
 
+  /review/rank/{page}:      
+    get:                 
+      tags:               
+        - Review            
+      summary: 리뷰 전체 랭킹으로 5위까지 겟 
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: page   
+        description: 해당 페이지 조회, 0 이면 1 ~ 5 위까지 겟, page의 값에 따라서 스킵 
+        required: true  
+      responses:      
+        200:
+          description: review 리스트 likeCount + replyCount 를 기준으로 겟 
+          examples:
+            application/json:
+              [
+                {
+                  "reviewID": 5,
+                  "FK_REVIEW_placeID": 2,
+                  "content": "updated content haha",
+                  "updated": "2021-01-28T07:05:12.000Z",
+                  "FK_REVIEW_userID": "ok@gmail.com",
+                  "point": 5,
+                  "likeCount": 2,
+                  "imageKey": "asdasd,vasgrae,hdhydth",
+                  "replyCount": 6,
+                  "userNickName": "updated NickName okk",
+                  "profileImg": "",
+                  "placeName": "X4C 2Q6",
+                  "resizedImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/asdasd",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/vasgrae",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/hdhydth"
+                  ],
+                  "originalImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/asdasd",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/vasgrae",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/hdhydth"
+                  ]
+                },
+              ]
+        400:
+          description: Get 파라미터가 형식이 잘못된 경우
+
+  /review/best/{placeID}/{page}:      
+    get:                 
+      tags:               
+        - Review            
+      summary: 리뷰 차박지에 따라서 베스트 리뷰 5위까지 겟 
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: placeID   
+        description: 차박지 아이디
+        required: true
+      - in: path       
+        name: page   
+        description: 해당 페이지 조회, 0 이면 1 ~ 5 위까지 겟, page의 값에 따라서 스킵 
+        required: true  
+      responses:      
+        200:
+          description: review 리스트 likeCount + replyCount 를 기준으로 겟 
+          examples:
+            application/json:
+              [
+                {
+                    "reviewID": 10,
+                    "FK_REVIEW_placeID": 3,
+                    "content": "post review to place ID 2",
+                    "updated": "2021-01-06T15:00:00.000Z",
+                    "FK_REVIEW_userID": "ok@gmail.com",
+                    "point": 3,
+                    "likeCount": 3,
+                    "imageKey": "a",
+                    "replyCount": 0,
+                    "userNickName": "updated NickName okk",
+                    "profileImg": "",
+                    "resizedImages": [
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/a"
+                    ],
+                    "originalImages": [
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/a"
+                    ]
+                },
+              ]
+        400:
+          description: Get 파라미터가 형식이 잘못된 경우
+
   /review/{reviewID}/{placeID}:      
     put:                 
       tags:               

@@ -1,12 +1,20 @@
 module.exports = function(results, endpoint){
    
     for(var i = 0; i < results.length ; i++){
-        if(!results[i].imageKey) continue;
+        if(!results[i].imageKey) {
+            results[i].resizedImages = [];
+            results[i].originalImages = [];
+            continue;
+        }
         var imageKeyArr = results[i].imageKey.split(',');
         var resizedImages = [];
         var originalImages = [];
         for(var j = 0; j < imageKeyArr.length; j++){
-            if(!imageKeyArr[j] || imageKeyArr[j] == null) continue;
+            if(!imageKeyArr[j] || imageKeyArr[j] == null){
+                results[i].resizedImages = [];
+                results[i].originalImages = [];
+                continue;
+            }
             var userID;
             if(endpoint == 'place')
             {

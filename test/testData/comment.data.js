@@ -21,7 +21,7 @@ let postProvider = [
 
 let putProvider = [
     {
-        commentID : 1,
+        commentID : 3,
         content : 'updated content',
         exp : 200,
         detail : 'success',
@@ -40,7 +40,22 @@ let putProvider = [
     }
 ]
 
+let deleteProvider = [
+    {
+        communityID : 5,
+        commentID : 1,
+        exp : 200,
+        detail : 'success',
+    },
+    {
+        communityID : 404,
+        commentID : 1,
+        exp : 404,
+        detail : 'row not found',
+    }
+]
 module.exports = {
     postProvider : postProvider,
-    putProvider : putProvider
+    putProvider : putProvider,
+    deleteProvider : deleteProvider
 }

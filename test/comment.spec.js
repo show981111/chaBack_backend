@@ -40,8 +40,8 @@ describe('Comment API', function(){
                         if(err) throw err;
                         if(postProvider.exp == 200){
                              expect(response.body).to.have.property('commentID');
-                             insertedID = response.body.communityID;
-                            //  testData.deleteProvider[0].communityID = insertedID;
+                             insertedID = response.body.commentID;
+                             testData.deleteProvider[0].commentID = insertedID;
                         }
                         else {
                             response.body.error.should.equal(postProvider.detail);
@@ -54,12 +54,12 @@ describe('Comment API', function(){
             testPost(testData.postProvider[i], i);
         }
     })
-    describe('PUT COMMUNITY api/v1/community/:communityID', function(){
+    describe('PUT Comment api/v1/comment/:commentID', function(){
     
         let testPut = function(putProvider, i){
             it(`it should be ${putProvider.exp} : ${putProvider.detail} index[${i}]`, (done) =>{
                 request(app)
-                    .put(`/api/v1/community/${putProvider.communityID}`)
+                    .put(`/api/v1/comment/${putProvider.commentID}`)
                     .send(putProvider)
                     .set('Authorization', 'Bearer ' + accessToken)
                     .expect(putProvider.exp)
@@ -79,61 +79,60 @@ describe('Comment API', function(){
         }
     })
 
-    // describe('DELETE REVIEW api/v1/review/:reviewID/:placeID', function(){
+    describe('DELETE REVIEW api/v1/comment/:communityID/:communityID', function(){
     
-    //     let testDelete = function(deleteProvider, i){
-    //         it(`it should be ${deleteProvider.exp} : ${deleteProvider.detail} index[${i}]`, (done) =>{
-    //             request(app)
-    //                 .delete(`/api/v1/community/${deleteProvider.communityID}`)
-    //                 .send({imageKey : deleteProvider.imageKey})
-    //                 .set('Authorization', 'Bearer ' + accessToken)
-    //                 .expect(deleteProvider.exp)
-    //                 .end((err, response) => {
-    //                     if(err) throw err;
-    //                     if(deleteProvider.exp == 200) expect(response.text).to.equal('success');
-    //                     else {
-    //                         response.body.error.should.equal(deleteProvider.detail);
-    //                     }
-    //                     done();
-    //                 })
-    //         })
-    //     }
+        let testDelete = function(deleteProvider, i){
+            it(`it should be ${deleteProvider.exp} : ${deleteProvider.detail} index[${i}]`, (done) =>{
+                request(app)
+                    .delete(`/api/v1/comment/${deleteProvider.communityID}/${deleteProvider.commentID}`)
+                    .set('Authorization', 'Bearer ' + accessToken)
+                    .expect(deleteProvider.exp)
+                    .end((err, response) => {
+                        if(err) throw err;
+                        if(deleteProvider.exp == 200) expect(response.text).to.equal('success');
+                        else {
+                            response.body.error.should.equal(deleteProvider.detail);
+                        }
+                        done();
+                    })
+            })
+        }
 
-    //     for(var i = 0; i < testData.deleteProvider.length; i++){
-    //         // console.log(insertedReviewID);
-    //         testDelete(testData.deleteProvider[i], i);
-    //     }
-    // })
+        for(var i = 0; i < testData.deleteProvider.length; i++){
+            // console.log(insertedReviewID);
+            testDelete(testData.deleteProvider[i], i);
+        }
+    })
+    ///parent/:communityID', 
+    describe('GET COMMENT API', function(){
+        it('it get COMMENT list by communityID', (done) => {
+            request(app)
+                .get('/api/v1/comment/parent/5')
+                .expect(200)
+                .end((err, response) => {
+                    if(err) throw err;
+                    console.log(response.body);
+                    for(var i = 0; i < response.body.length; i++){
+                        response.body[i].FK_COMMENT_communityID.should.equal(5);
+                    }
+                    done();
+                })
+        })
 
-    // describe('GET COMMUNITY API', function(){
-    //     it('it get community list by userID', (done) => {
-    //         request(app)
-    //             .get('/api/v1/community/user/ok@gmail.com/0')
-    //             .expect(200)
-    //             .end((err, response) => {
-    //                 if(err) throw err;
-    //                 console.log(response.body);
-    //                 for(var i = 0; i < response.body.length; i++){
-    //                     response.body[i].FK_COMMUNITY_userID.should.equal('ok@gmail.com');
-    //                 }
-    //                 done();
-    //             })
-    //     })
-
-    //     it('it get community list by category', (done) => {
-    //         request(app)
-    //             .get('/api/v1/community/1/0')
-    //             .expect(200)
-    //             .end((err, response) => {
-    //                 if(err) throw err;
-    //                 console.log(response.body);
-    //                 for(var i = 0; i < response.body.length; i++){
-    //                     response.body[i].category.should.equal(1);
-    //                     // response.body[i].reviewID.should.be.below(10);
-    //                 }
-    //                 done();
-    //             })
-    //     })
-    // })
+        it('it get comment list by userID', (done) => {
+            request(app)
+                .get('/api/v1/comment/user/ok@gmail.com/0')
+                .expect(200)
+                .end((err, response) => {
+                    if(err) throw err;
+                    console.log(response.body);
+                    for(var i = 0; i < response.body.length; i++){
+                        response.body[i].FK_COMMENT_userID.should.equal('ok@gmail.com');
+                        // response.body[i].reviewID.should.be.below(10);
+                    }
+                    done();
+                })
+        })
+    })
 
 })

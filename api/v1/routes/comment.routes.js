@@ -18,7 +18,7 @@ router.get('/parent/:communityID',
     checkValidationResult,
     commentController.getCommentsByParent );
 
-router.get('/user/:userID', 
+router.get('/user/:userID/:pageNumber', 
     check('userID').notEmpty().isEmail().withMessage('userID should not be empty').trim(),
     checkValidationResult,
     commentController.getCommentsByUserID );
