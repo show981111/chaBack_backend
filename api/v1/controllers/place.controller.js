@@ -153,23 +153,30 @@ let deletePlace = function (req,res,next) {
     })
 }
 
-let updateViewCount = function(req, res, next){
+let updateViewCount = function(placeID){
     var sql = 'UPDATE PLACE SET viewCount = viewCount + 1 WHERE placeID = ?';
-    db.query(sql, [req.params.placeID], function(err , result){
-        if(err) {return next(err);}
-
-        res.status(200).send();
+    return new Promise(function(resolve, reject){
+            db.query(sql, [placeID], function(err , result){
+            if(err) { return reject(err);}
+            return resolve();
+        })
     })
 }
 
 let getPlaceInfoByID = function(req, res, next){
     const sql = 'SELECT * FROM PLACE WHERE placeID = ?';
-    db.query(sql, [req.params.placeID], function(err, result){
+    db.query(sql, [req.params.placeID], async function(err, result){
         if(err) return next(err);
 
         if(result.length > 0)
         {
-            res.status(200).send(result[0]);
+            try{
+                await updateViewCount(req.params.placeID);
+                result = makeImageArray(result, 'place');
+                res.status(200).send(result[0]);
+            }catch(e){
+                return next(e);
+            }
         }else{
             const e = new Error('row not found');
             e.status = 404;

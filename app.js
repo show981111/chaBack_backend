@@ -2,14 +2,12 @@ const express = require('express')
 require('dotenv').config();
 const app = express()
 const port = process.env.port;
-const mongoDB = require('./dbConnection/mongoDB.js')
 const version_one_router = require('./api/v1/index.js');
 
 //body parser 
 const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({extended:false }))
 app.use(bodyParser.json())
-mongoDB();
 
 //versioning
 app.use('/api/v1/', version_one_router);

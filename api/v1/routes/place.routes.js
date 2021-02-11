@@ -58,11 +58,11 @@ router.delete('/:placeID',
  * 조회수 UP
  */
 
-router.put('/view/:placeID',
-    check('placeID').notEmpty().isNumeric().withMessage('placeID should be number and not be empty').trim(),
-    checkValidationResult, 
-    placeController.updateViewCount
-    )
+// router.put('/view/:placeID',
+//     check('placeID').notEmpty().isNumeric().withMessage('placeID should be number and not be empty').trim(),
+//     checkValidationResult, 
+//     placeController.updateViewCount
+//     )
 
 router.get('/:placeID', 
     check('placeID').notEmpty().isNumeric().withMessage('placeID should be number and not be empty').trim(),
