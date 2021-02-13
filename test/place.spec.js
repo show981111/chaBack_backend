@@ -3,7 +3,6 @@ const chai = require('chai');
 let app = require("../app.js");
 const { expect } = require('chai');
 const testData = require('./testData/place.data.js');
-const { sendEmailInvalidInput, undefinedUser } = require('./testData/auth.data.js');
 const { response } = require('express');
 
 chai.should();

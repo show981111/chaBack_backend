@@ -91,7 +91,8 @@ let profileUpload = multer({
 
 let updateProfile = function(req, res, next){
     const sql = 'UPDATE USER SET profileImg = ? WHERE userID = ?';
-    const url = `${process.env.BUCKET_PATH}/images/resize/${req.token_userID}/${req.token_userID}.jpeg`
+    const formattedUserID = req.token_userID.replace('@', '%40');
+    const url = `${process.env.BUCKET_PATH}/images/resize/${formattedUserID}/${formattedUserID}.jpeg`
     db.query(sql, [url, req.token_userID], async function (err, results) {
         if(err) {console.log(err); return next(err);}
 

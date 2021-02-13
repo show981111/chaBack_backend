@@ -93,14 +93,12 @@ const updateUserFailProvider = [
         userID : 'ok1@gmail.com',
         profileImg : 'default',
         userNickName : 'ok6',
-        userName : 'sadasd',
         userPhone : '01011112222',
         exp : 409,
         detail : 'userNickName already exist'
     },
     {
         profileImg : 'default',
-        userName : 'sadasd',
         userPhone : '01011112222',
         exp : 400,
         detail : 'userNickName deos not exist'
@@ -108,21 +106,12 @@ const updateUserFailProvider = [
     {
         profileImg : 'default',
         userNickName : 'a',
-        userPhone : '01011112222',
-        exp : 400,
-        detail : 'userName does not exist'
-    },
-    {
-        profileImg : 'default',
-        userNickName : 'a',
-        userName : 'sadasd',
         exp : 400,
         detail : 'userPhone does not exist'
     },
     {
         profileImg : 'default',
         userNickName : 'a',
-        userName : 'sadasd',
         userPhone : '010-1111-2222',
         exp : 400,
         detail : 'invalid userPhone'

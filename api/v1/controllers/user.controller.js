@@ -208,8 +208,8 @@ let register = function(req, res , next){
 /* chage user information(userNickName or userName or userPhone or profileImg(if set, then should be updated to userID)) */
 let updateUserInfo = function(req, res , next){
     
-    const sql = `UPDATE USER SET userNickName = ?, userName = ? , userPhone = ? WHERE userID = ?`;
-    const params = [req.body.userNickName, req.body.userName, req.body.userPhone, req.token_userID];
+    const sql = `UPDATE USER SET userNickName = ? , userPhone = ? WHERE userID = ?`;
+    const params = [req.body.userNickName, req.body.userPhone, req.token_userID];
     db.query(sql, params, function(err, results){
         if(err){
             if(err.errno == 1062){
