@@ -31,6 +31,28 @@ let getReview = function(option, parseNum = 20){
     }
 }
 
+let updateUserInfo = function(userID, option){
+    var sql;
+    if(option == 'insert'){
+        sql = 'UPDATE USER SET reviewCount = reviewCount + 1 WHERE userID = ?';
+    }else{
+        sql = 'UPDATE USER SET reviewCount = reviewCount - 1 WHERE userID = ?';
+    }   
+    return new Promise(function(resolve, reject) {
+        db.query(sql, [userID], function(err, results) {
+            if(err) reject(err);
+            if(results.affectedRows > 0){
+                resolve();
+            }else{
+                const e = new Error('Not Found');
+                e.status = 404;
+                reject(e);
+            }
+        })
+    });
+}
+
+
 /**
  * @param {Number} placeID 
  * @param {Number} point 
@@ -81,6 +103,7 @@ let postReview = function (req, res, next) {
         if(results.affectedRows > 0){
             try{
                 await updatePlaceInfo(req.body.placeID, req.body.point, 'insert');
+                await updateUserInfo(req.token_userID, 'insert');
                 res.status(200).send({ reviewID : results.insertId });
             }catch(err){
                 return next(err);
@@ -126,6 +149,7 @@ let deleteReview = function (req, res, next) {
         if(results.affectedRows > 0){
             try{
                 await updatePlaceInfo(req.params.placeID, 0, 'delete');
+                await updateUserInfo(req.token_userID, 'delete');
                 res.status(200).send('success');
             } catch(err){
                 return next(err);

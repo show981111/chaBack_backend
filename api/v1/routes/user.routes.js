@@ -46,7 +46,13 @@ router.put('/reset',
     checkValidationResult,
     userController.resetPassword
 )
-
+/*베스트 유저 겟 */
+router.get('/best/:page/:parseNum',
+    check('page').notEmpty().isNumeric().withMessage('page should be number and not be empty').trim(),
+    check('parseNum').notEmpty().isNumeric().withMessage('parseNum should be number and not be empty').trim(),
+    checkValidationResult,
+    userController.getBest
+)
 
 module.exports = router;
 

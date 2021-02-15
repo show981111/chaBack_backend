@@ -6,6 +6,27 @@ const makeImageArray = require('../utils/makeImageArray.js')
 const makeImageKey = require('../utils/makeImageKey.js');
 require('dotenv').config();
 
+let updateUserInfo = function(userID, option){
+    var sql;
+    if(option == 'insert'){
+        sql = 'UPDATE USER SET placeCount = placeCount + 1 WHERE userID = ?';
+    }else{
+        sql = 'UPDATE USER SET placeCount = placeCount - 1 WHERE userID = ?';
+    }   
+    return new Promise(function(resolve, reject) {
+        db.query(sql, [userID], function(err, results) {
+            if(err) reject(err);
+            if(results.affectedRows > 0){
+                resolve();
+            }else{
+                const e = new Error('Not Found');
+                e.status = 404;
+                reject(e);
+            }
+        })
+    });
+}
+
 /**
  * @param {Boolean} byDistance 
  */
@@ -78,7 +99,7 @@ let postPlace = async function(req, res, next) {
                 VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`;
     var params = [req.body.placeName, req.token_userID,updated ,req.body.lat, req.body.lng, req.body.address,req.body.region,req.body.content,
                     req.body.category, req.body.bathroom,req.body.water,req.body.price, imageKeyWithComma];
-    db.query(sql,params, function (err, results) {
+    db.query(sql,params, async function (err, results) {
         if(err){ 
             console.log(err);
             if(err.errno == 1062){
@@ -93,9 +114,14 @@ let postPlace = async function(req, res, next) {
         }
         if(results.affectedRows > 0){
             //next() 해서 aws에 이미지 삽입! 
-            res.status(200).send({
-                placeID : results.insertId
-            })
+            try{
+                await updateUserInfo(req.token_userID, 'insert');
+                res.status(200).send({
+                    placeID : results.insertId
+                })
+            }catch(e){
+                return next(e);
+            }
         }else{
             next(new Error());
         }
@@ -141,10 +167,15 @@ let putPlace = function(req, res, next) {
 
 let deletePlace = function (req,res,next) {
     var sql = 'DELETE FROM PLACE WHERE FK_PLACE_userID = ? AND placeID = ?';
-    db.query(sql, [req.token_userID, req.params.placeID], function(err, results) {
+    db.query(sql, [req.token_userID, req.params.placeID], async function(err, results) {
         if(err) return next(err);
         if(results.affectedRows > 0){
-            res.status(200).send('success')
+            try{
+                await updateUserInfo(req.token_userID, 'delete');
+                res.status(200).send('success');
+            }catch(e){
+                return next(e);
+            }
         }else{
             const e = new Error('Not Found');
             e.status = 404;
@@ -184,6 +215,18 @@ let getPlaceInfoByID = function(req, res, next){
         }
     })
 }
+
+let getBest = function(req, res, next){
+    const sql = `SELECT plc.*, user.userNickName, user.profileImg FROM PLACE plc 
+                    LEFT JOIN USER user ON plc.FK_PLACE_userID = user.userID
+                    order by (plc.reviewCount + plc.wishCount) DESC 
+                    LIMIT ${req.params.page} , ${req.params.parseNum}`;
+    db.query(sql, function(err, results){
+        if(err) return next(err);
+        results = makeImageArray(results, 'place');
+        res.status(200).send(results);
+    })
+}
 // let getPlaceRanking = function(req, res, next){
 //     var sql = 'SELECT * FROM PLACE order by reviewCount + '
 // }
@@ -193,5 +236,6 @@ module.exports = {
     putPlace : putPlace,
     deletePlace : deletePlace,
     updateViewCount : updateViewCount,
-    getPlaceInfoByID : getPlaceInfoByID
+    getPlaceInfoByID : getPlaceInfoByID,
+    getBest : getBest
 }

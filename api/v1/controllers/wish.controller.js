@@ -76,9 +76,10 @@ let deleteWish = function(req, res, next){
 
 
 let getWish = function(req, res, next){
-    var sql = `SELECT A.*, plc.* FROM WISH A
+    var sql = `SELECT A.*, plc.*, user.userNickName FROM WISH A
                 LEFT JOIN PLACE plc ON A.FK_WISH_placeID = plc.placeID
-                WHERE FK_WISH_userID = ?`;
+                LEFT JOIN USER user ON plc.FK_PLACE_userID = user.userID
+                WHERE FK_WISH_userID = ? order by A.id DESC`;
     params = [req.params.userID];
 
     db.query(sql , params, function(err, result){

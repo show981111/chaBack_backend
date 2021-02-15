@@ -109,7 +109,7 @@ var placeSchema = function(optional){
                 }
             },
         },  
-        trim: true
+        trim: true,
     },
     content: {
         errorMessage: 'content should not be empty and max length is 200',
@@ -132,7 +132,7 @@ var placeSchema = function(optional){
                 }
             },
         },  
-        trim : true
+        trim : true,
     },
     bathroom: {
         errorMessage: 'bathroom should be 1 or 0',

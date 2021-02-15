@@ -292,10 +292,21 @@ let resetPassword= function(req, res, next){
     });
 }
 
+let getBest = function(req, res, next){
+    const sql = `SELECT user.userID, user.userNickName, user.profileImg, user.userName, user.userPhone, user.placeCount, user.reviewCount FROM USER user
+                    order by (1*user.reviewCount + 2*user.placeCount) DESC 
+                    LIMIT ${req.params.page} , ${req.params.parseNum}`;
+    db.query(sql, function(err, results){
+        if(err) return next(err);
+        res.status(200).send(results);
+    })
+}
+
 module.exports = {
     register : register,
     login : login,
     updateUserInfo : updateUserInfo,
     resetPassword : resetPassword,
-    adminLogin : adminLogin
+    adminLogin : adminLogin,
+    getBest : getBest
 };

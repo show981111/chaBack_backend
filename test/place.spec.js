@@ -10,8 +10,8 @@ var accessToken;
 var insertedPlaceID;
 describe('PLACE API', function(){
     var test = {
-        'region' : 'a',
-        'category' : 'a',
+        'region' : '서울특별시',
+        'category' : '노지',
         'bathroom' : 0,
         'water' : 1,
         'price' : -1,
@@ -25,7 +25,7 @@ describe('PLACE API', function(){
         console.log(test['placeName']);
         it('it should return place lists' , (done) => {
             request(app)
-                .get(`/api/v1/place/${test['region']}/${test['category']}/${test['bathroom']}/${test['water']}/
+                .get(`/api/v1/place/${encodeURIComponent(test['region'])}/${encodeURIComponent(test['category'])}/${test['bathroom']}/${test['water']}/
                 ${test['price']}/${test['placeName']}/${test['page']}/${test['option']}`)
                 .expect(200)
                 .end((err, response) => {
@@ -47,7 +47,7 @@ describe('PLACE API', function(){
         let getInvalidTest = function(invalidDataProvider, i) {
             it(`it should be ${invalidDataProvider.exp} : ${invalidDataProvider.detail} index[${i}]`, (done)=>{
                 request(app)
-                    .get(`/api/v1/place/${invalidDataProvider['region']}/${invalidDataProvider['category']}/
+                    .get(`/api/v1/place/${encodeURIComponent(invalidDataProvider['region'])}/${encodeURIComponent(invalidDataProvider['category'])}/
                     ${invalidDataProvider['bathroom']}/${invalidDataProvider['water']}/${invalidDataProvider['price']}/
                     ${invalidDataProvider['placeName']}'/${invalidDataProvider['page']}/${invalidDataProvider['option']}`)
                     .expect(invalidDataProvider.exp)
@@ -67,7 +67,7 @@ describe('PLACE API', function(){
     describe('GET PLACE according to current location api/v1/place/:region/:category/:bathroom/:water/:price/:placeName/:page/distance/:lat/:lng', function(){
         it('it should get places by distance', (done) => {
             request(app)
-                .get(`/api/v1/place/${test['region']}/${test['category']}/${test['bathroom']}/0/
+                .get(`/api/v1/place/${encodeURIComponent(test['region'])}/${encodeURIComponent(test['category'])}/${test['bathroom']}/0/
                 ${test['price']}/-1/0/distance/28.0340000/120.6967000`)
                 .expect(200)
                 .end((err, response) => {
@@ -89,7 +89,7 @@ describe('PLACE API', function(){
 
         it('it should be 400', (done) => {
             request(app)
-                .get(`/api/v1/place/${test['region']}/${test['category']}/${test['bathroom']}/0/
+                .get(`/api/v1/place/${encodeURIComponent(test['region'])}/${encodeURIComponent(test['category'])}/${test['bathroom']}/0/
                 ${test['price']}/-1/${3}/distance/10/190`)
                 .expect(400)
                 .end((err, response) => {

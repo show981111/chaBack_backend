@@ -247,6 +247,61 @@ paths:
         404:
           description: 차박지 찾지 못함
 
+  /place/best/{page}/{parseNum}:      
+    get:                 
+      tags:               
+        - Place            
+      summary: 베스트 차박지 겟
+      produces:
+      - application/json
+      parameters:         
+      - in: path       
+        name: page   
+        description: 페이지
+        required: true 
+      - in: path       
+        name: parseNum   
+        description: 한번에 몇개씩 가져올지 (ex. 5면 5개씩 가져오고 page 만큼 스킵)
+        required: true 
+      responses:      
+        200:
+          description: 성공적으로 차박지 정보 겟
+          examples:
+            application/json:
+              [
+                {
+                    "placeID": 67,
+                    "placeName": "M1W 8I0",
+                    "FK_PLACE_userID": "ok@gmail.com",
+                    "updated": "2018-12-06T15:00:00.000Z",
+                    "lat": -29.18152,
+                    "lng": 27.57533,
+                    "address": "P.O. Box 516, 1721 Tortor Road",
+                    "region": "f",
+                    "content": "mi lacinia mattis. Integer",
+                    "wishCount": 4630,
+                    "reviewCount": 4408,
+                    "viewCount": 0,
+                    "category": "f",
+                    "bathroom": 0,
+                    "water": 1,
+                    "price": 0,
+                    "totalPoint": 4054,
+                    "imageKey": "0",
+                    "meanPoint": 0.92,
+                    "userNickName": "updated NickName okk",
+                    "profileImg": "",
+                    "resizedImages": [
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/0"
+                    ],
+                    "originalImages": [
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/0"
+                    ]
+                },
+              ]
+        400:
+          description: 변수가 형식이 잘못된 경우
+
 definitions:      
   Place:
     type: object

@@ -78,9 +78,9 @@ describe('REVIEW API', function(){
             })
         }
 
-        for(var i = 0; i < testData.reviewPutProvider.length; i++){
+        for(var k = 0; k < testData.reviewPutProvider.length; k++){
             console.log(insertedReviewID);
-            testPut(testData.reviewPutProvider[i], i);
+            testPut(testData.reviewPutProvider[k], k);
         }
     })
 
@@ -122,11 +122,11 @@ describe('REVIEW API', function(){
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
-                    console.log(response.body);
+                    // console.log(response.body);
                     for(var i = 0; i < response.body.length; i++){
                         response.body[i].FK_REVIEW_userID.should.equal('ok@gmail.com');
                         response.body[i].should.have.property('userLiked');
-                        response.body[i].reviewID.should.be.below(20);
+                        response.body[i].reviewID.should.be.below(21);
                     }
                     done();
                 })
@@ -139,7 +139,7 @@ describe('REVIEW API', function(){
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
-                    console.log(response.body);
+                    //console.log(response.body);
                     for(var i = 0; i < response.body.length; i++){
                         response.body[i].FK_REVIEW_placeID.should.equal(3);
                         response.body[i].should.have.property('userLiked');
@@ -156,7 +156,7 @@ describe('REVIEW API', function(){
                 .expect(200)
                 .end((err, response) => {
                     if(err) throw err;
-                    console.log(response.body);
+                    //console.log(response.body);
                     // for(var i = 0; i < response.body.length; i++){
                     //     // response.body[i].reviewID.should.be.below(10);
                     // }

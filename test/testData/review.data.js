@@ -36,7 +36,7 @@ let reviewPostProvider = [
         placeID : 2,
         content : 'post review to place ID 2 ',
         point : 3,
-        imageKey : [1,2,3,4,5,6,7],
+        imageKey : ['1','2','3','4','5','6','7'],
         exp : 400,
         detail : "out of range" 
     },
@@ -44,7 +44,7 @@ let reviewPostProvider = [
         placeID : 300,
         content : 'post review to place ID 2 ',
         point : 3,
-        imageKey : [1,2,3,4],
+        imageKey : ['1','2','3','4'],
         exp : 404,
         detail : "placeID Not Found" 
     },

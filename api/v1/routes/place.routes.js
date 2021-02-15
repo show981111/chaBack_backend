@@ -64,9 +64,18 @@ router.delete('/:placeID',
 //     placeController.updateViewCount
 //     )
 
+/*차박지 아이디를 통해서 차박지 정보 가져옴 + 조회수 업*/
 router.get('/:placeID', 
     check('placeID').notEmpty().isNumeric().withMessage('placeID should be number and not be empty').trim(),
     checkValidationResult, 
     placeController.getPlaceInfoByID
+    )
+
+/*베스트 차박지 가져옴 */
+router.get('/best/:page/:parseNum', 
+    check('page').notEmpty().isNumeric().withMessage('page should be number and not be empty').trim(),
+    check('parseNum').notEmpty().isNumeric().withMessage('parseNum should be number and not be empty').trim(),
+    checkValidationResult, 
+    placeController.getBest
     )
 module.exports = router;
