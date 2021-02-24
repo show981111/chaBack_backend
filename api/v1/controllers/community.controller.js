@@ -71,15 +71,24 @@ var updateCommunity = function(req, res, next){
 }
 
 var deleteCommunity = function(req, res, next){
-    const sql = 'DELETE FROM COMMUNITY WHERE communityID = ? AND FK_COMMUNITY_userID = ?'
+    var sql = 'DELETE FROM COMMUNITY WHERE communityID = ? AND FK_COMMUNITY_userID = ? RETURNING imageKey, FK_COMMUNITY_userID'
+    var params = [req.params.communityID, req.token_userID];
+    if(req.isAdmin){
+        sql = 'DELETE FROM COMMUNITY WHERE communityID = ? RETURNING imageKey, FK_COMMUNITY_userID'
+        params = [req.params.communityID];
+    }
    
-    db.query(sql, [req.params.communityID, req.token_userID], function(err, result){
+    db.query(sql, params, function(err, result){
         if(err){
             return next(err);
         }
 
-        if(result.affectedRows > 0){
-            res.status(200).send('success');
+        if(result && result.length > 0 && result[0].FK_COMMUNITY_userID !== undefined){
+            req.token_userID = result[0].FK_COMMUNITY_userID;
+            if(result[0].imageKey) {
+                req.body.imageKey = result[0].imageKey.split(',');
+            }
+            next();
         }else{
             const e = new Error('row not found');
             e.status = 404;

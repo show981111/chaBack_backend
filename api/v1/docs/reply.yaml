@@ -117,7 +117,7 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우
 
-  /reply/{replyIDtoDelete}/{reviewID}:     
+  /reply/{replyIDtoDelete}:     
     delete:                 
       tags:               
         - Reply            
@@ -134,10 +134,6 @@ paths:
       - in: path       
         name: replyIDtoDelete   
         description: 삭제하려는 replyID
-        required: true 
-      - in: path       
-        name: reviewID   
-        description: 삭제하려는 replyID의 reviewID
         required: true 
       responses:      
         200:

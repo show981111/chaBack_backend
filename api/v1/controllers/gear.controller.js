@@ -14,9 +14,9 @@ let postGear = function(req, res, next){
     var imageKeyWithComma = makeImageKey(req.body.imageKey);
     const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
 
-    const sql = `INSERT INTO GEAR(title, category, content, updated, FK_GEAR_userID, imageKey)
-                    VALUES(?,?,?,?,?,?)`;
-    const params = [req.body.title, req.body.category, req.body.content, updated, req.token_userID, imageKeyWithComma];
+    const sql = `INSERT INTO GEAR(title, category, content, updated, FK_GEAR_userID, price,imageKey)
+                    VALUES(?,?,?,?,?,?,?)`;
+    const params = [req.body.title, req.body.category, req.body.content, updated, req.token_userID, req.body.price ,imageKeyWithComma];
 
     db.query(sql, params, function(err, result){
         if(err) {
@@ -34,15 +34,19 @@ let deleteGear = function(req, res, next){
         return next(e)
     }
 
-    const sql = 'DELETE FROM GEAR WHERE gearID = ?';
+    const sql = 'DELETE FROM GEAR WHERE gearID = ? RETURNING imageKey, FK_GEAR_userID';
 
     db.query(sql, [req.params.gearID], function(err, result){
         if(err) {
             return next(new Error());
         }
-
-        if(result.affectedRows > 0){
-            res.status(200).send('success');
+        console.log(result);
+        if(result && result.length > 0){
+            req.token_userID = result[0].FK_GEAR_userID;
+            if(result[0].imageKey) {
+                req.body.imageKey = result[0].imageKey.split(',');
+            }
+            next();
         }else{
             const e = new Error('Not Found');
             e.status = 404;
@@ -62,9 +66,9 @@ let putGear = function(req, res, next){
 
     const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 
-    const sql = 'UPDATE GEAR SET title = ?, category = ?, content = ?, updated = ?, imageKey = ? WHERE gearID = ?';
+    const sql = 'UPDATE GEAR SET title = ?, category = ?, content = ?, updated = ?, price = ?,imageKey = ? WHERE gearID = ?';
 
-    db.query(sql, [req.body.title, req.body.category, req.body.content, updated, imageKeyWithComma,
+    db.query(sql, [req.body.title, req.body.category, req.body.content, updated, req.body.price ,imageKeyWithComma,
                     req.params.gearID], function(err, result){
         if(err) {
             return next(new Error());

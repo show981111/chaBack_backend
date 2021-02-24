@@ -70,7 +70,6 @@ describe('GEAR API', function(){
                         if(putProvider.exp != 200){
                             response.body.error.should.equal(putProvider.detail)
                         }else{
-                            console.log(response.body)
                             insertId = response.body.gearReviewID;
                             //testData.gearDeleteProvider[0].gearReviewID = insertId;
                             console.log('insert ID ',insertId);
@@ -86,11 +85,11 @@ describe('GEAR API', function(){
 
     })
 
-    describe('GEAR REVIEW DELETE API /api/v1/gear-review/:gearID/:gearReviewID/:point', function(){
+    describe('GEAR REVIEW DELETE API /api/v1/gear-review/:gearID', function(){
         let testDelete = function(deleteProvider, i){
-            it(`It should be ${deleteProvider.exp} : ${deleteProvider.detail} index[${i}]`, (done) => {
+            it(`It should be ${deleteProvider.exp} : ${deleteProvider.gearID} index[${i}]`, (done) => {
                 request(app)
-                    .delete(`/api/v1/gear-review/${deleteProvider.gearID}/${deleteProvider.gearReviewID}/${deleteProvider.point}`)
+                    .delete(`/api/v1/gear-review/${deleteProvider.gearReviewID}`)
                     .send(deleteProvider)
                     .set('Authorization', 'Bearer ' + accessToken)
                     .expect(deleteProvider.exp)
@@ -103,6 +102,7 @@ describe('GEAR API', function(){
                             insertId = response.body.gearReviewID;
                             //testData.gearDeleteProvider[0].gearReviewID = insertId;
                             console.log('insert ID ',insertId);
+                            //testData.gearDeleteProvider[0].gearReviewID = insertId;
                         }
                         done();
                     })

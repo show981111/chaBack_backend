@@ -30,8 +30,7 @@ router.put('/:commentID',
     jwt.verifyToken(),
     commentController.updateComment );
 
-router.delete('/:communityID/:commentID', 
-    check('communityID').notEmpty().isNumeric().withMessage('communityID should not be empty').trim(),
+router.delete('/:commentID', 
     check('commentID').notEmpty().isNumeric().withMessage('commentID should not be empty').trim(),
     checkValidationResult,
     jwt.verifyToken(),

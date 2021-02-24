@@ -47,11 +47,10 @@ router.put('/:placeID',
 /*place 삭제 */
 router.delete('/:placeID',
     check('placeID').notEmpty().isNumeric().withMessage('placeID should be number and not be empty').trim(),
-    check('imageKey').optional().notEmpty().isArray().withMessage('imageKey should not be empty'),
     checkValidationResult, 
     jwt.verifyToken(), 
+    placeController.deletePlace,
     resourcesController.deleteObjects,
-    placeController.deletePlace
 );
 
 /**
@@ -78,4 +77,13 @@ router.get('/best/:page/:parseNum',
     checkValidationResult, 
     placeController.getBest
     )
+
+
+/*내가 등록한 차박지 가져옴 */
+router.get('/user/:userID', 
+    check('userID').notEmpty().isEmail().withMessage('userID should be Email and not be empty').trim(),
+    checkValidationResult, 
+    placeController.getMyPlace
+)
+router.get('/')
 module.exports = router;

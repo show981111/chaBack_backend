@@ -41,9 +41,8 @@ router.get('/user/:userID',
     replyController.getReply('userID')
 )
 
-router.delete('/:replyID/:reviewID',
+router.delete('/:replyID',
     check('replyID').notEmpty().isNumeric().withMessage('replyID should not be empty and be a number').trim(),
-    check('reviewID').notEmpty().isNumeric().withMessage('reviewID should not be empty and be a number').trim(),
     checkValidationResult,
     jwt.verifyToken(),
     replyController.deleteReply

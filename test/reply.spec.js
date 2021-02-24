@@ -84,12 +84,12 @@ describe('REPLY API', function(){
 
     })
 
-    describe('DELETE REPLY /api/v1/reply/:replyID/:reviewID', function(){
+    describe('DELETE REPLY /api/v1/reply/:replyID', function(){
         
         let deleteTest = function(deleteProvider, i){
             it(`it should be ${deleteProvider.exp} : ${deleteProvider.detail} ${deleteProvider.replyID} index[${i}]`, (done) => {
                 request(app)
-                    .delete(`/api/v1/reply/${deleteProvider.replyID}/${deleteProvider.reviewID}`)
+                    .delete(`/api/v1/reply/${deleteProvider.replyID}`)
                     .set('Authorization', 'Bearer ' + accessToken)
                     .expect(deleteProvider.exp)
                     .end((err, response) => {

@@ -66,27 +66,19 @@ let putProvider = [
 let deleteProvider = [
     {
         replyID : 'asd',
-        reviewID : 5,
         exp : 200,
         detail : 'deleted'
     },
     {
         replyID : 100,
-        reviewID : 5,
         exp : 404,
         detail : 'Not Found'
     },
     {
         replyID : 'asdfda',
-        reviewID : 5,
         exp : 400,
         detail : 'replyID should not be empty and be a number'
-    },
-    {
-        replyID : 3,
-        exp : 400,
-        detail : 'reviewID should not be empty and be a number'
-    },
+    }
 ]
 module.exports = {
     postProvider : postProvider,

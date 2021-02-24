@@ -40,7 +40,10 @@ let updateUserInfo = function(userID, option){
     }   
     return new Promise(function(resolve, reject) {
         db.query(sql, [userID], function(err, results) {
-            if(err) reject(err);
+            if(err){ 
+                console.log(err);
+                return reject(err);
+            }
             if(results.affectedRows > 0){
                 resolve();
             }else{
@@ -142,15 +145,29 @@ let putReview = function (req, res, next) {
 }
 
 let deleteReview = function (req, res, next) {
-    const sql = 'DELETE FROM REVIEW WHERE FK_REVIEW_userID = ? AND reviewID = ? AND FK_REVIEW_placeID = ?';
-    db.query(sql, [req.token_userID, req.params.reviewID, req.params.placeID], async function(err, results) {
-        if(err) {console.log(err); return next(err);}
+    var sql = 'DELETE FROM REVIEW WHERE FK_REVIEW_userID = ? AND reviewID = ? RETURNING point, FK_REVIEW_placeID, imageKey, FK_REVIEW_userID';
+    var params = [req.token_userID, req.params.reviewID];
 
-        if(results.affectedRows > 0){
+    if(req.isAdmin){
+        sql = 'DELETE FROM REVIEW WHERE reviewID = ? RETURNING point, FK_REVIEW_placeID, imageKey, FK_REVIEW_userID';
+        params = [req.params.reviewID];
+    }
+    db.query(sql, params, async function(err, results) {
+        if(err) {console.log(err); return next(err);}
+        console.log(results);
+        if(results.length > 0 && results[0].point !== undefined){
+            console.log(results[0].point);
             try{
-                await updatePlaceInfo(req.params.placeID, 0, 'delete');
-                await updateUserInfo(req.token_userID, 'delete');
-                res.status(200).send('success');
+                await updatePlaceInfo(results[0].FK_REVIEW_placeID, results[0].point, 'delete');
+                req.token_userID = results[0].FK_REVIEW_userID;
+                if(results[0].imageKey) {
+                    req.body.imageKey = results[0].imageKey.split(',');
+                }
+                if(!req.isAdmin)
+                {
+                    await updateUserInfo(req.token_userID, 'delete');
+                }
+                next();
             } catch(err){
                 return next(err);
             }

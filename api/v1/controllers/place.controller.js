@@ -15,7 +15,7 @@ let updateUserInfo = function(userID, option){
     }   
     return new Promise(function(resolve, reject) {
         db.query(sql, [userID], function(err, results) {
-            if(err) reject(err);
+            if(err) return reject(err);
             if(results.affectedRows > 0){
                 resolve();
             }else{
@@ -166,16 +166,26 @@ let putPlace = function(req, res, next) {
 }
 
 let deletePlace = function (req,res,next) {
-    var sql = 'DELETE FROM PLACE WHERE FK_PLACE_userID = ? AND placeID = ?';
-    db.query(sql, [req.token_userID, req.params.placeID], async function(err, results) {
+    var sql = 'DELETE FROM PLACE WHERE FK_PLACE_userID = ? AND placeID = ? RETURNING imageKey, FK_PLACE_userID';
+    var params = [req.token_userID, req.params.placeID];
+    if(req.isAdmin) {
+        sql = 'DELETE FROM PLACE WHERE placeID = ? RETURNING imageKey, FK_PLACE_userID';
+        params = [req.params.placeID];
+    }
+    db.query(sql, params, async function(err, results) {
         if(err) return next(err);
-        if(results.affectedRows > 0){
+        if(results && results.length > 0 && results[0].FK_PLACE_userID !== undefined){            
             try{
-                await updateUserInfo(req.token_userID, 'delete');
-                res.status(200).send('success');
+                if(!req.isAdmin) await updateUserInfo(req.token_userID, 'delete');
+                req.token_userID = results[0].FK_PLACE_userID;
+                if(results[0].imageKey) {
+                    req.body.imageKey = results[0].imageKey.split(',');
+                }
+                next();
             }catch(e){
                 return next(e);
             }
+           
         }else{
             const e = new Error('Not Found');
             e.status = 404;
@@ -227,6 +237,15 @@ let getBest = function(req, res, next){
         res.status(200).send(results);
     })
 }
+
+let getMyPlace = function(req, res, next){
+    const sql = `SELECT * FROM PLACE WHERE FK_PLACE_userID = ? order by placeID DESC`;
+    db.query(sql,[req.params.userID] ,function(err, results){
+        if(err) return next(err);
+        results = makeImageArray(results, 'place');
+        res.status(200).send(results);
+    })
+}
 // let getPlaceRanking = function(req, res, next){
 //     var sql = 'SELECT * FROM PLACE order by reviewCount + '
 // }
@@ -237,5 +256,6 @@ module.exports = {
     deletePlace : deletePlace,
     updateViewCount : updateViewCount,
     getPlaceInfoByID : getPlaceInfoByID,
-    getBest : getBest
+    getBest : getBest,
+    getMyPlace : getMyPlace
 }

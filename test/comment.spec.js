@@ -79,12 +79,12 @@ describe('Comment API', function(){
         }
     })
 
-    describe('DELETE REVIEW api/v1/comment/:communityID/:communityID', function(){
+    describe('DELETE REVIEW api/v1/comment/:commentID', function(){
     
         let testDelete = function(deleteProvider, i){
             it(`it should be ${deleteProvider.exp} : ${deleteProvider.detail} index[${i}]`, (done) =>{
                 request(app)
-                    .delete(`/api/v1/comment/${deleteProvider.communityID}/${deleteProvider.commentID}`)
+                    .delete(`/api/v1/comment/${deleteProvider.commentID}`)
                     .set('Authorization', 'Bearer ' + accessToken)
                     .expect(deleteProvider.exp)
                     .end((err, response) => {

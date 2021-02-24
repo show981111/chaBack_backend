@@ -25,11 +25,10 @@ router.put('/:gearID',
 
 router.delete('/:gearID',
     check('gearID').notEmpty().isNumeric().withMessage('gearID should not be empty').trim(),
-    check('imageKey').optional().isArray().withMessage('imageKey should not be empty'),
     checkValidationResult,
     jwt.verifyToken(),
-    resourcesController.deleteObjects,
-    gearController.deleteGear
+    gearController.deleteGear,
+    resourcesController.deleteObjects
 )
 
 router.get('/:page',

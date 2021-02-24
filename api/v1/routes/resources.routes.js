@@ -25,10 +25,7 @@ router.delete('/',
     check('imageKey').notEmpty().isArray().withMessage('key should not be empty'),
     checkValidationResult,
     jwt.verifyToken(), 
-    resourcesController.deleteObjects,
-    (req, res, next) => {
-        res.status(200).send('success');
-    }
+    resourcesController.deleteObjects
 )
 
 // router.get('/original/:endPoint/:id/:key', 

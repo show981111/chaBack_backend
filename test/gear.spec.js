@@ -13,7 +13,7 @@ describe('GEAR API', function(){
 
     before('login user',function(done){  
         const loginUser = {
-            userID : 'ok2@gmail.com',
+            userID : 'ok1@gmail.com',
             userPassword : '1234'
         }
         request(app)

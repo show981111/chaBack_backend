@@ -21,10 +21,8 @@ router.put('/:gearReviewID',
     gearReviewController.putGearReview
 )
 
-router.delete('/:gearID/:gearReviewID/:point',
-    check('gearID').notEmpty().isNumeric().withMessage('gearID should not be empty').trim(),
+router.delete('/:gearReviewID',
     check('gearReviewID').notEmpty().isNumeric().withMessage('gearReviewID should not be empty').trim(),
-    check('point').notEmpty().isNumeric().withMessage('point should not be empty').trim(),
     checkValidationResult,
     jwt.verifyToken(),
     gearReviewController.deleteGearReview

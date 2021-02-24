@@ -80,13 +80,19 @@ let putGearReview = function (req, res, next) {
 }
 
 let deleteGearReview = function (req, res, next) {
-    const sql = 'DELETE FROM GEAR_REVIEW WHERE FK_GREVIEW_userID = ? AND gearReviewID = ? AND FK_GREVIEW_gearID = ?';
-    db.query(sql, [req.token_userID, req.params.gearReviewID, req.params.gearID], async function(err, results) {
+    var sql = 'DELETE FROM GEAR_REVIEW WHERE FK_GREVIEW_userID = ? AND gearReviewID = ? RETURNING point, FK_GREVIEW_gearID';
+    var params = [req.token_userID, req.params.gearReviewID];
+
+    if(req.isAdmin){
+        sql = 'DELETE FROM GEAR_REVIEW WHERE gearReviewID = ? RETURNING point, FK_GREVIEW_gearID';
+        params = [ req.params.gearReviewID];
+    }
+    db.query(sql,params, async function(err, results) {
         if(err) {console.log(err); return next(err);}
 
-        if(results.affectedRows > 0){
+        if(results && results.length > 0 && results[0].FK_GREVIEW_gearID !== undefined){
             try{
-                await updateGearInfo(req.params.gearID, req.params.point, 'delete');
+                await updateGearInfo(results[0].FK_GREVIEW_gearID, results[0].point, 'delete');
                 res.status(200).send('success');
             } catch(err){
                 return next(err);

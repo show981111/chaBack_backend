@@ -44,8 +44,13 @@ let putRealTime = function(req, res, next){
 }
 
 let deleteRealTime = function(req, res, next){
-    const sql = 'DELETE FROM REALTIME WHERE FK_REALTIME_userID = ? AND realTimeID = ?';
-    db.query(sql, [req.token_userID, req.params.realTimeID], function(err, result){
+    var sql = 'DELETE FROM REALTIME WHERE FK_REALTIME_userID = ? AND realTimeID = ?';
+    var params = [req.token_userID, req.params.realTimeID];
+    if(req.isAdmin){
+        sql = 'DELETE FROM REALTIME WHERE realTimeID = ?';
+        params = [req.params.realTimeID];
+    }
+    db.query(sql, params , function(err, result){
         if(err) return next(err);
 
         if(result.affectedRows > 0){

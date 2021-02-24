@@ -302,6 +302,63 @@ paths:
         400:
           description: 변수가 형식이 잘못된 경우
 
+  /place/user/{userID}:      
+    get:                 
+      tags:               
+        - Place            
+      summary: 유저가 등록한 차박지 겟
+      produces:
+      - application/json
+      parameters:         
+      - in: path       
+        name: userID   
+        description: 조회하려는 유저 아이디 
+        required: true 
+      responses:      
+        200:
+          description: 성공적으로 차박지 정보 겟
+          examples:
+            application/json:
+              [
+                {
+                  "placeID": 4,
+                  "placeName": "ac231",
+                  "FK_PLACE_userID": "ok@gmail.com",
+                  "updated": "2021-02-15T02:08:03.000Z",
+                  "lat": 20.3002,
+                  "lng": 80.93254,
+                  "address": "asdasdasd adsa dasd",
+                  "region": "서울특별시",
+                  "content": "asdas dsad asd s sadsa dasd sadasd",
+                  "wishCount": 0,
+                  "reviewCount": 0,
+                  "viewCount": 0,
+                  "category": "노지",
+                  "bathroom": 0,
+                  "water": 1,
+                  "price": 0,
+                  "totalPoint": 0,
+                  "imageKey": [
+                      "12a2da31dsa.jpeg",
+                      "1df213dsf42.jpeg",
+                      "fds23f1fds1sae.jpeg"
+                  ],
+                  "meanPoint": null,
+                  "resizedImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/12a2da31dsa.jpeg",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/1df213dsf42.jpeg",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/fds23f1fds1sae.jpeg"
+                  ],
+                  "originalImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/12a2da31dsa.jpeg",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/1df213dsf42.jpeg",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/fds23f1fds1sae.jpeg"
+                  ]
+                },
+              ]
+        400:
+          description: 변수가 형식이 잘못된 경우
+
 definitions:      
   Place:
     type: object

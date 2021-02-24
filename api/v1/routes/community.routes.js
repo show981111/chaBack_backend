@@ -35,10 +35,10 @@ router.put('/:communityID',
 
 router.delete('/:communityID',     
     check('communityID').notEmpty().isNumeric().withMessage('communityID should not be empty').trim(),
-    check('imageKey').optional().notEmpty().isArray().withMessage('imageKey should not be empty'),
     checkValidationResult,
     jwt.verifyToken(),
-    resourcesController.deleteObjects,
-    communityController.deleteCommunity);
+    communityController.deleteCommunity,
+    resourcesController.deleteObjects
+    );
 
 module.exports = router;

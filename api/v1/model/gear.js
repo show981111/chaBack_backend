@@ -5,7 +5,18 @@ const {checkSchema, check} = require('express-validator');
  * @param {Boolean} isUpdate 
  */
 
-const cat = ['a','b','c','d']
+const cat = [
+    '차박텐트',
+    '평탄화용품',
+    '캠핑테이블',
+    '캠핑의자',
+    '캠핑매트',
+    '캠핑조명',
+    '캠핑식기',
+    '캠핑BBQㆍ연료',
+    '캠핑냉난방',
+    '악세사리'
+]
 
 let gearSchema = checkSchema({
     title : {
@@ -37,10 +48,13 @@ let gearSchema = checkSchema({
         errorMessage : 'category should not be empty',
         trim : true
     },
+    price : {
+        notEmpty : true,
+        isNumeric : true,
+        errorMessage : 'price should not be empty',
+        trim : true,
+    },
     imageKey : {
-        notEmpty: function(array) {
-            return array.length > 0;
-        },
         isArray : true,
         custom : {
             options : (value) => {

@@ -57,7 +57,7 @@ paths:
         404:
           description: 해당 글을 찾지 못함 
 
-  /comment/{communityID}/{commentID}:      
+  /comment/{commentID}:      
     delete:                 
       tags:               
         - Comment            
@@ -65,12 +65,6 @@ paths:
       produces:
       - application/json
       parameters:
-      - in: path       
-        name: communityID   
-        schema:
-          type: number
-        description: 삭제할 댓글의 부모 커뮤니티 아이디 
-        required: true  
       - in: path       
         name: commentID   
         schema:

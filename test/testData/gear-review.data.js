@@ -66,16 +66,12 @@ let putProvider = [
 
 let deleteProvider = [
     {
-        gearID : 3,
-        gearReviewID : 4,
-        point : 4,
+        gearReviewID : 543,
         exp : 200,
         detail : 'success',
     },
     {
-        gearID : 9,
-        gearReviewID : 4,
-        point : 4,
+        gearReviewID : 543,
         exp : 404,
         detail : 'Not Found',
     },

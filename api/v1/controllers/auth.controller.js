@@ -65,7 +65,7 @@ let verifyUser = function(req,res, next){
 }
 
 let authLogin = function(req, res, next){
-    const sql = 'SELECT userID, userNickName, userName, userPhone, profileImg FROM USER WHERE userID = ? ';
+    const sql = 'SELECT userID, userNickName, userName, userPhone, profileImg, isAdmin FROM USER WHERE userID = ? ';
     db.query(sql, [req.token_userID], function(err, result){
         if(err) return next(err);
 

@@ -52,18 +52,67 @@ paths:
           examples:
             application/json:
               {
-                "userID": "test@gmail.com",
-                "userNickName": "ㅅㅐ유",
-                "userName": "testet",
-                "userPhone": "01033334444",
-                "profileImg": "default",
-                "refreshToken": "eyJhbGciOiJIUdasdiIsInR5cCI6IkpXVCJ9",
-                "accessToken": "eyJhbGciOiJasdaIsInR5cCI6IkpXVCJ9"
+                  "userID": "ok@gmail.com",
+                  "userNickName": "ok",
+                  "userName": "hehe",
+                  "userPhone": "01011112222",
+                  "profileImg": "",
+                  "refreshToken": "fdasfsadfdsfs",
+                  "isAdmin": 0,
+                  "placeCount": 0,
+                  "reviewCount": 0,
+                  "accessToken": "cvbcxbcxvbcxvbcv"
               }
         400:
           description: Post Body 에 변수가 형식이 잘못된 경우
         401:
           description: 비밀번호 틀림
+        404:
+          description: 유저가 존재하지 않음 
+
+  /user/admin/login:      
+    post:                 
+      tags:               
+        - User            
+      summary: 로그인
+      produces:
+      - application/json
+      parameters:         
+      - in: body       
+        schema:
+          type: object
+          properties:
+            userID:
+              type: string
+            userPassword:
+              type: string
+          example:  
+            userID: "ok@gmail.com"
+            userPassword: "1234"
+        description: 로그인
+      responses:      
+        200:
+          description: 성공적으로 로그인, 
+          examples:
+            application/json:
+              {
+                  "userID": "ok1@gmail.com",
+                  "userNickName": "ok1",
+                  "userName": "hehe",
+                  "userPhone": "01011112222",
+                  "profileImg": "",
+                  "refreshToken": "dasfdsfdsap",
+                  "isAdmin": 1,
+                  "placeCount": 0,
+                  "reviewCount": 0,
+                  "accessToken": "fadsfsdfsdfasf",
+              }
+        400:
+          description: Post Body 에 변수가 형식이 잘못된 경우
+        401:
+          description: 비밀번호 틀림
+        403:
+          description: 관리자가 아님
         404:
           description: 유저가 존재하지 않음 
 
@@ -126,6 +175,46 @@ paths:
           description: Post Body 에 변수가 형식이 잘못된 경우
         403:
           description: 이메일 인증 안됨
+
+  /user/best/{page}/{parseNum}:      
+    get:                 
+      tags:               
+        - User            
+      summary: 유저랭킹 가져옴 
+      produces:
+      - application/json
+      parameters:         
+      - in: path       
+        name: page   
+        schema:
+          type: number
+        description: 페이지
+        required: true  
+      - in: path       
+        name: parseNum   
+        schema:
+          type: number
+        description: 한번에 몇개씩 가져올지
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 겟 
+          examples:
+            application/json:
+              [
+                {
+                    "userID": "ok6@gmail.com",
+                    "userNickName": "updated User NickName",
+                    "profileImg": "",
+                    "userName": "hehe",
+                    "userPhone": "01011112222",
+                    "placeCount": 2,
+                    "reviewCount": 0
+                },
+              ]
+        400:
+          description: Post Body 에 변수가 형식이 잘못된 경우
+
 
 definitions:        # Schema defination for request body
   User:

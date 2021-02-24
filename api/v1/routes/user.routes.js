@@ -13,12 +13,12 @@ router.post('/login',
     checkValidationResult,
     userController.login)
 
-/*관리자 로그인 => 토큰 발급*/
-router.post('/admin/login',
-    check('userID').notEmpty().isEmail().withMessage('userID should be an Email and not Empty').trim(),
-    check('userPassword').notEmpty().withMessage('userPassword should not empty'),
-    checkValidationResult,
-    userController.adminLogin)
+// /*관리자 로그인 => 토큰 발급*/
+// router.post('/admin/login',
+//     check('userID').notEmpty().isEmail().withMessage('userID should be an Email and not Empty').trim(),
+//     check('userPassword').notEmpty().withMessage('userPassword should not empty'),
+//     checkValidationResult,
+//     userController.adminLogin)
 
 
 /*회원가입*/

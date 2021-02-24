@@ -86,11 +86,10 @@ describe('REVIEW API', function(){
 
     describe('DELETE REVIEW api/v1/review/:reviewID/:placeID', function(){
     
-        let testPut = function(deleteProvider, i){
+        let testDelete = function(deleteProvider, i){
             it(`it should be ${deleteProvider.exp} : ${deleteProvider.detail} index[${i}]`, (done) =>{
                 request(app)
-                    .delete(`/api/v1/review/${deleteProvider.reviewID}/${deleteProvider.placeID}`)
-                    .send({imageKey : deleteProvider.imageKey})
+                    .delete(`/api/v1/review/${deleteProvider.reviewID}`)
                     .set('Authorization', 'Bearer ' + accessToken)
                     .expect(deleteProvider.exp)
                     .end((err, response) => {
@@ -106,7 +105,7 @@ describe('REVIEW API', function(){
 
         for(var i = 0; i < testData.reviewDeleteProvider.length; i++){
             // console.log(insertedReviewID);
-            testPut(testData.reviewDeleteProvider[i], i);
+            testDelete(testData.reviewDeleteProvider[i], i);
         }
     })
 

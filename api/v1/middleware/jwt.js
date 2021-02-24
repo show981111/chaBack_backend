@@ -31,6 +31,7 @@ let signAdminToken = function(userInfo, expIn, subject){
     return new Promise((resolve, reject) => {
         jwt.sign({
             userID: userInfo.userID,
+            userNickName : userInfo.userNickName,
             role : 'admin',
             iat : Math.floor(Date.now() / 1000)
         }, 

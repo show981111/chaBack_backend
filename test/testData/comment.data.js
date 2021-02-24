@@ -42,14 +42,12 @@ let putProvider = [
 
 let deleteProvider = [
     {
-        communityID : 5,
         commentID : 1,
         exp : 200,
         detail : 'success',
     },
     {
-        communityID : 404,
-        commentID : 1,
+        commentID : 500,
         exp : 404,
         detail : 'row not found',
     }

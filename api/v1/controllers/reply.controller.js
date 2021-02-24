@@ -113,15 +113,20 @@ let getReply = function(option){
 }
 
 let deleteReply = function(req, res, next){
-    var sql = 'DELETE FROM REPLY WHERE FK_REPLY_userID = ? AND replyID = ?';
+    var sql = 'DELETE FROM REPLY WHERE FK_REPLY_userID = ? AND replyID = ? RETURNING FK_REPLY_reviewID';
+    var params = [req.token_userID, req.params.replyID];
 
-    db.query(sql, [req.token_userID, req.params.replyID], async function(err, result){
+    if(req.isAdmin){
+        sql = 'DELETE FROM REPLY WHERE replyID = ? RETURNING FK_REPLY_reviewID';
+        params = [req.params.replyID];
+    }
+    db.query(sql, params, async function(err, result){
         if(err) return next(err);
 
-        if(result.affectedRows > 0){
+        if(result && result.length > 0 && result[0].FK_REPLY_reviewID !== undefined){
 
             try{
-                await updateReviewInfo(req.params.reviewID, 'delete');
+                await updateReviewInfo(result[0].FK_REPLY_reviewID, 'delete');
                 res.send('success');
             }catch(e){
                 return next(e);

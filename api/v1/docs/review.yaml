@@ -79,7 +79,7 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우(error message에 detail 있음)
 
-  /review/user/{page}:      
+  /review/user/{userID}/{page}:      
     get:                 
       tags:               
         - Review            
@@ -270,7 +270,7 @@ paths:
         404:
           description: 해당 유저가 등록한 reviewID를 찾지 못함 또는 해당 placeID를 찾지 못함
 
-  /review/{reviewIDtoDelete}/{placeID}:     
+  /review/{reviewIDtoDelete}:     
     delete:                 
       tags:               
         - Review            
@@ -288,10 +288,6 @@ paths:
         name: reviewIDtoDelete   
         description: 삭제하려는 reviewID
         required: true 
-      - in: path       
-        name: placeID   
-        description: 삭제하려는 리뷰의 차박지 아이디 placeID
-        required: true
       responses:      
         200:
           description: 성공적으로 삭제, 

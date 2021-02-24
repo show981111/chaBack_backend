@@ -14,6 +14,7 @@ var wishRouter = require('./routes/wish.routes.js');
 var gearRouter = require('./routes/gear.routes.js');
 var gearReviewRouter = require('./routes/gear_review.routes.js');
 var realTimeRouter = require('./routes/realTime.routes.js');
+var adminRouter = require('./routes/admin.routes.js');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
@@ -31,6 +32,11 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// use helmet
+var helmet = require('helmet')
+router.use(helmet());
+
 router.use('/community', communityRouter);
 router.use('/comment', commentRouter);
 router.use('/user', userRouter);
@@ -44,6 +50,7 @@ router.use('/wish', wishRouter);
 router.use('/gear', gearRouter);
 router.use('/gear-review/',gearReviewRouter);
 router.use('/real-time', realTimeRouter);
+router.use('/admin', adminRouter);
 
 module.exports = router;
 

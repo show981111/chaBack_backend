@@ -81,10 +81,6 @@ paths:
           type: string
         description: 삭제할 글 아이디
         required: true  
-      - in: body       
-        name: imageKey   
-        description: 해당 글이 이미지를 담고 있다면 해당 이미지 키
-        required: false  
       responses:      
         200:
           description: 성공적으로 삭제함

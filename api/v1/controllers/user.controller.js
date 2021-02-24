@@ -8,18 +8,14 @@ require('dotenv').config();
 
 let issueTokens = async function(arg1){
     try{
-        arg1.accessToken = await jwt.signJWT(arg1,'15m', 'accessToken');
-        arg1.refreshToken = await jwt.signJWT(arg1,'90d', 'refreshToken');
-        return arg1;
-    }catch(err){
-        return err;
-    }
-}
+        if(arg1.isAdmin){
+            arg1.accessToken = await jwt.signAdminToken(arg1,'180m', 'accessToken');
+            arg1.refreshToken = await jwt.signAdminToken(arg1,'90d', 'refreshToken');
+        }else{
+            arg1.accessToken = await jwt.signJWT(arg1,'180m', 'accessToken');
+            arg1.refreshToken = await jwt.signJWT(arg1,'90d', 'refreshToken');
+        }
 
-let issueAdminTokens = async function(arg1){
-    try{
-        arg1.accessToken = await jwt.signAdminToken(arg1,'15m', 'accessToken');
-        arg1.refreshToken = await jwt.signAdminToken(arg1,'90d', 'refreshToken');
         return arg1;
     }catch(err){
         return err;
@@ -27,7 +23,7 @@ let issueAdminTokens = async function(arg1){
 }
 
 let updateRefreshToken = function(arg1 , callback){
-    if(arg1 instanceof Error){
+    if(arg1 instanceof Error || !arg1){
         return callback(arg1);
     }
     var sql = 'UPDATE USER SET refreshToken = ? WHERE userID = ?';
@@ -44,21 +40,21 @@ let updateRefreshToken = function(arg1 , callback){
     });
 }
 
-let getUser =  function(userID,userPassword ,isAdmin , callback){
+let getUser =  function(userID,userPassword  , callback){
     var sql = 'SELECT * FROM USER WHERE userID = ?';
     db.query(sql, [userID],  function(error, results, fields){
         if(error) {
             return callback(error); 
         }
         if(results.length > 0){
-            if(isAdmin){
-                if(results[0].isAdmin != 1){
-                    const e = new Error();
-                    e.message = 'Forbidden';
-                    e.status = 403;
-                    return callback(e);
-                }
-            }
+            // if(isAdmin){
+            //     if(results[0].isAdmin != 1){
+            //         const e = new Error();
+            //         e.message = 'Forbidden';
+            //         e.status = 403;
+            //         return callback(e);
+            //     }
+            // }
             crypto.pbkdf2(userPassword, results[0].salt , 100000, 64, 'sha512', async function (err, key) {
                 if(err) return callback(err);
                 if(key.toString('base64') == results[0].userPassword){
@@ -83,28 +79,8 @@ let getUser =  function(userID,userPassword ,isAdmin , callback){
 
 let login = function(req, res, next){
     async.waterfall([
-        async.apply(getUser, req.body.userID, req.body.userPassword, 0),
+        async.apply(getUser, req.body.userID, req.body.userPassword),
         issueTokens,
-        updateRefreshToken
-    ], function(err, result, final) {
-        if(err != null){ 
-            console.log(err);
-            next(err); 
-            return;
-        }
-        if(result == 'done'){
-            res.status(200).send(final);
-        }else{
-            const err = new Error();
-            next(err);
-        }
-    });
-}
-
-let adminLogin = function(req, res, next){
-    async.waterfall([
-        async.apply(getUser, req.body.userID, req.body.userPassword, 1),
-        issueAdminTokens,
         updateRefreshToken
     ], function(err, result, final) {
         if(err != null){ 
@@ -307,6 +283,5 @@ module.exports = {
     login : login,
     updateUserInfo : updateUserInfo,
     resetPassword : resetPassword,
-    adminLogin : adminLogin,
     getBest : getBest
 };

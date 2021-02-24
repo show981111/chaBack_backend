@@ -95,13 +95,18 @@ let updateComment = function(req, res, next){
 }
 
 let deleteComment = function(req, res, next){
-    const sql = 'DELETE FROM COMMENT WHERE FK_COMMENT_userID = ? AND commentID = ? AND FK_COMMENT_communityID';
-    db.query(sql, [req.token_userID, req.params.commentID,req.params.communityID], async function(err, result){
+    var sql = 'DELETE FROM COMMENT WHERE FK_COMMENT_userID = ? AND commentID = ? RETURNING FK_COMMENT_communityID';
+    var params = [req.token_userID, req.params.commentID];
+    if(req.isAdmin){
+        sql = 'DELETE FROM COMMENT WHERE commentID = ? RETURNING FK_COMMENT_communityID';
+        params = [req.params.commentID];
+    }
+    db.query(sql, params, async function(err, result){
         if(err) return next(err);
 
-        if(result.affectedRows > 0 ){
+        if(result && result.length > 0 && result[0].FK_COMMENT_communityID !== undefined){
             try{
-                await updateCommunityInfo(req.params.communityID, 'delete');
+                await updateCommunityInfo(result[0].FK_COMMENT_communityID, 'delete');
                 res.status(200).send('success');
             }catch(e){
                 return next(e);

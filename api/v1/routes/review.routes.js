@@ -75,14 +75,12 @@ router.put('/:reviewID/:placeID',
     reviewController.putReview
 )
 
-router.delete('/:reviewID/:placeID',
+router.delete('/:reviewID',
     check('reviewID').isNumeric().notEmpty().withMessage('reviewID should be number').trim(),
-    check('placeID').isNumeric().notEmpty().withMessage('placeID should be number').trim(),
-    check('imageKey').optional().notEmpty().isArray().withMessage('imageKey should not be empty'),
     checkValidationResult,
     jwt.verifyToken(),
+    reviewController.deleteReview,
     resourcesController.deleteObjects,
-    reviewController.deleteReview
 )
 
 module.exports = router;

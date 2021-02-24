@@ -155,7 +155,7 @@ let downloadImage = function(option){
 let deleteObjects = function(req, res, next){
     var deleteKeys = [];
     console.log(req.body.imageKey);
-    if(!req.body.imageKey) return next(); //만약 지워야할 이미지가 없으면 걍 스킵한다
+    if(!req.body.imageKey) return res.status(200).send('success'); //만약 지워야할 이미지가 없으면 걍 스킵한다
 
     for(var i = 0; i < req.body.imageKey.length; i++){
         var keyNameArr = req.body.imageKey[i].split("/");
@@ -192,7 +192,8 @@ let deleteObjects = function(req, res, next){
             } // an error occurred
             else {
                 console.log(data);
-                next();
+                res.status(200).send('success');
+                //next();
             }    
        });
 }

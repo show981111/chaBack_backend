@@ -154,9 +154,6 @@ var placeSchema = function(optional){
     },
     imageKey : {
         optional : true,
-        notEmpty: function(array) {
-            return array.length > 0;
-        },
         isArray : true,
         custom : {
             options : (value) => {

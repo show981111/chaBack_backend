@@ -79,10 +79,6 @@ paths:
         name: gearIDtoDelete   
         description: 삭제하려는 차박 용품 
         required: true  
-      - in: body       
-        name: imageKey   
-        description: 해당 차박용품의 이미지 키 
-        required: true  
       responses:      
         200:
           description: 성공적으로 삭제
