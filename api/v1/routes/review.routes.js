@@ -68,7 +68,7 @@ router.get('/user/:userID/:page',
 
 
 /*리뷰 수정 */
-router.put('/:reviewID/:placeID',
+router.put('/:reviewID',
     reviewModel.reviewSchema(true),
     checkValidationResult,
     jwt.verifyToken(),

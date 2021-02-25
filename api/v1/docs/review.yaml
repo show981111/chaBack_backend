@@ -234,7 +234,7 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우
 
-  /review/{reviewID}/{placeID}:      
+  /review/{reviewID}:      
     put:                 
       tags:               
         - Review            
@@ -248,10 +248,6 @@ paths:
         name: Authorization
         description : 
           Bearer Auth
-      - in: path       
-        name: placeID   
-        description: 수정하려는 리뷰의 차박지 placeID
-        required: true 
       - in: path       
         name: reviewID   
         description: 수정하려는 reviewID

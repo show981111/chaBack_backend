@@ -85,7 +85,9 @@ let putGear = function(req, res, next){
 }
 
 let getGear = function(req, res, next){
-    sql = `SELECT A.* FROM GEAR A order by gearID DESC LIMIT ${req.params.page} , 20`;
+    sql = `SELECT A.*, user.userNickName, user.profileImg FROM GEAR A
+            LEFT JOIN USER user ON A.FK_GEAR_userID = user.userID
+            order by gearID DESC LIMIT ${req.params.page} , 20`;
 
     db.query(sql, function(err, results){
         if(err) {

@@ -117,21 +117,42 @@ let postReview = function (req, res, next) {
     })
 }
 
-let putReview = function (req, res, next) {
-    const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
+let getReviewInfoByID = function(reviewID){
+    const sql = 'SELECT point,FK_REVIEW_placeID FROM REVIEW WHERE reviewID = ?';
+    return new Promise(function(resolve, reject) {
+        db.query(sql, [reviewID], function(err, result) {
+            if(err) reject(err);
+            if(result.length > 0 && result[0].point !== undefined && result[0].FK_REVIEW_placeID !== undefined){
+                resolve(result[0]);
+            }else{
+                const e = new Error('Not Found');
+                e.status = 404;
+                reject(e);
+            }
+        })
+    });
+}
 
+let putReview = async function (req, res, next) {
+    const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
+    var originalReview ;
+    try{
+        originalReview = await getReviewInfoByID(req.params.reviewID);
+    }catch(e){
+        return next(e);
+    }
     var imageKeyWithComma = makeImageKey(req.body.imageKey);
 
     const sql = `UPDATE REVIEW SET content = ?, updated = ?, point = ?, imageKey = ?
                     WHERE FK_REVIEW_userID = ? AND reviewID = ? AND FK_REVIEW_placeID = ?`;
     const params = [req.body.content, updated, req.body.point, imageKeyWithComma, req.token_userID, req.params.reviewID
-                        ,req.params.placeID ];
+                        ,originalReview.FK_REVIEW_placeID ];
     db.query(sql, params, async function (err, results) {
         if(err) {console.log(err); return next(err);}
 
         if(results.affectedRows > 0){
             try{
-                await updatePlaceInfo(req.params.placeID, req.body.pointGap, 'update');
+                await updatePlaceInfo(originalReview.FK_REVIEW_placeID, req.body.point - originalReview.point, 'update');
                 res.status(200).send('success');
             } catch(err){
                 return next(err);

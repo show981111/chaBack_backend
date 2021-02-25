@@ -57,7 +57,7 @@ paths:
         404:
           description: 해당 글을 찾지 못함 
 
-  /comment/{commentID}:      
+  /comment/{commentIDtoDelete}:      
     delete:                 
       tags:               
         - Comment            
@@ -66,7 +66,7 @@ paths:
       - application/json
       parameters:
       - in: path       
-        name: commentID   
+        name: commentIDtoDelete   
         schema:
           type: number
         description: 삭제할 댓글 아이디 
@@ -147,27 +147,3 @@ paths:
                 },
               ]
 
-
-
-definitions:      
-  Community:
-    type: object
-    properties:
-      placeName:
-        type: string
-        description : 실시간 현황 등록시에만 필요
-      placeID:
-        type: string
-        description : 실시간 현황 등록시에만 필요 
-      content:
-        type: string
-      category:
-        type: int
-      imageKey:
-        type: string
-    example:
-      placeName : N3V 4F7
-      placeID : post review to place ID 2
-      content : 3
-      category : 2
-      imageKey : ['a','b','c']

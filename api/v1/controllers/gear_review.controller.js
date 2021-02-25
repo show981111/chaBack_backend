@@ -53,19 +53,40 @@ let postGearReview = function(req, res, next){
     })
 }
 
-let putGearReview = function (req, res, next) {
+let getGearInfo = function(gearReviewID){
+    const sql = 'SELECT point,FK_GREVIEW_gearID FROM GEAR_REVIEW WHERE gearReviewID = ?';
+    return new Promise(function(resolve, reject) {
+        db.query(sql, [gearReviewID], function(err, result) {
+            if(err) reject(err);
+            if(result.length > 0 && result[0].point !== undefined && result[0].FK_GREVIEW_gearID !== undefined){
+                resolve(result[0]);
+            }else{
+                const e = new Error('Not Found');
+                e.status = 404;
+                reject(e);
+            }
+        })
+    });
+}
+
+let putGearReview = async function (req, res, next) {
     const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
+    var gearInfo;
+    try{
+        gearInfo = await getGearInfo(req.params.gearReviewID);
+    }catch(e){
+        return next(e);
+    }
 
     const sql = `UPDATE GEAR_REVIEW SET content = ?, updated = ?, point = ?
-                    WHERE FK_GREVIEW_userID = ? AND gearReviewID = ? AND FK_GREVIEW_gearID = ?`;
-    const params = [req.body.content, updated, req.body.point, req.token_userID, req.params.gearReviewID
-                        ,req.body.gearID ];
+                    WHERE FK_GREVIEW_userID = ? AND gearReviewID = ?`;
+    const params = [req.body.content, updated, req.body.point, req.token_userID, req.params.gearReviewID];
     db.query(sql, params, async function (err, results) {
         if(err) {console.log(err); return next(err);}
 
         if(results.affectedRows > 0){
             try{
-                await updateGearInfo(req.body.gearID, req.body.pointGap, 'update');
+                await updateGearInfo(gearInfo.FK_GREVIEW_gearID, req.body.point - gearInfo.point, 'update');
                 res.status(200).send('success');
             } catch(err){
                 console.log(err);

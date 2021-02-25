@@ -64,7 +64,7 @@ let getUser =  function(userID,userPassword  , callback){
                 }else{
                     const e = new Error();
                     e.message = 'password incorrect';
-                    e.status = 401;
+                    e.status = 409;
                     return callback(e);
                 }
             });

@@ -38,26 +38,14 @@ let postProvider = [
 let putProvider = [
     {
         gearReviewID : 2,
-        gearID : 3,
-        point : 3,
-        pointGap : 2,
+        point : 5,
         content : 'update the review content of 2',
         exp : 200,
         detail : 'success'
     },
     {
-        gearReviewID : 2,
-        gearID : 3,
-        point : 3,
-        content : 'update the review content of 2',
-        exp : 400,
-        detail : 'pointGap should be number'
-    },
-    {
         gearReviewID : 543,
-        gearID : 3,
         point : 3,
-        pointGap : 2,
         content : 'update the review content of 2',
         exp : 404,
         detail : 'Not Found'

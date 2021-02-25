@@ -63,7 +63,7 @@ describe('REVIEW API', function(){
         let testPut = function(putProvider, i){
             it(`it should be ${putProvider.exp} : ${putProvider.detail} index[${i}]`, (done) =>{
                 request(app)
-                    .put(`/api/v1/review/${putProvider.reviewID}/${putProvider.placeID}`)
+                    .put(`/api/v1/review/${putProvider.reviewID}`)
                     .send(putProvider)
                     .set('Authorization', 'Bearer ' + accessToken)
                     .expect(putProvider.exp)

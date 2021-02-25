@@ -1,0 +1,152 @@
+paths:
+  /gear-review/:          
+    post:             
+      tags:               
+        - GearReview           
+      summary: 차박용품 리뷰 작성 
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: body       
+        name: gearID   
+        description: 차박 용품 아이디
+        required: true  
+      - in: body       
+        name: content   
+        description: 리뷰 내용
+        required: true  
+      - in: body       
+        name: point
+        description: 점수
+        required: true  
+      responses:     
+        200:
+          description: 성공적으로 글 등록 
+        400:
+          description: 요청 변수 잘못됨
+        401:
+          description: 토큰 인증 실패 
+        404:
+          description: 부모 차박용품 아이디 찾지 못함
+
+  /gear-review/{gearReviewID}:      
+    put:                 
+      tags:               
+        - GearReview            
+      summary: 해당 글을 수정함 
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: gearReviewID   
+        schema:
+          type: string
+        description: 수정할 댓글 아이디 
+        required: true  
+      - in: body       
+        name: content   
+        description: 리뷰 내용
+        required: true  
+      - in: body       
+        name: point
+        description: 점수
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 수정함
+        401:
+          description: 토큰 인증실패 
+        404:
+          description: 해당 글을 찾지 못함 
+
+  /gear-review/{gearReviewIDtoDelete}:      
+    delete:                 
+      tags:               
+        - GearReview            
+      summary: 해당 글을 삭제함 
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: gearReviewIDtoDelete   
+        schema:
+          type: number
+        description: 삭제할 리뷰 아이디 
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 삭제함
+        401:
+          description: 토큰 인증실패 
+        404:
+          description: 해당 글을 찾지 못함 
+
+  /gear-review/gear/{gearID}:      
+    get:                 
+      tags:               
+        - GearReview            
+      summary: 해당 차박용품에 달린 리뷰 가져옴  
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: gearID   
+        schema:
+          type: number
+        description: 차박용품 글 아이디
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+              [
+                {
+                    "gearReviewID": 14,
+                    "FK_GREVIEW_gearID": 3,
+                    "FK_GREVIEW_userID": "ok@gmail.com",
+                    "content": "this is review to gearID 3",
+                    "updated": "2021-02-24T03:02:23.000Z",
+                    "point": 4,
+                    "userNickName": "sadsadasd",
+                    "profileImg": "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok%40gmail.com/ok%40gmail.com.jpeg"
+                },
+              ]
+
+  /gear-review/user/{userID}:      
+    get:                 
+      tags:               
+        - GearReview            
+      summary: 유저가 단 댓글 가져옴 
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: userID   
+        schema:
+          type: string
+        description: 유저 아이디
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+              [
+                {
+                    "gearReviewID": 14,
+                    "FK_GREVIEW_gearID": 3,
+                    "FK_GREVIEW_userID": "ok@gmail.com",
+                    "content": "this is review to gearID 3",
+                    "updated": "2021-02-24T03:02:23.000Z",
+                    "point": 4
+                },
+              ]
+
+

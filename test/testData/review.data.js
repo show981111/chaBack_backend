@@ -56,46 +56,21 @@ let reviewPostProvider = [
 
 let reviewPutProvider = [
     {
-        placeID : 2,
         reviewID : 5,
         content : 'updated content haha',
         point : 5,
-        pointGap : 2,
         imageKey : ['asdasd','vasgrae','hdhydth'],
         exp : 200,
         detail : 'update 5 successfully'
     },
     {
-        placeID : 2,
-        reviewID : 5,
-        content : 'updated content haha',
-        point : 5,
-        pointGap : -10,
-        imageKey : ['asdasd','vasgrae','hdhydth'],
-        exp : 400,
-        detail : 'pointGap out of range'
-    },
-    {
-        placeID : 1,
         reviewID : 2,
         content : 'updated content haha',
         point : 5,
-        pointGap : -3,
         imageKey : ['asdasd','vasgrae','hdhydth'],
         exp : 404,
         detail : 'Not Found'
-    },
-    {
-        placeID : 10,
-        reviewID : 2,
-        content : 'updated content haha',
-        point : 5,
-        pointGap : -3,
-        imageKey : ['asdasd','vasgrae','hdhydth'],
-        exp : 404,
-        detail : 'Not Found'
-    },
-
+    }
 ]
 
 let reviewDeleteProvider = [

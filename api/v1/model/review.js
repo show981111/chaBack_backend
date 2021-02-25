@@ -7,7 +7,7 @@ const {checkSchema, check} = require('express-validator');
 let reviewSchema = function (isUpdate) {
     return checkSchema({
         placeID : {
-            // optional : isUpdate,
+            optional : isUpdate,
             notEmpty : true,
             isNumeric : true,
             errorMessage : 'placeID should be number',
@@ -57,23 +57,6 @@ let reviewSchema = function (isUpdate) {
                 }
             },
             errorMessage : 'imageKey should be array and max 5',
-        },
-        pointGap : {
-            optional : !isUpdate,
-            isNumeric : true,
-            custom : {
-                options : (value) => {
-                    if(value >= -5 && value <= 5){//현재 - 과거 점수 
-                         return value;
-                    }else{
-                        const e = new Error('pointGap out of range');
-                        e.status = 400;
-                        throw e;
-                    }
-                }
-            },
-            errorMessage : 'pointGap should be number',
-            trim : true
         }
     });
 }
