@@ -89,7 +89,7 @@ paths:
         404:
           description: 해당 글을 찾지 못함 
 
-  /community/user/{userID}/{pageNumber}:      
+  /community/user/{userID}:      
     get:                 
       tags:               
         - Community            
@@ -102,12 +102,6 @@ paths:
         schema:
           type: string
         description: 유저 아이디 
-        required: true  
-      - in: path       
-        name: pageNumber   
-        schema:
-          type: string
-        description: 페이지
         required: true  
       responses:      
         200:
@@ -153,8 +147,8 @@ paths:
           type: string
         description: 카테고리 (0 - 자유게시판, 1 - QnA)
         required: true  
-      - in: pageNumber       
-        name: userID   
+      - in: path       
+        name: pageNumber   
         schema:
           type: string
         description: 페이지
@@ -188,6 +182,52 @@ paths:
                     ]
                 },
               ]
+
+  /community/{communityIDtoGet}:      
+    get:                 
+      tags:               
+        - Community            
+      summary: 커뮤니티 아이디로 글 정보 가져옴
+      produces:
+      - application/json
+      parameters:
+      - in: path       
+        name: communityIDtoGet   
+        schema:
+          type: number
+        description: 조회할 커뮤니티 아이디
+        required: true  
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+              [
+                {
+                    "communityID": 26,
+                    "title": "community post  0",
+                    "content": "dasdasdasvaljlkMlkdn;e sad Fea vaevb e",
+                    "category": 0,
+                    "FK_COMMUNITY_userID": "ok@gmail.com",
+                    "imageKey": "dasdsad.jpeg,dsadas.jpeg,asd.jpeg",
+                    "updated": "2021-02-06T05:41:53.000Z",
+                    "commentsNum": 0,
+                    "userNickName": "updated NickName okk",
+                    "profileImg": "",
+                    "resizedImages": [
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/dasdsad.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/dsadas.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/asd.jpeg"
+                    ],
+                    "originalImages": [
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/dasdsad.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/dsadas.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/asd.jpeg"
+                    ]
+                },
+              ]
+        404:
+          description : 일치하는 커뮤니티 글 찾지 못함
 
 definitions:      
   Board:

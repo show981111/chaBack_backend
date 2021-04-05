@@ -3,7 +3,7 @@ require('dotenv').config();
 const app = express()
 const port = process.env.port;
 const version_one_router = require('./api/v1/index.js');
-
+const logger = require('./config/winston.js');
 // // use helmet
 // var helmet = require('helmet')
 
@@ -30,11 +30,17 @@ app.use('/api/v1/', version_one_router);
 
 //error handler
 app.use((err, req, res, next) => {
-    var msg = err;
+    
     res.status(err.status || 500);
-    if(err.status == 404) {
-        msg = 'not found';
+  
+    var errorInformation = {
+        path : req.originalUrl,
+        msg : err.message,
+        status : err.status,
+        body : req.body,
+        parmas : req.params
     }
+    logger.error(JSON.stringify(errorInformation));
     res.send({
         error: err.message || "internal server error",
         status: err.status || 500,

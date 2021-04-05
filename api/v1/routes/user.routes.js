@@ -54,6 +54,14 @@ router.get('/best/:page/:parseNum',
     userController.getBest
 )
 
+router.post('/report/community/',
+    check('id').notEmpty().isNumeric().withMessage('id should be number and not be empty').trim(),
+    check('userID').notEmpty().isEmail().withMessage('userID should be number and not be empty').trim(),
+    checkValidationResult,
+    jwt.verifyToken(),
+    userController.postReport('community')
+)
+
 module.exports = router;
 
 

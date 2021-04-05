@@ -1,48 +1,40 @@
 paths:
-  /place/{region}/{category}/{bathroom}/{water}/{price}/{placeName}/{page}/{option}/:          
-    get:             
+  /place/{query}/{page}/{option}:          
+    post:             
       tags:               
         - Place           
       summary: PLACE 리스트 GET
       produces:
       - application/json
       parameters:        
-      - in: path       
+      - in: body       
         name: region   
-        schema:
-          type: string
-        description: 조회하고자 하는 지역 / 없으면 - 1
-        required: true  
-      - in: path       
+        description: 조회하고자 하는 지역 
+        required: false  
+      - in: body       
         name: category   
-        schema:
-          type: string
-        description: 조회하고자 하는 차박지 종류 / 없으면 -1
-        required: true  
-      - in: path       
+        description: 조회하고자 하는 차박지 종류 
+        required: false  
+      - in: body       
         name: bathroom   
-        schema:
-          type: int
-        description: 화장실 유뮤 0 or 1 / 없으면 -1
-        required: true  
-      - in: path       
+        description: 화장실 유뮤 0 or 1 
+        required: false  
+      - in: body       
         name: water   
-        schema:
-          type: int
-        description: 수도시설 유뮤 0 or 1 / 없으면 -1
-        required: true  
-      - in: path       
+        description: 수도시설 유뮤 0 or 1 
+        required: false  
+      - in: body       
         name: price   
-        schema:
-          type: string
-        description: 가격 유무료 0 or 1 / 없으면 -1
-        required: true  
+        description: 가격 유무료 0 or 1
+        required: false  
+      - in: body       
+        name: hasMarket   
+        description: 주변 가계 유무 0 or 1 
+        required: false  
       - in: path       
-        name: placeName   
-        schema:
-          type: string
-        description: 차박지 이름 / 없으면 -1
-        required: true  
+        name: query   
+        description: 검색어
+        required: false  
       - in: path       
         name: page   
         schema:
@@ -58,13 +50,47 @@ paths:
       responses:     
         200:
           description: placeList 반환 
+          examples:
+            application/json:
+              {
+                "placeID": 287,
+                "placeName": "test market up",
+                "FK_PLACE_userID": "ok@gmail.com",
+                "updated": "2021-03-02T20:32:49.000Z",
+                "lat": 20.3002,
+                "lng": 100.93254,
+                "address": "asdasdasd adsa dasd",
+                "region": "서울특별시",
+                "content": "test",
+                "wishCount": 0,
+                "reviewCount": 0,
+                "viewCount": 0,
+                "category": "노지",
+                "bathroom": 0,
+                "water": 1,
+                "price": 1,
+                "hasMarket": 0,
+                "totalPoint": 0,
+                "imageKey": [
+                    "sadasdas.jpeg"
+                ],
+                "meanPoint": null,
+                "userNickName": "sadsadasd",
+                "profileImg": "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok%40gmail.com/ok%40gmail.com.jpeg",
+                "resizedImages": [
+                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/sadasdas.jpeg"
+                ],
+                "originalImages": [
+                    "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/sadasdas.jpeg"
+                ]
+              }
         400:
           description: Get 파라미터가 형식이 잘못된 경우(error message에 detail 있음)
         404:
           description: 유저 아이디 또는 유저 닉네임이 이미 존재할 경우 
 
-  /place/{region}/{category}/{bathroom}/{water}/{price}/{placeName}/{page}/distance/{lat}/{lng}: 
-    get:             
+  /place/{page}/distance/{lat}/{lng}: 
+    post:             
       tags:               
         - Place           
       summary: PLACE 리스트 현위치로부터 거리순으로 GET
@@ -344,6 +370,7 @@ paths:
                       "fds23f1fds1sae.jpeg"
                   ],
                   "meanPoint": null,
+                  "userNickName" : "This is User NickName",
                   "resizedImages": [
                       "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/12a2da31dsa.jpeg",
                       "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/1df213dsf42.jpeg",
@@ -358,6 +385,33 @@ paths:
               ]
         400:
           description: 변수가 형식이 잘못된 경우
+
+  /place/conflict/{lat}/{lng}:      
+    get:                 
+      tags:               
+        - Place            
+      summary: 주변 500미터에 차박지 있는지 체크 
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: lat   
+        description: latitude
+        required: true 
+      - in: path       
+        name: lng   
+        description: longitude
+        required: true 
+      responses:      
+        200:
+          description: 0(근처에 없음) 또는 1(있음)
+          examples: 
+            application/json:
+              {
+                "conflict": 0
+              }
+        400:
+          description: 요청 변수가 형식이 잘못된 경우
 
 definitions:      
   Place:
@@ -383,6 +437,8 @@ definitions:
         type: int
       price:
         type: int
+      hasMarket:
+        type: int
       imageKey:
         type: string
     example:
@@ -396,6 +452,7 @@ definitions:
       bathroom : 0
       water : 1
       price : 0
+      hasMarket : 1
       imageKey : [12a2da31dsa,1df213dsf42,fds23f1fds1sae]
 
   ChangePlace:
@@ -413,6 +470,8 @@ definitions:
         type: int
       price:
         type: int
+      hasMarket:
+        type: int
       imageKey:
         type: string
     example:
@@ -422,4 +481,5 @@ definitions:
       bathroom : 1
       water : 1
       price : 1
+      hasMarket : 0
       imageKey : [a,b,c,d,e]

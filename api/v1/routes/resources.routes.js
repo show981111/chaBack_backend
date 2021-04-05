@@ -11,7 +11,12 @@ router.post('/upload',
     jwt.verifyToken(), 
     resourcesController.upload.array('img' , 5) ,
     (req, res, next) => {
-        res.status(200).send('success');
+        // console.log(req.resizedImageUrls);
+        // console.log(req.originalImageUrls);
+        res.status(200).send({
+            resizedImages : req.resizedImageUrls,
+            originalImages : req.originalImageUrls
+        });
     }
 )
 

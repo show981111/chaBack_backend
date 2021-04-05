@@ -67,16 +67,18 @@ paths:
           description: reply 리스트 반환 여기서 childCount는 해당 댓글에 달린 대댓글 갯수
           examples:
             application/json:
-              [
+              [          
                 {
-                  replyID: 10,
-                  FK_REPLY_userID: 'ok@gmail.com',
-                  updated: '2020-01-03T02:20:00.000Z',
-                  content: '123',
-                  FK_REPLY_reviewID: 5,
-                  replyParentID: null,
-                  childCount: 4
-                }
+                  "replyID": 92,
+                  "FK_REPLY_userID": "nnn1437@naver.com",
+                  "updated": "2021-02-26T09:38:08.000Z",
+                  "content": "좋아요",
+                  "FK_REPLY_reviewID": 221,
+                  "replyParentID": null,
+                  "childCount": 0,
+                  "userNickName": "차박맨",
+                  "profileImg": "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/nnn1437%40naver.com/nnn1437%40naver.com.jpeg"
+                },
               ]
         400:
           description: 요청 파라미터가 잘못됨
@@ -163,4 +165,3 @@ definitions:
     example:
       content : post reply to review 3
       reviewID : 3
-      replyParentID : 5

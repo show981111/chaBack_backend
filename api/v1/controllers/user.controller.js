@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const db = require('../../../dbConnection/mariaDB.js');
 const jwt = require('../middleware/jwt.js');
 const async = require('async');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 /* LOGIN */
@@ -278,10 +279,64 @@ let getBest = function(req, res, next){
     })
 }
 
+let transporter = nodemailer.createTransport({
+	service: 'Naver',
+	host: 'smtp.naver.com',
+	port: 587,
+	secure: false,
+	auth: {
+	  user: process.env.emailUserID,
+	  pass: process.env.emailUserPassword,
+	},
+});
+
+/**Send Email to User */
+let postReport = function(option){
+
+    return function(req, res, next){
+        var sql;
+        if(option == 'community')
+        {
+            sql = 'SELECT * FROM COMMUNITY WHERE communityID = ?';
+        }
+        db.query(sql, [req.body.id], async function(err, result){
+            if(err) return next(err);
+            if(result == undefined || result.length < 1){
+                const e = new Error();
+                e.status = 404;
+                e.message = 'Not Found';
+                return next(e);
+            }else{
+                try{
+            
+                    let content = `<p>${req.body.userID}로부터 신고가 들어왔습니다.<br>
+                                    글 제목 : ${result[0].title}<br>
+                                    글 내용 : ${result[0].content}<br>
+                                    카테고리 : ${result[0].category}<br>
+                                    글작성자 : ${result[0].FK_COMMUNITY_userID}
+                                    </p>`;  
+            
+                    let info = await transporter.sendMail({
+                        from: `차박의 성지 <${process.env.emailUserID}>`,
+                        to: 'chabaksg@gmail.com',//req.body.userID
+                        subject: '[차박의성지]유저로부터 신고가 들어왔습니다',
+                        html: content,
+                    });
+                    res.status(200).send('success');
+            
+                }catch(mail_error){
+                    next(mail_error);
+                }
+            }
+        })
+    }
+}
+
 module.exports = {
     register : register,
     login : login,
     updateUserInfo : updateUserInfo,
     resetPassword : resetPassword,
-    getBest : getBest
+    getBest : getBest,
+    postReport : postReport
 };

@@ -215,6 +215,35 @@ paths:
         400:
           description: Post Body 에 변수가 형식이 잘못된 경우
 
+  /user/report/community:      
+    post:                 
+      tags:               
+        - User            
+      summary: 유저가 게시글을 신고함
+      produces:
+      - application/json
+      parameters:         
+      - in: body       
+        schema:
+          type: object
+          properties:
+            userID:
+              type: string
+            userPassword:
+              type: number
+          example:  
+            userID: "ok@gmail.com"
+            id: 3
+      responses:      
+        200:
+          description: 성공적으로 메일을 보냄
+        400:
+          description: Post Body 에 변수가 형식이 잘못된 경우
+        401:
+          description: 토큰인증 안됨
+        404:
+          description: 해당 글을 찾지 못함
+
 
 definitions:        # Schema defination for request body
   User:

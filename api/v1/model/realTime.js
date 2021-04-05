@@ -6,7 +6,6 @@ let realTimeSchema = checkSchema({
         isString : true,
         errorMessage : 'content should not be empty',
         trim : true,
-        escape : true
     },
     placeID : {
         notEmpty : true,

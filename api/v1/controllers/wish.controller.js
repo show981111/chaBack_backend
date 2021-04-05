@@ -37,7 +37,7 @@ let postWish = function(req, res, next){
                 e.status = 404;
                 return next(e);
             }else if(err.errno == 1062){
-                return res.status(204).send('already posted');;    
+                return res.status(204).send('already posted');
             }
             return next(err)
         }

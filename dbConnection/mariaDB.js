@@ -6,6 +6,7 @@ var db = mysql.createConnection({
   user     : process.env.mariaDB_user,
   password : process.env.mariaDB_password,
   database : process.env.mariaDB_database,
+  charset : 'utf8mb4'
 });
  
 if(!db._connectCalled ) 

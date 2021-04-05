@@ -7,7 +7,7 @@ let updateGearInfo = function(gearID, point, option){
     }else if(option == 'update'){// point = curPoint - pastPoint
         sql = 'UPDATE GEAR SET totalPoint = totalPoint + ? WHERE gearID = ?';
     }else if(option == 'delete'){
-        sql = 'UPDATE GEAR SET totalPoint = totalPoint - ?, reviewCount = reviewCount - 1 WHERE gearID = ?';
+        //sql = 'UPDATE GEAR SET totalPoint = totalPoint - ? WHERE gearID = ?';
     }   
     return new Promise(function(resolve, reject) {
         db.query(sql, [point, gearID], function(err, results) {
@@ -57,7 +57,7 @@ let getGearInfo = function(gearReviewID){
     const sql = 'SELECT point,FK_GREVIEW_gearID FROM GEAR_REVIEW WHERE gearReviewID = ?';
     return new Promise(function(resolve, reject) {
         db.query(sql, [gearReviewID], function(err, result) {
-            if(err) reject(err);
+            if(err){ console.log(err); reject(err);}
             if(result.length > 0 && result[0].point !== undefined && result[0].FK_GREVIEW_gearID !== undefined){
                 resolve(result[0]);
             }else{
@@ -75,6 +75,7 @@ let putGearReview = async function (req, res, next) {
     try{
         gearInfo = await getGearInfo(req.params.gearReviewID);
     }catch(e){
+        console.log(e);
         return next(e);
     }
 
@@ -110,19 +111,19 @@ let deleteGearReview = function (req, res, next) {
     }
     db.query(sql,params, async function(err, results) {
         if(err) {console.log(err); return next(err);}
-
-        if(results && results.length > 0 && results[0].FK_GREVIEW_gearID !== undefined){
-            try{
-                await updateGearInfo(results[0].FK_GREVIEW_gearID, results[0].point, 'delete');
-                res.status(200).send('success');
-            } catch(err){
-                return next(err);
-            }
-        }else{
-            const e = new Error('Not Found');
-            e.status = 404;
-            next(e);
-        } 
+        res.status(200).send('success');
+        // if(results && results.length > 0 && results[0].FK_GREVIEW_gearID !== undefined){
+        //     try{
+        //         await updateGearInfo(results[0].FK_GREVIEW_gearID, results[0].point, 'delete');
+        //         res.status(200).send('success');
+        //     } catch(err){
+        //         return next(err);
+        //     }
+        // }else{
+        //     const e = new Error('Not Found');
+        //     e.status = 404;
+        //     next(e);
+        // } 
     })
 }
 
@@ -131,12 +132,12 @@ let getGearReview = function(option){
         var sql;
         var params =[];
         if(option == 'userID'){
-            sql = 'SELECT * FROM GEAR_REVIEW WHERE FK_GREVIEW_userID = ? order by gearReviewID DESC';
+            sql = 'SELECT * FROM GEAR_REVIEW WHERE FK_GREVIEW_userID = ? order by gearReviewID ASC';
             params.push(req.params.userID);
         }else{
             sql = `SELECT A.*, B.userNickName, B.profileImg FROM GEAR_REVIEW A
                     LEFT JOIN USER B ON A.FK_GREVIEW_userID = B.userID
-                    WHERE FK_GREVIEW_gearID = ? order by gearReviewID DESC`;
+                    WHERE FK_GREVIEW_gearID = ? order by gearReviewID ASC`;
             params.push(req.params.gearID);
         }
         db.query(sql, params, function(err, results){

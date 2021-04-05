@@ -7,7 +7,7 @@ let updateCommunityInfo = function(communityID, option){
     if(option == 'insert'){
         sql = 'UPDATE COMMUNITY SET commentsNum = commentsNum + 1 WHERE communityID = ?';
     }else{
-        sql = 'UPDATE COMMUNITY SET commentsNum = commentsNum - 1 WHERE communityID = ?';
+        //sql = 'UPDATE COMMUNITY SET commentsNum = commentsNum - 1 WHERE communityID = ?';
     }   
     return new Promise(function(resolve, reject) {
         db.query(sql, [communityID], function(err, results) {
@@ -69,9 +69,10 @@ let getCommentsByParent = function(req, res, next){
 
 //get Comments By userID w/ posts 
 let getCommentsByUserID = function(req, res, next){
-    const sql = `SELECT C.*, U.userNickName, U.profileImg FROM COMMENT C
+    const sql = `SELECT C.*, U.userNickName, U.profileImg, parent.title FROM COMMENT C
                     LEFT JOIN USER U ON U.userID = C.FK_COMMENT_userID
-                    WHERE C.FK_COMMENT_userID = ? LIMIT ${req.params.pageNumber}, 20`;
+                    LEFT JOIN COMMUNITY parent ON parent.communityID = C.FK_COMMENT_communityID
+                    WHERE C.FK_COMMENT_userID = ? order by commentID DESC`;
     db.query(sql, [req.params.userID], function(err, results){
         if(err) return next(err);
 
@@ -103,19 +104,19 @@ let deleteComment = function(req, res, next){
     }
     db.query(sql, params, async function(err, result){
         if(err) return next(err);
-
-        if(result && result.length > 0 && result[0].FK_COMMENT_communityID !== undefined){
-            try{
-                await updateCommunityInfo(result[0].FK_COMMENT_communityID, 'delete');
-                res.status(200).send('success');
-            }catch(e){
-                return next(e);
-            }
-        }else{
-            const e = new Error('row not found');
-            e.status = 404;
-            return next(e);
-        }
+        res.status(200).send('success');
+        // if(result && result.length > 0 && result[0].FK_COMMENT_communityID !== undefined){
+        //     try{
+        //         await updateCommunityInfo(result[0].FK_COMMENT_communityID, 'delete');
+        //         res.status(200).send('success');
+        //     }catch(e){
+        //         return next(e);
+        //     }
+        // }else{
+        //     const e = new Error('row not found');
+        //     e.status = 404;
+        //     return next(e);
+        // }
     })
 }
 

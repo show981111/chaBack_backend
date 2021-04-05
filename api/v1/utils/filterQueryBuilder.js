@@ -1,18 +1,20 @@
 const { categoryList } = require("../model/place");
 
-let filterQueryBuilder = function(region, category, bathroom, water , price, placeName ,before, standard, curlat, curlong) {//name 추가
+let filterQueryBuilder = function(reqBody , query, before, standard, curlat, curlong) {//name 추가
     
     var sql = 'SELECT A.*, B.userNickName, B.profileImg FROM PLACE A ';
     var paramArray = [];
     var params = {
-        'region' : region,
-        'category' : category,
-        'bathroom' : bathroom,
-        'water' : water,
-        'price' : price,
-        'placeName' : placeName
+        'region' : reqBody.region,
+        'category' : reqBody.category,
+        'bathroom' : reqBody.bathroom,
+        'water' : reqBody.water,
+        'price' : reqBody.price,
+        'hasMarket' : reqBody.hasMarket,
+        'query' : query
+        // 'placeName' : reqBody.placeName,
+        // 'address' : reqBody.address
     };
-    console.log(placeName);
     if(standard == 'distance'){
         sql = `SELECT A.*, B.userNickName, B.profileImg,
         (
@@ -38,34 +40,44 @@ let filterQueryBuilder = function(region, category, bathroom, water , price, pla
     // }else if(standard == 'date'){
     //     common = `updated < ? order by updated DESC LIMIT 20`;
     // }
-    var common = `order by placeID DESC LIMIT ${before} , 20`;
+    var order = `order by placeID DESC LIMIT ${before} , 20`;
     if(standard == 'point'){
-        common = `order by meanPoint DESC LIMIT ${before} ,20`;
+        order = `order by meanPoint DESC LIMIT ${before} ,20`;
     }else if(standard == 'review'){
-        common = `order by reviewCount DESC LIMIT ${before} ,20`;
+        order = `order by reviewCount DESC LIMIT ${before} ,20`;
     }else if(standard == 'distance'){
-        common = `order by distance DESC LIMIT ${before}, 20`;//km 기준이다 
+        order = `order by distance DESC LIMIT ${before}, 20`;//km 기준이다 
         console.log(before);
     }else if(standard == 'date'){
-        common = `order by updated DESC LIMIT ${before} ,20`;
+        order = `order by updated DESC LIMIT ${before} ,20`;
     }
     var where = 'WHERE ';
     var join = 'JOIN USER B ON A.FK_PLACE_userID = B.userID ';
     var index = 0;
+    var textCondition;
+    // if(reqBody.placeName != undefined){
+    //     textCondition = `(placeName = ${} OR )`
+    // }else 
     for(var key in params){
-        if(params[key]!= undefined && params[key] != -1 && params[key] != '-1'){
+        if(params[key]!== undefined && params[key] != -1 && params[key] != '-1'){
+            console.log(key, params[key]);
             if(index != 0)
             {
-                if(key == 'placeName'){
-                    where += `AND ${key} like ? `;
+                if(key == 'query'){
+                    where += `AND (placeName like ? OR address like ?)`;
                 }else where += `AND ${key} = ? `;
             }else {
-                if(key == 'placeName'){
-                    where += ` ${key} like ? `;
+                if(key == 'query'){
+                    where += ` (placeName like ? OR address like ?) `;
                 }else where += `${key} = ? `;
             }
-            if(key == 'placeName') params[key] = '%'+params[key]+'%';
-            paramArray.push(params[key]);
+            if(key == 'query'){
+                 params[key] = '%'+params[key]+'%';
+                 paramArray.push(params[key]);
+                 paramArray.push(params[key]);
+            }else{
+                paramArray.push(params[key]);
+            }
             index++;
         }
     }
@@ -76,19 +88,19 @@ let filterQueryBuilder = function(region, category, bathroom, water , price, pla
         // }else{
         //     where += 'AND ' + common;
         // }
-        where += ' ' + common;
+        where += ' ' + order;
     }else{
         // if(standard == 'distance'){
         //     where = common;
         // }else{
         //     where = common;
         // }
-        where = common;
+        where = order;
     }
     
     //paramArray.push(before);
     sql = sql + join +where;
-
+    //console.log(sql);
     return {
         sql : sql,
         params : paramArray

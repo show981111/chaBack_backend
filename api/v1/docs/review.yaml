@@ -79,7 +79,7 @@ paths:
         400:
           description: Get 파라미터가 형식이 잘못된 경우(error message에 detail 있음)
 
-  /review/user/{userID}/{page}:      
+  /review/user/{userID}:      
     get:                 
       tags:               
         - Review            
@@ -95,11 +95,7 @@ paths:
           Bearer Auth
       - in: path       
         name: userID   
-        description: 조회하려는 userID
-        required: true 
-      - in: path       
-        name: page   
-        description: 해당 페이지 조회
+        description: 조회하려는 유저 아이디
         required: true  
       responses:      
         200:
@@ -128,6 +124,59 @@ paths:
       responses:      
         200:
           description: review 리스트 반환
+        400:
+          description: Get 파라미터가 형식이 잘못된 경우
+
+  /review/point/{page}:      
+    get:                 
+      tags:               
+        - Review            
+      summary: 별점순서대로 리뷰 조회
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: page   
+        description: 해당 페이지 조회
+        required: true  
+      responses:      
+        200:
+          description: review 리스트 반환
+          examples:
+            application/json:
+              [
+                {
+                    "reviewID": 241,
+                    "FK_REVIEW_placeID": 257,
+                    "content": "너무너무너무너무 좋았습니다\n최고~~~ㅎㅎ",
+                    "updated": "2021-03-02T03:40:09.000Z",
+                    "FK_REVIEW_userID": "nnn1437@naver.com",
+                    "point": 5,
+                    "likeCount": 1,
+                    "imageKey": [
+                        "image_picker_A199EB50-EE30-4450-9598-394A8AC31367-38859-0000339892E2D376.jpeg",
+                        "image_picker_AD9CF751-7578-4A9A-824E-36F2133B50AD-79374-00003D9EB07F11D8.jpeg"
+                    ],
+                    "replyCount": 0,
+                    "userNickName": "차박맨",
+                    "profileImg": "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/nnn1437%40naver.com/nnn1437%40naver.com.jpeg",
+                    "placeName": "내자리",
+                    "resizedImages": [
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/nnn1437@naver.com/image_picker_A199EB50-EE30-4450-9598-394A8AC31367-38859-0000339892E2D376.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/nnn1437@naver.com/image_picker_AD9CF751-7578-4A9A-824E-36F2133B50AD-79374-00003D9EB07F11D8.jpeg"
+                    ],
+                    "originalImages": [
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/nnn1437@naver.com/image_picker_A199EB50-EE30-4450-9598-394A8AC31367-38859-0000339892E2D376.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/nnn1437@naver.com/image_picker_AD9CF751-7578-4A9A-824E-36F2133B50AD-79374-00003D9EB07F11D8.jpeg"
+                    ]
+                },
+              ]
         400:
           description: Get 파라미터가 형식이 잘못된 경우
 
@@ -219,15 +268,22 @@ paths:
                     "FK_REVIEW_userID": "ok@gmail.com",
                     "point": 3,
                     "likeCount": 3,
-                    "imageKey": "a",
+                    "imageKey": [
+                        "6CD80CFD-D062-4AB1-AEED-F4CA02305A93.jpeg",
+                        "6DAF61D9-5DAD-4443-AA1A-43266228826B.jpeg"
+                    ],
                     "replyCount": 0,
-                    "userNickName": "updated NickName okk",
+                    "userNickName": "ㅅㅐ유",
                     "profileImg": "",
+                    "userLiked": 0,
+                    "placeName": "dsadsadasd",
                     "resizedImages": [
-                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/a"
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/test@gmail.com/6CD80CFD-D062-4AB1-AEED-F4CA02305A93.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/test@gmail.com/6DAF61D9-5DAD-4443-AA1A-43266228826B.jpeg"
                     ],
                     "originalImages": [
-                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/a"
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/test@gmail.com/6CD80CFD-D062-4AB1-AEED-F4CA02305A93.jpeg",
+                        "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/test@gmail.com/6DAF61D9-5DAD-4443-AA1A-43266228826B.jpeg"
                     ]
                 },
               ]
@@ -294,6 +350,52 @@ paths:
         404:
           description: 해당 유저가 등록한 리뷰를 찾지 못함
 
+  /review/id/{reviewID}:      
+    get:                 
+      tags:               
+        - Review            
+      summary: 해당 리뷰아이디로 정보 조회
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: reviewID   
+        description: 리뷰 아이디
+        required: true 
+      responses:      
+        200:
+          description: 리뷰 정보 겟
+          examples:
+            application/json:
+              {
+                  "reviewID": 8,
+                  "FK_REVIEW_placeID": 2,
+                  "content": "post review to place ID 2",
+                  "updated": "2021-01-06T15:00:00.000Z",
+                  "FK_REVIEW_userID": "ok@gmail.com",
+                  "point": 3,
+                  "likeCount": 0,
+                  "imageKey": [
+                      "6B05AABE-23CD-490C-A379-68B09F31B118.jpeg",
+                      "6FA28D4D-CD24-42DA-AA01-252477178C85.jpeg"
+                  ],
+                  "replyCount": 0,
+                  "userNickName": "sadsadasd",
+                  "profileImg": "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok%40gmail.com/ok%40gmail.com.jpeg",
+                  "resizedImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/6B05AABE-23CD-490C-A379-68B09F31B118.jpeg",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/ok@gmail.com/6FA28D4D-CD24-42DA-AA01-252477178C85.jpeg"
+                  ],
+                  "originalImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/6B05AABE-23CD-490C-A379-68B09F31B118.jpeg",
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/ok@gmail.com/6FA28D4D-CD24-42DA-AA01-252477178C85.jpeg"
+                  ]
+              }
+        400:
+          description: Get 파라미터가 형식이 잘못된 경우
+        404:
+          description: 해당 리뷰 찾지 못함
+
 definitions:      
   Review:
     type: object
@@ -319,13 +421,9 @@ definitions:
         type: string
       point:
         type: int
-      pointGap:
-        type: int
-        description: 현재 점수 - 과거 점수
       imageKey:
         type: int
     example:
         content : 'updated content haha'
         point : 5
-        pointGap : 2
         imageKey : ['asdasd','vasgrae','hdhydth']

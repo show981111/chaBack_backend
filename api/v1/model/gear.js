@@ -29,7 +29,6 @@ let gearSchema = checkSchema({
         isString : true,
         errorMessage : 'content should not be empty',
         trim : true,
-        escape : true
     },
     category : {
         notEmpty : true,

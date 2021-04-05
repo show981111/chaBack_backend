@@ -1,0 +1,88 @@
+paths:
+  /block:          
+    post:             
+      tags:               
+        - BLOCK           
+      summary: 유저 차단 
+      produces:
+      - application/json
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: body       
+        name: blockedUserID   
+        description: 댓글 내용
+        required: true  
+      responses:     
+        200:
+          description: 성공적으로 찜하기
+        204:
+          description: 이미 차단 되있음 
+        401:
+          description: 토큰 인증 실패 
+        404:
+          description: 유저 찾지 못함
+
+  /block/{blockedUserIDtoDelete}:      
+    delete:                 
+      tags:               
+        - BLOCK            
+      summary: 차단 취소
+      parameters:        
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      - in: path       
+        name: blockedUserIDtoDelete   
+        schema:
+          type: string
+        description: 차단 풀 유저 아이디
+        required: true  
+      produces:
+      - application/json
+      responses:      
+        200:
+          description: 차단 잘 취소함
+        401:
+          description: 토큰 인증 실패  
+        404:
+          description: 아이디 찾지 못함 
+
+  /block/:      
+    get:                 
+      tags:               
+        - BLOCK            
+      summary: 유저가 차단한 목록 가져옴
+      produces:
+      - application/json
+      parameters:
+      - in: header
+        type: http
+        scheme: bearer
+        name: Authorization
+        description : 
+          Bearer Auth
+      responses:      
+        200:
+          description: 성공적으로 가져옴
+          examples:
+            application/json:
+              [
+                  {
+                      "blockingUserID": "test@gmail.com",
+                      "blockedUserID": "nhj2965@naver.com"
+                  },
+                  {
+                      "blockingUserID": "test@gmail.com",
+                      "blockedUserID": "nnn1437@naver.com"
+                  }
+              ]
+        401:
+          description: 토큰 인증실패 

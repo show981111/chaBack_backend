@@ -9,14 +9,14 @@ const resourcesController = require('../controllers/resources.controller.js');
 
 
 //region, category, bathroom, water , price ,from
-router.get('/:region/:category/:bathroom/:water/:price/:placeName/:page/:option/', 
+router.post('/:query?/:page/:option', 
     placeModel.placeCommonFilterSchema,
-    placeModel.placeFilterSchema,
+    placeModel.optionSchema,
     checkValidationResult,
     placeController.getPlaceList(false) );
     //get image by place/:placeID/1 
     
-router.get('/:region/:category/:bathroom/:water/:price/:placeName/:page/distance/:lat/:lng', 
+router.post('/:query/:page/distance/:lat/:lng', 
     placeModel.placeCommonFilterSchema,
     check('page').isNumeric().notEmpty().withMessage('page should be number').trim(),
     check('lat').isDecimal().notEmpty().isFloat({min : -90, max : 90}).withMessage('lat should be decimal').trim(),
@@ -25,6 +25,12 @@ router.get('/:region/:category/:bathroom/:water/:price/:placeName/:page/distance
     placeController.getPlaceList(true) );
     //get image by place/:placeID/1 
 
+router.get('/conflict/:lat/:lng', 
+    check('lat').isDecimal().notEmpty().isFloat({min : -90, max : 90}).withMessage('lat should be decimal').trim(),
+    check('lng').isDecimal().notEmpty().isFloat({min : -180, max : 180}).withMessage('lng should be decimal').trim(),
+    checkValidationResult,
+    placeController.checkConflict 
+    );
 
 router.post('/', //기존 차박지와 간격 500m 차이나는지 확인할것 
     jwt.verifyToken(), 

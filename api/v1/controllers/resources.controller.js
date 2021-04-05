@@ -11,6 +11,8 @@ AWS.config.update({
     accessKeyId: process.env.IAM_USER_KEY,
     region: process.env.REGION
 });
+// const logger = require('./config/winston.js');
+
 
 var s3 = new AWS.S3();
 
@@ -21,6 +23,8 @@ let upload = multer({
         bucket: process.env.BUCKET_NAME,
         contentType: multerS3.AUTO_CONTENT_TYPE,
         shouldTransform : function (req, file, cb) {
+            req.originalImageUrls = [];
+            req.resizedImageUrls = [];
             console.log(req.token_userID);
             console.log('in should transform ', file);
             cb(null, true);
@@ -31,9 +35,11 @@ let upload = multer({
             key: function (req, file, cb) {
                 console.log(file);
                 var keyName = file.originalname.split(".")[0];
-                // console.log(keyName);
-                cb(null, `images/original/${req.token_userID}/${keyName}.jpeg`); 
-            },
+                var url = `images/original/${req.token_userID}/${keyName}.jpeg`;
+                req.originalImageUrls.push(`${process.env.BUCKET_PATH}/${url}`);
+                cb(null, url); 
+            }
+            ,
             transform: function (req, file, cb) {
               cb(null, sharp().rotate().jpeg())
             }
@@ -44,12 +50,15 @@ let upload = multer({
               
                 var keyName = file.originalname.split(".")[0];
                 // console.log(keyName);
-                cb(null, `images/resize/${req.token_userID}/${keyName}.jpeg`); 
+                var url = `images/resize/${req.token_userID}/${keyName}.jpeg`;
+                req.resizedImageUrls.push(`${process.env.BUCKET_PATH}/${url}`);
+
+                cb(null, url); 
             },
             transform: function (req, file, cb) {
               cb(null, sharp().rotate().resize({
                     fit: sharp.fit.contain,
-                    width: 200
+                    height: 500
                 }).jpeg())
             }
           }

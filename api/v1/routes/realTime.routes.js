@@ -16,7 +16,7 @@ router.post('/',
 
 router.put('/:realTimeID',
     check('realTimeID').notEmpty().isNumeric().withMessage('realTimeID should not be empty').trim(),
-    check('content').notEmpty().withMessage('content should not be empty').trim().escape(),
+    check('content').notEmpty().withMessage('content should not be empty').trim(),
     checkValidationResult,
     jwt.verifyToken(),
     realTimeController.putRealTime

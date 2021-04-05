@@ -15,6 +15,8 @@ var gearRouter = require('./routes/gear.routes.js');
 var gearReviewRouter = require('./routes/gear_review.routes.js');
 var realTimeRouter = require('./routes/realTime.routes.js');
 var adminRouter = require('./routes/admin.routes.js');
+var blockRouter = require('./routes/block.routes.js');
+
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
@@ -51,6 +53,7 @@ router.use('/gear', gearRouter);
 router.use('/gear-review/',gearReviewRouter);
 router.use('/real-time', realTimeRouter);
 router.use('/admin', adminRouter);
+router.use('/block', blockRouter);
 
 module.exports = router;
 

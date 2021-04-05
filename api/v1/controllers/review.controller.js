@@ -22,7 +22,7 @@ let getReview = function(option, parseNum = 20){
                 console.log(err);
                 return next(err);
             }
-            console.log(this.sql);
+            //console.log(this.sql);
             // if(option != 'userID')
             // {
             results = makeImageArray(results, 'review');
@@ -68,7 +68,7 @@ let updatePlaceInfo = function(placeID, point, option){
     }else if(option == 'update'){// point = curPoint - pastPoint
         sql = 'UPDATE PLACE SET totalPoint = totalPoint + ? WHERE placeID = ?';
     }else if(option == 'delete'){
-        sql = 'UPDATE PLACE SET totalPoint = totalPoint - ?, reviewCount = reviewCount - 1 WHERE placeID = ?';
+        //sql = 'UPDATE PLACE SET totalPoint = totalPoint - ? WHERE placeID = ?';
     }   
     return new Promise(function(resolve, reject) {
         db.query(sql, [point, placeID], function(err, results) {
@@ -76,7 +76,7 @@ let updatePlaceInfo = function(placeID, point, option){
             if(results.affectedRows > 0){
                 resolve();
             }else{
-                const e = new Error('Not Found');
+                const e = new Error('place not found');
                 e.status = 404;
                 reject(e);
             }
@@ -122,10 +122,10 @@ let getReviewInfoByID = function(reviewID){
     return new Promise(function(resolve, reject) {
         db.query(sql, [reviewID], function(err, result) {
             if(err) reject(err);
-            if(result.length > 0 && result[0].point !== undefined && result[0].FK_REVIEW_placeID !== undefined){
+            if(result && result.length > 0 && result[0].point !== undefined && result[0].FK_REVIEW_placeID !== undefined){
                 resolve(result[0]);
             }else{
-                const e = new Error('Not Found');
+                const e = new Error('review not found');
                 e.status = 404;
                 reject(e);
             }
@@ -134,7 +134,7 @@ let getReviewInfoByID = function(reviewID){
 }
 
 let putReview = async function (req, res, next) {
-    const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
+    //const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
     var originalReview ;
     try{
         originalReview = await getReviewInfoByID(req.params.reviewID);
@@ -142,11 +142,17 @@ let putReview = async function (req, res, next) {
         return next(e);
     }
     var imageKeyWithComma = makeImageKey(req.body.imageKey);
+    
+    var sql;
+    if(req.isAdmin){
+        sql = `UPDATE REVIEW SET content = ?, point = ?, imageKey = ?
+                    WHERE reviewID = ?`;
+    }else{
+        sql = `UPDATE REVIEW SET content = ?, point = ?, imageKey = ?
+                    WHERE FK_REVIEW_userID = '${req.token_userID}' AND reviewID = ?`;
+    }
 
-    const sql = `UPDATE REVIEW SET content = ?, updated = ?, point = ?, imageKey = ?
-                    WHERE FK_REVIEW_userID = ? AND reviewID = ? AND FK_REVIEW_placeID = ?`;
-    const params = [req.body.content, updated, req.body.point, imageKeyWithComma, req.token_userID, req.params.reviewID
-                        ,originalReview.FK_REVIEW_placeID ];
+    const params = [req.body.content, req.body.point, imageKeyWithComma, req.params.reviewID];
     db.query(sql, params, async function (err, results) {
         if(err) {console.log(err); return next(err);}
 
@@ -179,15 +185,13 @@ let deleteReview = function (req, res, next) {
         if(results.length > 0 && results[0].point !== undefined){
             console.log(results[0].point);
             try{
-                await updatePlaceInfo(results[0].FK_REVIEW_placeID, results[0].point, 'delete');
+                //await updatePlaceInfo(results[0].FK_REVIEW_placeID, results[0].point, 'delete');
                 req.token_userID = results[0].FK_REVIEW_userID;
                 if(results[0].imageKey) {
                     req.body.imageKey = results[0].imageKey.split(',');
                 }
-                if(!req.isAdmin)
-                {
-                    await updateUserInfo(req.token_userID, 'delete');
-                }
+                await updateUserInfo(req.token_userID, 'delete');
+                
                 next();
             } catch(err){
                 return next(err);
@@ -200,11 +204,29 @@ let deleteReview = function (req, res, next) {
     })
 }
 
+let getReviewInfo = function(req, res, next){
+    const sql = `SELECT rv.*, user.userNickName, user.profileImg, plc.placeName FROM REVIEW rv
+                    LEFT JOIN USER user ON rv.FK_REVIEW_userID = user.userID
+                    LEFT JOIN PLACE plc ON rv.FK_REVIEW_placeID = plc.placeID
+                    WHERE rv.reviewID = ?`;
+    db.query(sql, req.params.reviewID, function(err,result){
+        if(err) return next(err);
 
+        if(result && result.length > 0){
+            result = makeImageArray(result, 'review');
+            res.status(200).send(result[0]);
+        }else{
+            const e = new Error('review not found');
+            e.status = 404;
+            return next(e);
+        }
+    })
+}
 module.exports = {
     getReview : getReview,
     postReview : postReview,
     putReview : putReview,
     deleteReview : deleteReview,
-    unLoginedUser : unLoginedUser
+    unLoginedUser : unLoginedUser,
+    getReviewInfo : getReviewInfo
 }

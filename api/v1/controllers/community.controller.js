@@ -2,6 +2,14 @@ const db = require('../../../dbConnection/mariaDB.js');
 const makeImageKey = require('../utils/makeImageKey.js');
 const makeImageArray = require('../utils/makeImageArray.js')
 
+let unLoginedUser = function(err, req, res, next){
+    if(err.status == 401 && err.message == 'no credential'){
+        next();
+    }else{
+        next(err);
+    } 
+}
+
 var postCommunity = function(req, res, next){
     const sql = `INSERT INTO COMMUNITY(title, content, category, FK_COMMUNITY_userID, imageKey, updated)
                     VALUES(?, ?, ?, ?, ? ,?)`;
@@ -26,9 +34,17 @@ var postCommunity = function(req, res, next){
 }
 
 var getCommunities = function(req, res, next){
-    const sql = `SELECT C.*, U.userNickName, U.profileImg FROM COMMUNITY C
+    var sql ; 
+    if(!req.token_userID){
+        sql = `SELECT C.*, U.userNickName, U.profileImg FROM COMMUNITY C
                     LEFT JOIN USER U ON C.FK_COMMUNITY_userID = U.userID
                     WHERE category = ? order by communityID DESC LIMIT ${req.params.pageNumber}, 20`;
+    }else{
+        sql = `SELECT C.*, U.userNickName, U.profileImg FROM COMMUNITY C
+                    LEFT JOIN USER U ON C.FK_COMMUNITY_userID = U.userID
+                    LEFT JOIN BLOCK B ON B.blockingUserID = '${req.token_userID}' AND C.FK_COMMUNITY_userID = B.blockedUserID
+                    WHERE category = ? AND B.blockedUserID is NULL order by communityID DESC LIMIT ${req.params.pageNumber}, 20;`
+    }
     db.query(sql, [req.params.category],function(err, results){
         if(err){ console.log(err); return next(err);}
 
@@ -40,7 +56,7 @@ var getCommunities = function(req, res, next){
 var getCommunityByUserID = function(req, res , next){
     const sql = `SELECT C.*, U.userNickName, U.profileImg FROM COMMUNITY C 
                     LEFT JOIN USER U ON C.FK_COMMUNITY_userID = U.userID
-                    WHERE FK_COMMUNITY_userID = ? order by communityID DESC LIMIT ${req.params.pageNumber}, 20`;
+                    WHERE FK_COMMUNITY_userID = ? order by communityID DESC`;
     db.query(sql, [req.params.userID ],function(err, results){
         if(err){ console.log(err); return next(err);}
 
@@ -50,11 +66,11 @@ var getCommunityByUserID = function(req, res , next){
 }
 
 var updateCommunity = function(req, res, next){
-    const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
+    //const updated = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') ;
     var imageKeyWithComma = makeImageKey(req.body.imageKey);
 
-    const sql = 'UPDATE COMMUNITY SET content = ?, title = ?, updated = ?, imageKey = ? WHERE communityID = ? AND FK_COMMUNITY_userID = ?';
-    const params = [req.body.content, req.body.title, updated, imageKeyWithComma, req.params.communityID, req.token_userID];
+    const sql = 'UPDATE COMMUNITY SET content = ?, title = ?, imageKey = ? WHERE communityID = ? AND FK_COMMUNITY_userID = ?';
+    const params = [req.body.content, req.body.title, imageKeyWithComma, req.params.communityID, req.token_userID];
     db.query(sql, params, function(err, result){
         if(err){
             return next(err);
@@ -97,10 +113,31 @@ var deleteCommunity = function(req, res, next){
     })
 }
 
+var getCommunityInfo = function(req, res, next){
+    const sql = `SELECT C.*, U.userNickName, U.profileImg FROM COMMUNITY C
+                    LEFT JOIN USER U ON C.FK_COMMUNITY_userID = U.userID
+                    WHERE C.communityID = ?`;
+    db.query(sql, [req.params.communityID], function(err, result){
+        if(err) return next(err);
+
+        if(result && result.length > 0)
+        {
+            result= makeImageArray(result, 'community');
+            res.status(200).send(result[0]);
+        }else{
+            const e = new Error('community not found');
+            e.status = 404;
+            return next(e);
+        }
+    })
+}
+
 module.exports = {
     postCommunity: postCommunity,
     getCommunities : getCommunities,
     getCommunityByUserID : getCommunityByUserID,
     updateCommunity : updateCommunity,
-    deleteCommunity : deleteCommunity
+    deleteCommunity : deleteCommunity,
+    getCommunityInfo : getCommunityInfo,
+    unLoginedUser : unLoginedUser
 }

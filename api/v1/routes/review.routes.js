@@ -40,6 +40,14 @@ router.get('/like/:page',
     reviewController.unLoginedUser,
     reviewController.getReview('like'))
 
+/*리뷰 별점에 따라서 얻기 */
+router.get('/point/:page', 
+    check('page').isNumeric().notEmpty().withMessage('page should be number').trim(),
+    checkValidationResult,
+    jwt.verifyToken(),
+    reviewController.unLoginedUser,
+    reviewController.getReview('point'))
+
 /*리뷰 전체 랭킹 상위 5개*/
 router.get('/rank/:page', 
     check('page').isNumeric().notEmpty().withMessage('page should be number').trim(),
@@ -57,8 +65,7 @@ router.get('/best/:placeID/:page',
     reviewController.getReview('best', 5))
 
 /*리뷰 유저아이디에 따라서 얻기 */
-router.get('/user/:userID/:page', 
-    check('page').isNumeric().notEmpty().withMessage('page should be number').trim(),
+router.get('/user/:userID', 
     check('userID').isEmail().notEmpty().withMessage('userID should be email and not be empty').trim(),
     checkValidationResult,
     jwt.verifyToken(),
@@ -81,6 +88,13 @@ router.delete('/:reviewID',
     jwt.verifyToken(),
     reviewController.deleteReview,
     resourcesController.deleteObjects,
+)
+
+/*리뷰아이디로 정보 겟*/
+router.get('/id/:reviewID',
+    check('reviewID').isNumeric().notEmpty().withMessage('reviewID should be number').trim(),
+    checkValidationResult,
+    reviewController.getReviewInfo
 )
 
 module.exports = router;

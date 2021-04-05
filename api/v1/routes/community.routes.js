@@ -7,28 +7,35 @@ const jwt = require('../middleware/jwt.js')
 const resourcesController = require('../controllers/resources.controller.js');
 const communitySchema = require('../model/community.js');
 
-router.get('/user/:userID/:pageNumber',
+router.get('/user/:userID',
     check('userID').notEmpty().isEmail().withMessage('userID should be email and not Empty').trim(),
     checkValidationResult,
+    jwt.verifyToken(),
+    communityController.unLoginedUser,
     communityController.getCommunityByUserID);
 
 router.get('/:category/:pageNumber', 
     check('category').notEmpty().isFloat({min : 0, max : 1}).withMessage('category should not be empty').trim().toInt(),
     check('pageNumber').notEmpty().isNumeric().withMessage('pageNumber should not be empty').trim().toInt(),
     checkValidationResult,
+    jwt.verifyToken(),
+    communityController.unLoginedUser,
     communityController.getCommunities);
 
+router.get('/:communityID',
+    check('communityID').notEmpty().isNumeric().withMessage('communityID should not be empty').trim(),
+    checkValidationResult,
+    communityController.getCommunityInfo);
+
 router.post('/board', 
-    communitySchema,
+    communitySchema(false),
     checkValidationResult,
     jwt.verifyToken(),
     communityController.postCommunity);
 
-router.put('/:communityID',
-    check('title').notEmpty().withMessage('title should not be empty').trim().escape(),     
-    check('content').notEmpty().withMessage('content should not be empty').trim().escape(), 
+router.put('/:communityID', 
     check('communityID').notEmpty().isNumeric().withMessage('communityID should not be empty').trim(),
-    check('imageKey').optional().notEmpty().isArray().withMessage('imageKey should not be empty'),
+    communitySchema(true),
     checkValidationResult,
     jwt.verifyToken(),
     communityController.updateCommunity);

@@ -118,7 +118,6 @@ var placeSchema = function(optional){
         },
         notEmpty : true,
         trim : true,
-        escape : true,
     },
     category: {
         errorMessage: 'category should not be empty',
@@ -148,7 +147,13 @@ var placeSchema = function(optional){
     },
     price: {
         errorMessage: 'price should be 1 or 0',
-        isNumeric : true,
+        isBoolean : true,
+        notEmpty : true,
+        trim : true
+    },
+    hasMarket: {
+        errorMessage: 'hasMarket should be 1 or 0',
+        isBoolean : true,
         notEmpty : true,
         trim : true
     },
@@ -175,6 +180,7 @@ var placeSchema = function(optional){
 
 var placeCommonFilterSchema = checkSchema({
     region: {
+        optional : true,
         errorMessage: 'region should not be empty',
         notEmpty : true, 
         custom : {
@@ -189,6 +195,7 @@ var placeCommonFilterSchema = checkSchema({
         trim: true
     },
     category: {
+        optional : true,
         errorMessage: 'category should not be empty',
         notEmpty : true,
         custom : {
@@ -203,12 +210,13 @@ var placeCommonFilterSchema = checkSchema({
         trim : true
     },
     bathroom: {
+        optional : true,
         errorMessage: 'bathroom should be 1, 0, -1',
         notEmpty : true,
         custom : {
             options : (value) => {
                 if(value == 0 || value == 1 || value == -1){
-                    return value;
+                    return true;
                 }else{
                     const e = new Error('bathroom should be 1, 0, -1');
                     e.status = 400;
@@ -219,12 +227,13 @@ var placeCommonFilterSchema = checkSchema({
         trim : true
     },
     water: {
+        optional : true,
         errorMessage: 'water should be 1, 0, -1',
         notEmpty : true,
         custom : {
             options : (value) => {
                 if(value == 0 || value == 1 || value == -1){
-                    return value;
+                    return true;
                 }else{
                     const e = new Error('water should be 1, 0, -1');
                     e.status = 400;
@@ -235,12 +244,13 @@ var placeCommonFilterSchema = checkSchema({
         trim : true
     },
     price: {
+        optional : true,
         errorMessage: 'price should be 1, 0, -1',
         notEmpty : true,
         custom : {
             options : (value) => {
                 if(value == 0 || value == 1 || value == -1){
-                    return value;
+                    return true;
                 }else{
                     const e = new Error('price should be 1, 0, -1');
                     e.status = 400;
@@ -250,14 +260,32 @@ var placeCommonFilterSchema = checkSchema({
         },  
         trim : true
     },
-    placeName: {
-        errorMessage: 'placeName should not be empty',
+    hasMarket: {
+        optional : true,
+        errorMessage: 'hasMarket should be 1, 0, -1',
+        notEmpty : true,
+        custom : {
+            options : (value) => {
+                if(value == 0 || value == 1 || value == -1){
+                    return true;
+                }else{
+                    const e = new Error('price should be 1, 0, -1');
+                    e.status = 400;
+                    throw e;
+                }
+            },
+        },  
+        trim : true
+    },
+    query: {
+        optional : true,
+        errorMessage: 'query should not be empty',
         notEmpty : true,
         trim : true
     }
 });
 
-var placeFilterSchema = checkSchema({
+var optionSchema = checkSchema({
     option : {
         custom : {
             options : (value) => {
@@ -309,7 +337,7 @@ var placeFilterSchema = checkSchema({
 module.exports = {
     placeSchema : placeSchema,
     filter : filter,
-    placeFilterSchema : placeFilterSchema,
+    optionSchema : optionSchema,
     placeCommonFilterSchema : placeCommonFilterSchema,
     categoryList : categoryList,
     regionData : regionData,

@@ -5,7 +5,7 @@ let updateReviewInfo = function(reviewID, option){
     if(option == 'insert'){
         sql = 'UPDATE REVIEW SET replyCount = replyCount + 1 WHERE reviewID = ?';
     }else{
-        sql = 'UPDATE REVIEW SET replyCount = replyCount - 1 WHERE reviewID = ?';
+        //sql = 'UPDATE REVIEW SET replyCount = replyCount - 1 WHERE reviewID = ?';
     }   
     return new Promise(function(resolve, reject) {
         db.query(sql, [reviewID], function(err, results) {
@@ -98,7 +98,7 @@ let getReply = function(option){
                         LEFT JOIN USER C ON A.FK_REPLY_userID = C.userID
                         WHERE A.FK_REPLY_reviewID = ? AND A.replyParentID IS NULL 
                         group by A.replyID
-                        order by A.replyID DESC`;
+                        order by A.replyID ASC`;
             params = [req.params.reviewID];
         }
         db.query(sql, params, function(err, results){
@@ -122,21 +122,21 @@ let deleteReply = function(req, res, next){
     }
     db.query(sql, params, async function(err, result){
         if(err) return next(err);
+        res.send('success');
+        // if(result && result.length > 0 && result[0].FK_REPLY_reviewID !== undefined){
 
-        if(result && result.length > 0 && result[0].FK_REPLY_reviewID !== undefined){
+        //     try{
+        //         await updateReviewInfo(result[0].FK_REPLY_reviewID, 'delete');
+        //         res.send('success');
+        //     }catch(e){
+        //         return next(e);
+        //     }
 
-            try{
-                await updateReviewInfo(result[0].FK_REPLY_reviewID, 'delete');
-                res.send('success');
-            }catch(e){
-                return next(e);
-            }
-
-        }else{
-            const e = new Error('Not Found');
-            e.status = 404;
-            return next(e);
-        }
+        // }else{
+        //     const e = new Error('Not Found');
+        //     e.status = 404;
+        //     return next(e);
+        // }
     })
 }
 

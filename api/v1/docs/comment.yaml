@@ -110,7 +110,7 @@ paths:
                 },
               ]
 
-  /comment/user/{userID}/{pageNumber}:      
+  /comment/user/{userID}:      
     get:                 
       tags:               
         - Comment            
@@ -123,12 +123,6 @@ paths:
         schema:
           type: string
         description: 유저 아이디
-        required: true  
-      - in: path       
-        name: pageNumber   
-        schema:
-          type: number
-        description: 페이지
         required: true  
       responses:      
         200:
@@ -143,7 +137,8 @@ paths:
                     "content": "updated content",
                     "updated": "2021-02-06T05:59:59.000Z",
                     "userNickName": "updated NickName okk",
-                    "profileImg": ""
+                    "profileImg": "",
+                    "title" : "this is title"
                 },
               ]
 

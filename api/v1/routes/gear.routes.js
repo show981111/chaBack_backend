@@ -37,5 +37,10 @@ router.get('/:page',
     gearController.getGear
 )
 
+router.get('/id/:gearID',
+    check('gearID').notEmpty().isNumeric().withMessage('gearID should not be empty').trim(),
+    checkValidationResult,
+    gearController.getGearInfoByID
+)
 
 module.exports = router;

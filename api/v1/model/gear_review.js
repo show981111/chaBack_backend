@@ -18,7 +18,6 @@ let gearReviewSchema = function (isUpdate) {
             isString : true,
             errorMessage : 'content should be string',
             trim : true,
-            escape : true
         },
         point : {
             errorMessage : 'point should be number',

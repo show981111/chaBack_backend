@@ -129,6 +129,51 @@ paths:
                 },
               ]
 
+  /gear/id/{gearID}:      
+    get:                 
+      tags:               
+        - Gear            
+      summary: 차박 용품 아이디로 조회 
+      produces:
+      - application/json
+      parameters:        
+      - in: path       
+        name: gearID   
+        description: 해당 아이디 조회
+        required: true  
+      responses:      
+        200:
+          description: 차박 용품 반환
+          examples:
+            application/json:
+              {
+                  "gearID": 3,
+                  "category": "a",
+                  "title": "asd",
+                  "content": "sad",
+                  "updated": "2021-03-20T15:00:00.000Z",
+                  "FK_GEAR_userID": "test@gmail.com",
+                  "imageKey": [
+                      "a.jpeg"
+                  ],
+                  "reviewCount": 6,
+                  "totalPoint": 43,
+                  "meanPoint": 7.17,
+                  "price": 123,
+                  "userNickName": "ㅅㅐ유",
+                  "profileImg": "",
+                  "resizedImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/resize/test@gmail.com/a.jpeg"
+                  ],
+                  "originalImages": [
+                      "https://chaback-bucket.s3.ap-northeast-2.amazonaws.com/images/original/test@gmail.com/a.jpeg"
+                  ]
+              }
+        400:
+          description: 파라미터가 잘못된 경우
+        404:
+          description: 해당 아이디 찾지 못함
+
 definitions:      
   Gear:
     type: object
@@ -139,10 +184,13 @@ definitions:
         type: string
       category:
         type: string
+      price:
+        type: number
       imageKey:
         type: string
     example:
       title : chaback tent
       content : awesome chavback tent 
       category : something
+      price : 1023
       imageKey : ['a','b','c']

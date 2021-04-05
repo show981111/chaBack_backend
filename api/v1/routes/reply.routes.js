@@ -7,7 +7,7 @@ const jwt = require('../middleware/jwt.js');
 
 
 router.post('/', 
-    check('content').notEmpty().isString().withMessage('content should not be empty and be string').trim().escape(),
+    check('content').notEmpty().isString().withMessage('content should not be empty and be string').trim(),
     check('reviewID').notEmpty().isNumeric().withMessage('reviewID should be number').trim(),
     check('replyParentID').optional().notEmpty().isNumeric().withMessage('replyParentID should be number').trim(),
     checkValidationResult,
@@ -17,7 +17,7 @@ router.post('/',
 
 router.put('/:replyID',
     check('replyID').notEmpty().isNumeric().withMessage('replyID should not be empty and be a number').trim(),
-    check('content').notEmpty().isString().withMessage('content should not be empty').trim().escape(),
+    check('content').notEmpty().isString().withMessage('content should not be empty').trim(),
     checkValidationResult,
     jwt.verifyToken(), 
     replyController.putReply

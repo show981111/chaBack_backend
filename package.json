@@ -25,7 +25,9 @@
     "sharp": "^0.27.0",
     "supertest": "^6.0.1",
     "swagger-jsdoc": "^6.0.1",
-    "swagger-ui-express": "^4.1.6"
+    "swagger-ui-express": "^4.1.6",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.1"
   },
   "scripts": {
     "test": "node_modules/.bin/mocha test/review.spec.js"
