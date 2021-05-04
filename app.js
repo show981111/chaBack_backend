@@ -38,7 +38,8 @@ app.use((err, req, res, next) => {
         msg : err.message,
         status : err.status,
         body : req.body,
-        parmas : req.params
+        parmas : req.params,
+        requestID : req.token_userID
     }
     logger.error(JSON.stringify(errorInformation));
     res.send({
